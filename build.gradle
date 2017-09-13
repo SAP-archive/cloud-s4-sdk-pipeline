@@ -23,7 +23,6 @@ spotless {
         greclipse().configFile('greclipse.properties')
     }
     groovyGradle {
-        // same as groovy, but for .gradle (defaults to '*.gradle')
         target '*.gradle'
         paddedCell() // Avoid cyclic ambiguities
         greclipse().configFile('greclipse.properties')
