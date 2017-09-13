@@ -18,13 +18,13 @@ dependencies {
 
 spotless {
     groovy {
-        excludeJava() // excludes all Java sources within the Groovy source dirs from formatting
-        paddedCell() // Avoid cyclic ambiguities
+        excludeJava()
+        paddedCell()
         greclipse().configFile('greclipse.properties')
     }
     groovyGradle {
         target '*.gradle'
-        paddedCell() // Avoid cyclic ambiguities
+        paddedCell()
         greclipse().configFile('greclipse.properties')
     }
 }
