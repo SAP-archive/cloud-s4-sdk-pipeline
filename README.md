@@ -11,13 +11,30 @@
  
  ## Requirements
  
- You have a repository on github or any other version control system.
+ For instantiating the SAP S/4HANA  Cloud SDK Cx Server, you need to provide a suitable host with a linux operating system and Docker installed. Please also ensure that the user with whom you start the Cx Server belongs to the
+ docker group.
  
- You have to setup a [Jenkins](https://jenkins.io/) server. In addition you have to add the [s4sdk-pipeline-library](https://github.com/SAP/cloud-s4-sdk-pipeline-lib) as shared library. 
+ Your project source files need to be available on a git or github server, which is accessible from the Cx Server host.
+ 
+The lifecycle of the Cx Server is maintained by a script with called cxserver.
+It can be found in the same named folder on the root of each SAP S/4HANA Cloud SDK project archetype. Together with the server.cfg file, this is all you need for starting your instance of the SAP S/4HANA Cloud SDK Cx Server.
+ 
+ To create a new project using the SDK execute the following command:
+ 
+ ```shell
+  mvn archetype:generate -DarchetypeGroupId=com.sap.cloud.s4hana.archetypes -DarchetypeArtifactId=scp-cf-tomee -DarchetypeVersion=1.0.0
+ ```
+ 
+ In the new project there is a folder called cx-server.
+This folder needs to be copied to the future host on which the Cx Server is intended to run.
+ 
+On the host machine execute the following command in the folder cx-server.
+This will start the Jenkins server.
+ ```shell
+  ./cx-server start
+ ```
 
- The best way to setup the server with all requirements is to use the cx-server script, which is included in every new project created with the SAP S/4HANA Cloud SDK. You can find the details [here](https://blogs.sap.com/2017/05/19/step-3-with-sap-s4hana-cloud-sdk-helloworld-on-scp-cloudfoundry/). 
- 
- Furthermore, you have to create a Jenkins job, which is connected to your version control system and can build that project.
+In Jenkins click on "New Item" and create a new "Multibranch Pipeline" for your repository.  
   
  ## Download and Installation
  
