@@ -11,13 +11,16 @@
  
  ## Requirements
  
- For instantiating the SAP S/4HANA  Cloud SDK Cx Server, you need to provide a suitable host with a linux operating system and Docker installed. Please also ensure that the user with whom you start the Cx Server belongs to the
+ To use the pipeline you need a Jenkins server which has the [pipeline library](https://github.com/SAP/cloud-s4-sdk-pipeline-lib) as shared library configured.
+ The best way to achieve the is to use the SAP S/4HANA Cloud SDK Cx Server.
+ 
+ For instantiating the SAP S/4HANA Cloud SDK Cx Server, you need to provide a suitable host with a linux operating system and Docker installed. Please also ensure that the user with whom you start the Cx Server belongs to the
  docker group.
  
  Your project source files need to be available on a git or github server, which is accessible from the Cx Server host.
  
-The lifecycle of the Cx Server is maintained by a script with called cxserver.
-It can be found in the same named folder on the root of each SAP S/4HANA Cloud SDK project archetype. Together with the server.cfg file, this is all you need for starting your instance of the SAP S/4HANA Cloud SDK Cx Server.
+ The lifecycle of the Cx Server is maintained by a script with called cxserver.
+ It can be found in the same named folder on the root of each SAP S/4HANA Cloud SDK project archetype. Together with the server.cfg file, this is all you need for starting your instance of the SAP S/4HANA Cloud SDK Cx Server.
  
  To create a new project using the SDK execute the following command:
  
@@ -26,20 +29,20 @@ It can be found in the same named folder on the root of each SAP S/4HANA Cloud S
  ```
  
  In the new project there is a folder called cx-server.
-This folder needs to be copied to the future host on which the Cx Server is intended to run.
+ This folder needs to be copied to the future host on which the Cx Server is intended to run.
  
-On the host machine execute the following command in the folder cx-server.
-This will start the Jenkins server.
+ On the host machine execute the following command in the folder cx-server.
+ This will start the Jenkins server.
  ```shell
   ./cx-server start
  ```
 
-In Jenkins click on "New Item" and create a new "Multibranch Pipeline" for your repository.  
+ In Jenkins click on "New Item" and create a new "Multibranch Pipeline" for your repository.  
   
  ## Download and Installation
  
-In order to use the pipeline just load the pipeline within your Jenkinsfile that is placed in the root of your project repository. 
-Create a file called Jenkinsfile and add the following example code:
+ In order to use the pipeline just load the pipeline within your Jenkinsfile that is placed in the root of your project repository. 
+ Create a file called Jenkinsfile and add the following example code:
  
  ```groovy
  #!/usr/bin/env groovy 
@@ -51,14 +54,14 @@ Create a file called Jenkinsfile and add the following example code:
  }
 ```
 
-After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline. 
+ After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline. 
 
 ## Known Issues
-Currently, there are no known issues.
+ Currently, there are no known issues.
 
 ## How to obtain support
-If you need any support, have any question or have found a bug, please report it as issue in the repository.
+ If you need any support, have any question or have found a bug, please report it as issue in the repository.
 
 ## License
-Copyright (c) 2017 SAP SE or an SAP affiliate company. All rights reserved.
-This file is licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE file](LICENSE).”
+ Copyright (c) 2017 SAP SE or an SAP affiliate company. All rights reserved.
+ This file is licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE file](LICENSE).”
