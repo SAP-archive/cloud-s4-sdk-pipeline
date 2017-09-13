@@ -1,0 +1,38 @@
+buildscript { repositories { mavenCentral() } }
+
+plugins { id "com.diffplug.gradle.spotless" version "3.5.1" }
+
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    maven { url "http://repo.jenkins-ci.org/releases/" }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.10'
+    compile 'org.jenkins-ci.plugins.workflow:workflow-cps:2.38'
+    testCompile group:'com.lesfurets', name:'jenkins-pipeline-unit', version:'1.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+spotless {
+    groovy {
+        excludeJava() // excludes all Java sources within the Groovy source dirs from formatting
+        paddedCell() // Avoid cyclic ambiguities
+        greclipse().configFile('greclipse.properties')
+    }
+    groovyGradle {
+        // same as groovy, but for .gradle (defaults to '*.gradle')
+        target '*.gradle'
+        paddedCell() // Avoid cyclic ambiguities
+        greclipse().configFile('greclipse.properties')
+    }
+}
+
+
+sourceSets {
+    main {
+        groovy { srcDirs = ['/']}
+    }
+}

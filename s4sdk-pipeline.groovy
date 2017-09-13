@@ -12,63 +12,62 @@ pipeline {
     stages {
         stage('Init') {
             steps {
-                library "pipeline-sdk-lib@${pipelineSdkVersion}"
+                library "s4sdk-pipeline-library@${pipelineSdkVersion}"
                 initS4SdkPipeline script: this
-                stashFiles script:this, stage:'init'
-            }
-        }
-        stage('Clean Build') {
-            steps {
-                unstashFiles script: this, stage:'build'
-                stageMavenCleanBuild script:this
-                stashFiles script: this, stage:'build'
             }
         }
 
-        stage('Static Code Checks') {
+        stage('Build') {
             steps {
-                unstashFiles script: this, stage: 'staticCodeChecks'
-                stageStaticCodeChecks script: this
-                stashFiles script: this, stage: 'staticCodeChecks'
+                parallel(
+                        "Backend": {
+                            node { stageBuildBackend script: this }
+                        },
+                        "Frontend":{
+                            node { stageBuildFrontend script: this }
+                        }
+                        )
             }
         }
 
-        stage('Unit Test') {
+        stage('Local Tests') {
             steps {
-                unstashFiles script: this, stage: 'unitTest'
-                stageUnitTests script:this
-                stashFiles script: this, stage: 'unitTest'
-            }
-        }
-        stage('Integration Tests') {
-            steps {
-                unstashFiles script: this, stage: 'integrationTest'
-                stageIntegrationTests script: this
-                stashFiles script: this, stage: 'integrationTest'
+                parallel (
+                        "Static Code Checks": {
+                            node { stageStaticCodeChecks script: this }
+                        },
+                        "Backend Unit Tests": {
+                            node { stageUnitTests script: this }
+                        },
+                        "Backend Integration Tests": {
+                            node { stageIntegrationTests script: this }
+                        },
+                        "Frontend Unit Tests": {
+                            node { stageFrontendUnitTests script: this }
+                        }
+                        )
             }
         }
 
-        stage ('Quality Checks') {
-            unstashFiles script:this, stage:'qualityChecks'
+        stage('Remote Tests') {
             steps {
-                unstashFiles script: this, stage: 'qualityChecks'
-                stageS4SdkQualityChecks(script: this)
-                stashFiles script: this, stage: 'qualityChecks'
+                parallel(
+                        "End to end Tests": {
+                            node { stageEndToEndTests script: this }
+                        },
+                        "Performance Tests": {
+                            node { stagePerformanceTests script: this }
+                        }
+                        )
             }
-            stashFiles script:this, stage:'qualityChecks'
+        }
+        stage('Quality Checks') {
+            steps { stageS4SdkQualityChecks script: this }
         }
 
         stage('Production Deployment') {
-            steps {
-                unstashFiles script:this, stage:'deploy'
-                stageProductionDeployment script: this
-                stashFiles script:this, stage:'deploy'
-            }
+            steps { stageProductionDeployment script: this }
         }
     }
-    post {
-        failure {
-            archive "**"
-        }
-    }
+    post { failure { deleteDir() } }
 }
