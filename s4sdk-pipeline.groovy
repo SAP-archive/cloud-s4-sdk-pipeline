@@ -52,7 +52,7 @@ pipeline {
         stage('Remote Tests') {
             steps {
                 parallel(
-                        "End to end Tests": {
+                        "End to End Tests": {
                             node { stageEndToEndTests script: this }
                         },
                         "Performance Tests": {
