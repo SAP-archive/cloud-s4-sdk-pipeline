@@ -21,10 +21,10 @@ pipeline {
             steps {
                 parallel(
                         "Backend": {
-                            node { stageBuildBackend script: this }
+                            node('') { stageBuildBackend script: this }
                         },
                         "Frontend":{
-                            node { stageBuildFrontend script: this }
+                            node('') { stageBuildFrontend script: this }
                         }
                         )
             }
@@ -34,16 +34,16 @@ pipeline {
             steps {
                 parallel (
                         "Static Code Checks": {
-                            node { stageStaticCodeChecks script: this }
+                            node('') { stageStaticCodeChecks script: this }
                         },
                         "Backend Unit Tests": {
-                            node { stageUnitTests script: this }
+                            node('') { stageUnitTests script: this }
                         },
                         "Backend Integration Tests": {
-                            node { stageIntegrationTests script: this }
+                            node('') { stageIntegrationTests script: this }
                         },
                         "Frontend Unit Tests": {
-                            node { stageFrontendUnitTests script: this }
+                            node('') { stageFrontendUnitTests script: this }
                         }
                         )
             }
@@ -53,10 +53,10 @@ pipeline {
             steps {
                 parallel(
                         "End to End Tests": {
-                            node { stageEndToEndTests script: this }
+                            node('') { stageEndToEndTests script: this }
                         },
                         "Performance Tests": {
-                            node { stagePerformanceTests script: this }
+                            node('') { stagePerformanceTests script: this }
                         }
                         )
             }
