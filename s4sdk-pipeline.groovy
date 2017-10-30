@@ -1,11 +1,11 @@
 #!/usr/bin/env groovy
 
 final def pipelineSdkVersion = 'master'
-
+def stageConfig = [:]
 pipeline {
     agent any
     options {
-        timeout(time: 30, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
         timestamps()
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
     }
@@ -13,60 +13,81 @@ pipeline {
         stage('Init') {
             steps {
                 library "s4sdk-pipeline-library@${pipelineSdkVersion}"
-                initS4SdkPipeline script: this
+                script { stageConfig = initS4SdkPipeline script: this }
             }
         }
 
         stage('Build') {
-            steps {
-                parallel(
-                        "Backend": {
-                            node('') { stageBuildBackend script: this }
-                        },
-                        "Frontend":{
-                            node('') { stageBuildFrontend script: this }
-                        }
-                        )
+            parallel {
+                stage("Backend") { steps { node('') { stageBuildBackend script: this } } }
+                stage("Frontend") {
+                    when { expression { stageConfig.FRONT_END_BUILD } }
+                    steps { node('') { stageBuildFrontend script: this } }
+                }
             }
         }
 
         stage('Local Tests') {
-            steps {
-                parallel (
-                        "Static Code Checks": {
-                            node('') { stageStaticCodeChecks script: this }
-                        },
-                        "Backend Unit Tests": {
-                            node('') { stageUnitTests script: this }
-                        },
-                        "Backend Integration Tests": {
-                            node('') { stageIntegrationTests script: this }
-                        },
-                        "Frontend Unit Tests": {
-                            node('') { stageFrontendUnitTests script: this }
-                        }
-                        )
+            parallel {
+                stage("Static Code Checks") { steps { node('') { stageStaticCodeChecks script: this } } }
+                stage("Backend Unit Tests") { steps { node('') { stageUnitTests script: this } } }
+                stage("Backend Integration Tests") { steps { node('') { stageIntegrationTests script: this } } }
+                stage("Frontend Unit Tests") {
+                    when { expression { stageConfig.FRONT_END_TESTS } }
+                    steps { node('') { stageFrontendUnitTests script: this } }
+                }
             }
         }
 
         stage('Remote Tests') {
-            steps {
-                parallel(
-                        "End to End Tests": {
-                            node('') { stageEndToEndTests script: this }
-                        },
-                        "Performance Tests": {
-                            node('') { stagePerformanceTests script: this }
-                        }
-                        )
+            when { expression { stageConfig.REMOTE_TESTS } }
+            parallel {
+                stage("End to End Tests") {
+                    when { expression { stageConfig.E2E_TESTS } }
+                    steps { node('') { stageEndToEndTests script: this } }
+                }
+                stage("Performance Tests") {
+                    when { expression { stageConfig.PERFORMANCE_TESTS } }
+                    steps { node('') { stagePerformanceTests script: this } }
+                }
             }
         }
+
         stage('Quality Checks') {
-            steps { stageS4SdkQualityChecks script: this }
+            steps { node('') { stageS4SdkQualityChecks script: this } }
         }
 
-        stage('Production Deployment') {
-            steps { stageProductionDeployment script: this }
+        stage('Security Checks') {
+            when { expression { stageConfig.SECURITY_CHECKS } }
+            parallel {
+                stage("Checkmarx Scan") {
+                    when { expression { stageConfig.CHECKMARX_SCAN } }
+                    steps { node('') { stageCheckmarxScan script: this } }
+                }
+                stage("WhiteSource Scan") {
+                    when { expression { stageConfig.WHITESOURCE_SCAN } }
+                    steps { node('') { stageWhitesourceScan script: this } }
+                }
+                stage("Node Security Platform Scan") {
+                    when { expression { stageConfig.NODE_SECURITY_SCAN } }
+                    steps { node('') { stageNodeSecurityPlatform script: this } }
+                }
+            }
+
+        }
+
+        stage('Deployment') {
+            parallel {
+                stage('Production Deployment') {
+                    when { expression { stageConfig.PRODUCTION_DEPLOYMENT } }
+                    steps { node('') { stageProductionDeployment script: this } }
+                }
+
+                stage('Artifact Deployment') {
+                    when { expression { stageConfig.ARTIFACT_DEPLOYMENT } }
+                    steps { node('') { stageArtifactDeployment script: this } }
+                }
+            }
         }
     }
     post { failure { deleteDir() } }
