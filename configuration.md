@@ -68,7 +68,7 @@ credentials:
 Example for target defintions:
 ```
 cfTargets:
-  -  org: 'MyOrg'
+  - org: 'MyOrg'
     space: 'Test'
     apiEndpoint: 'https://api.cf.sap.hana.ondemand.com'
     appName: 'testapp'
