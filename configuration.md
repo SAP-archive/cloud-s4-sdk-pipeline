@@ -62,8 +62,8 @@ credentials:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `cfTarget` | | The CloudFoundry deployment target to be used for running the end to end tests. |
-| `neoTarget` | | The Neo deployment target to be used for running the end to end tests. |
+| `cfTargets` | | The CloudFoundry deployment target to be used for running the end to end tests. |
+| `neoTargets` | | The Neo deployment target to be used for running the end to end tests. |
 | `appUrl` | |  The URL under which the app is available after deployment. |
 
 Example for target defintions:
