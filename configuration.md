@@ -95,19 +95,19 @@ neoTargets:
 | `cfTargets` | | The list of CloudFoundry deployment targets required for the performance test stage. |
 | `neoTargets` | | The list of Neo deployment targets required for the performance test stage. |
 
-#### performanceTests
-
-| Property | Default Value | Description |
-| --- | --- | --- |
-| `cfTargets` | | The list of CloudFoundry deployment targets required for the performance test stage. |
-| `neoTargets` | | The list of Neo deployment targets required for the performance test stage. |
-
-#### productionDeployment
+#### s4SdkQualityChecks
 
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `jacocoExcludes` | | The list of classes that should be excluded from the code coverage check, e.g. generated classes. |
 | `nonErpDestinations` | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
+
+#### productionDeployment
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `cfTargets` | | The list of productive CloudFoundry deployment targets to be deployed when a build of your productive branch succeeds. |
+| `neoTargets`| | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
 
 ### Step configuration
 
