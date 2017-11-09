@@ -61,20 +61,20 @@ credentials:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `cfTargets` | | The CloudFoundry deployment target to be used for running the end to end tests. |
-| `neoTargets` | | The Neo deployment target to be used for running the end to end tests. |
-| `appUrl` | |  The URL under which the app is available after deployment. |
+| `cfTargets` | | The CloudFoundry deployment targets to be used for running the end to end tests. |
+| `neoTargets` | | The Neo deployment targets to be used for running the end to end tests. |
+| `appUrls` | |  The URLs under which the app is available after deployment. |
 
 Example for target defintions:
 ```
 cfTargets:
-  org: 'MyOrg'
-  space: 'Test'
-  apiEndpoint: 'https://api.cf.sap.hana.ondemand.com'
-  appName: 'testapp'
-  manifest: 'manifest-test.yml'
-  credentialsId: 'deploy-test'
-  deploymentType: 'standard'
+  -  org: 'MyOrg'
+    space: 'Test'
+    apiEndpoint: 'https://api.cf.sap.hana.ondemand.com'
+    appName: 'testapp'
+    manifest: 'manifest-test.yml'
+    credentialsId: 'deploy-test'
+    deploymentType: 'standard'
 
 neoTargets:
   - host: 'int.sap.hana.ondemand.com'
