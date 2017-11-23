@@ -106,7 +106,7 @@ Example of jacocoExcludes:
 ```
   s4SdkQualityChecks:
     jacocoExcludes:
-      - '/HelloWorld.class'
+      - '**/HelloWorld.class'
       - '**/generated/**'
 ``` 
 
