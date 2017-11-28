@@ -99,8 +99,16 @@ neoTargets:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `jacocoExcludes` | | The list of classes that should be excluded from the code coverage check, e.g. generated classes. |
+| `jacocoExcludes` | | A list of exclusions expressed as an [Ant style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
 | `nonErpDestinations` | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
+
+Example of jacocoExcludes:
+```
+  s4SdkQualityChecks:
+    jacocoExcludes:
+      - '**/HelloWorld.class'
+      - '**/generated/**'
+``` 
 
 #### productionDeployment
 
