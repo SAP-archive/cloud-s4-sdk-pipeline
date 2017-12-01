@@ -14,48 +14,49 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
 
 #### buildFrontend
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | s4sdk/docker-node-chromium | The docker image to be used for building the application frontend. **Note:** This will only change the docker image used for building the frontend. End to end tests and other npm based stages will still use their individual default values. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
+| `dockerImage` | s4sdk/docker-node-chromium | The docker image to be used for building the application frontend. **Note:** This will only change the docker image used for building the frontend. End to end tests and other npm based stages will still use their individual default values. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
 
 #### staticCodeChecks
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `pmdExcludes` | | A comma separated list of exclusions expressed as an [Ant style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**` |
-| `findbugsExcludesFile` | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
+| `pmdExcludes` | | A comma separated list of exclusions expressed as an [Ant style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**` |
+| `findbugsExcludesFile` | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
 
 #### unitTests
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
 
 #### integrationTests
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
-| `credentials` | | The list of system credentials to be injected during integration tests. The following example will provision the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
+| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `retry` | 1 | The amount of maximal times that integration tests will try before aborting the build. **Note:** This will consume more time for the jenkins build. |
+| `credentials` | | The list of system credentials to be injected during integration tests. The following example will provision the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
 
 Example for `credentials`:
 ```
 credentials:
   - alias: 'ERP'
-    credentialId: 'erp-credentials'
+    credentialId: 'erp-credentials'
   - alias: 'SFSF'
-    credentialId: 'successfactors-credentials'
+    credentialId: 'successfactors-credentials'
 ```
 
 #### frontendUnitTests
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | s4sdk/docker-node-chromium | The docker image to be used for running frontend unit tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
+| `dockerImage` | s4sdk/docker-node-chromium | The docker image to be used for running frontend unit tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
 
 #### endToEndTests
 
@@ -63,7 +64,7 @@ credentials:
 | --- | --- | --- |
 | `cfTargets` | | The CloudFoundry deployment targets to be used for running the end to end tests. |
 | `neoTargets` | | The Neo deployment targets to be used for running the end to end tests. |
-| `appUrls` | |  The URLs under which the app is available after deployment. |
+| `appUrls` | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId as shown below  |
 
 Example for target defintions:
 ```
@@ -88,6 +89,12 @@ neoTargets:
       runtimeVersion: '2'
 ```
 
+Example for appUrls defintion with credentials:
+```
+appUrls:
+ - url: 'https://approuter.cfapps.hana.ondemand.com'
+   credentialId: e2e-test-user
+```
 #### performanceTests
 
 | Property | Default Value | Description |
@@ -114,8 +121,10 @@ Example of jacocoExcludes:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `cfTargets` | | The list of productive CloudFoundry deployment targets to be deployed when a build of your productive branch succeeds. |
+| `cfTargets` | | The list of productive CloudFoundry deployment targets to be deployed when a build of your productive branch succeeds. |
 | `neoTargets`| | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
+| `appUrls` | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
+
 
 ### Step configuration
 
