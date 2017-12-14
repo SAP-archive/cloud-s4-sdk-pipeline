@@ -25,7 +25,7 @@
  To create a new project using the SDK execute the following command:
  
  ```shell
-  mvn archetype:generate -DarchetypeGroupId=com.sap.cloud.s4hana.archetypes -DarchetypeArtifactId=scp-cf-tomee -DarchetypeVersion=1.0.0
+  mvn archetype:generate -DarchetypeGroupId=com.sap.cloud.s4hana.archetypes -DarchetypeArtifactId=scp-cf-tomee -DarchetypeVersion=RELEASE
  ```
  
  In the new project there is a folder called `cx-server`.
