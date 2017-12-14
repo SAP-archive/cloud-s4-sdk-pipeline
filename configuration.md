@@ -42,6 +42,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | --- | --- | --- |
 | `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
 | `retry` | 1 | The amount of maximal times that integration tests will try before aborting the build. **Note:** This will consume more time for the jenkins build. |
+| `forkCount` | 1C | The number of JVM processes that are spawned to run the tests in parallel. |
 | `credentials` | | The list of system credentials to be injected during integration tests. The following example will provision the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
 
 Example for `credentials`:
