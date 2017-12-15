@@ -23,22 +23,22 @@ pipeline {
 
         stage('Build') {
             parallel {
-                stage("Backend") { steps { node('') { stageBuildBackend script: this } } }
+                stage("Backend") { steps { stageBuildBackend script: this } }
                 stage("Frontend") {
                     when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_BUILD } }
-                    steps { node('') { stageBuildFrontend script: this } }
+                    steps { stageBuildFrontend script: this }
                 }
             }
         }
 
         stage('Local Tests') {
             parallel {
-                stage("Static Code Checks") { steps { node('') { stageStaticCodeChecks script: this } } }
-                stage("Backend Unit Tests") { steps { node('') { stageUnitTests script: this } } }
-                stage("Backend Integration Tests") { steps { node('') { stageIntegrationTests script: this } } }
+                stage("Static Code Checks") { steps { stageStaticCodeChecks script: this } }
+                stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
+                stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
                 stage("Frontend Unit Tests") {
                     when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_TESTS } }
-                    steps { node('') { stageFrontendUnitTests script: this } }
+                    steps { stageFrontendUnitTests script: this }
                 }
             }
         }
@@ -48,17 +48,17 @@ pipeline {
             parallel {
                 stage("End to End Tests") {
                     when { expression { pipelineEnvironment.skipConfiguration.E2E_TESTS } }
-                    steps { node('') { stageEndToEndTests script: this } }
+                    steps { stageEndToEndTests script: this }
                 }
                 stage("Performance Tests") {
                     when { expression { pipelineEnvironment.skipConfiguration.PERFORMANCE_TESTS } }
-                    steps { node('') { stagePerformanceTests script: this } }
+                    steps { stagePerformanceTests script: this }
                 }
             }
         }
 
         stage('Quality Checks') {
-            steps { node('') { stageS4SdkQualityChecks script: this } }
+            steps { stageS4SdkQualityChecks script: this }
         }
 
         stage('Security Checks') {
@@ -66,15 +66,15 @@ pipeline {
             parallel {
                 stage("Checkmarx Scan") {
                     when { expression { pipelineEnvironment.skipConfiguration.CHECKMARX_SCAN } }
-                    steps { node('') { stageCheckmarxScan script: this } }
+                    steps { stageCheckmarxScan script: this }
                 }
                 stage("WhiteSource Scan") {
                     when { expression { pipelineEnvironment.skipConfiguration.WHITESOURCE_SCAN } }
-                    steps { node('') { stageWhitesourceScan script: this } }
+                    steps { stageWhitesourceScan script: this }
                 }
                 stage("Node Security Platform Scan") {
                     when { expression { pipelineEnvironment.skipConfiguration.NODE_SECURITY_SCAN } }
-                    steps { node('') { stageNodeSecurityPlatform script: this } }
+                    steps { stageNodeSecurityPlatform script: this }
                 }
             }
 
@@ -84,12 +84,12 @@ pipeline {
             parallel {
                 stage('Production Deployment') {
                     when { expression { pipelineEnvironment.skipConfiguration.PRODUCTION_DEPLOYMENT } }
-                    steps { node('') { stageProductionDeployment script: this } }
+                    steps { stageProductionDeployment script: this }
                 }
 
                 stage('Artifact Deployment') {
                     when { expression { pipelineEnvironment.skipConfiguration.ARTIFACT_DEPLOYMENT } }
-                    steps { node('') { stageArtifactDeployment script: this } }
+                    steps { stageArtifactDeployment script: this }
                 }
             }
         }
