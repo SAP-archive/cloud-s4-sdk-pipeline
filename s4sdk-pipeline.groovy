@@ -1,76 +1,80 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v2.1'
-def stageConfig = [:]
+final def pipelineSdkVersion = 'v3'
+
 pipeline {
     agent any
     options {
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
         timestamps()
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        skipDefaultCheckout()
     }
     stages {
         stage('Init') {
             steps {
                 library "s4sdk-pipeline-library@${pipelineSdkVersion}"
-                script { stageConfig = initS4SdkPipeline script: this }
+                node('') {
+                    checkout scm
+                    initS4SdkPipeline script: this
+                }
             }
         }
 
         stage('Build') {
             parallel {
-                stage("Backend") { steps { node('') { stageBuildBackend script: this } } }
+                stage("Backend") { steps { stageBuildBackend script: this } }
                 stage("Frontend") {
-                    when { expression { stageConfig.FRONT_END_BUILD } }
-                    steps { node('') { stageBuildFrontend script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_BUILD } }
+                    steps { stageBuildFrontend script: this }
                 }
             }
         }
 
         stage('Local Tests') {
             parallel {
-                stage("Static Code Checks") { steps { node('') { stageStaticCodeChecks script: this } } }
-                stage("Backend Unit Tests") { steps { node('') { stageUnitTests script: this } } }
-                stage("Backend Integration Tests") { steps { node('') { stageIntegrationTests script: this } } }
+                stage("Static Code Checks") { steps { stageStaticCodeChecks script: this } }
+                stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
+                stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
                 stage("Frontend Unit Tests") {
-                    when { expression { stageConfig.FRONT_END_TESTS } }
-                    steps { node('') { stageFrontendUnitTests script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_TESTS } }
+                    steps { stageFrontendUnitTests script: this }
                 }
             }
         }
 
         stage('Remote Tests') {
-            when { expression { stageConfig.REMOTE_TESTS } }
+            when { expression { pipelineEnvironment.skipConfiguration.REMOTE_TESTS } }
             parallel {
                 stage("End to End Tests") {
-                    when { expression { stageConfig.E2E_TESTS } }
-                    steps { node('') { stageEndToEndTests script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.E2E_TESTS } }
+                    steps { stageEndToEndTests script: this }
                 }
                 stage("Performance Tests") {
-                    when { expression { stageConfig.PERFORMANCE_TESTS } }
-                    steps { node('') { stagePerformanceTests script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.PERFORMANCE_TESTS } }
+                    steps { stagePerformanceTests script: this }
                 }
             }
         }
 
         stage('Quality Checks') {
-            steps { node('') { stageS4SdkQualityChecks script: this } }
+            steps { stageS4SdkQualityChecks script: this }
         }
 
         stage('Security Checks') {
-            when { expression { stageConfig.SECURITY_CHECKS } }
+            when { expression { pipelineEnvironment.skipConfiguration.SECURITY_CHECKS } }
             parallel {
                 stage("Checkmarx Scan") {
-                    when { expression { stageConfig.CHECKMARX_SCAN } }
-                    steps { node('') { stageCheckmarxScan script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.CHECKMARX_SCAN } }
+                    steps { stageCheckmarxScan script: this }
                 }
                 stage("WhiteSource Scan") {
-                    when { expression { stageConfig.WHITESOURCE_SCAN } }
-                    steps { node('') { stageWhitesourceScan script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.WHITESOURCE_SCAN } }
+                    steps { stageWhitesourceScan script: this }
                 }
                 stage("Node Security Platform Scan") {
-                    when { expression { stageConfig.NODE_SECURITY_SCAN } }
-                    steps { node('') { stageNodeSecurityPlatform script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.NODE_SECURITY_SCAN } }
+                    steps { stageNodeSecurityPlatform script: this }
                 }
             }
 
@@ -79,16 +83,25 @@ pipeline {
         stage('Deployment') {
             parallel {
                 stage('Production Deployment') {
-                    when { expression { stageConfig.PRODUCTION_DEPLOYMENT } }
-                    steps { node('') { stageProductionDeployment script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.PRODUCTION_DEPLOYMENT } }
+                    steps { stageProductionDeployment script: this }
                 }
 
                 stage('Artifact Deployment') {
-                    when { expression { stageConfig.ARTIFACT_DEPLOYMENT } }
-                    steps { node('') { stageArtifactDeployment script: this } }
+                    when { expression { pipelineEnvironment.skipConfiguration.ARTIFACT_DEPLOYMENT } }
+                    steps { stageArtifactDeployment script: this }
                 }
             }
         }
     }
-    post { failure { deleteDir() } }
+    post {
+        always{
+            script{
+                if(pipelineEnvironment.skipConfiguration.SEND_NOTIFICATION){
+                    postActionSendNotification script: this
+                }
+            }
+        }
+        failure { deleteDir() }
+    }
 }

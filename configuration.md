@@ -1,6 +1,13 @@
 ## Pipeline configuration
 
-To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. Currently, this comprises a general configuration on project level, a step configuration to set default values for steps, and a stage level to set configuration values for a specific stage. If a property is configured on step as well as stage level, the stage level value takes precedence.
+The SAP S/4HANA Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
+To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. This comprises:
+ * the general configuration on project level,
+ * the stage level configurations to set configuration values for specific stages,
+ * the step configurations to set default values for steps,
+ * and the post action configurations to configure post build behavior.
+ 
+ If a property is configured on step as well as stage level, the stage level value takes precedence.
 
 ### General configuration
 
@@ -14,7 +21,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | maven:3.5-jdk-8-alpine | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
 
 #### buildFrontend
 
@@ -33,14 +40,15 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | maven:3.5-jdk-8-alpine | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
 
 #### integrationTests
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | maven:3.5-jdk-8-alpine | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
 | `retry` | 1 | The amount of maximal times that integration tests will try before aborting the build. **Note:** This will consume more time for the jenkins build. |
+| `forkCount` | 1C | The number of JVM processes that are spawned to run the tests in parallel. |
 | `credentials` | | The list of system credentials to be injected during integration tests. The following example will provision the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
 
 Example for `credentials`:
@@ -134,7 +142,7 @@ The executeMaven step is used for all invocations of the mvn build tool. It is e
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | maven:3.5-jdk-7-alpine | The image to be used for executing maven commands. |
+| `dockerImage` | maven:3.5-jdk-8-alpine | The image to be used for executing maven commands. |
 | `globalSettingsFile` | | The global settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 | `projectSettingsFile` | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
@@ -145,3 +153,27 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `dockerImage` | s4sdk/docker-node-chromium | The image to be used for executing npm commands. |
+
+
+### Post action configuration
+
+#### sendNotifications
+
+The `sendNotifications` post build action can be used to send notifications to project members in case of a unsuccessful build outcome.
+By default, an email is sent to the list of users who committed a change since the last non-broken build. Additionally, a set of recipients can be defined that should always receive notifications.
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `enabled` | false | If set to `true`, notifications will be sent. |
+| `skipFeatureBranches` | false | If set to `true`, notifications will only be sent for the productive branch as defined in the general configuration section. |
+| `recipients` | | List of email adresses that should be notified in addition to the standard recipients. |
+
+Example for `sendNotifications`: 
+```
+postActions:
+  enabled: true
+  skipFeatureBranches: true
+  recipients:
+    - ryan.architect@foobar.com
+    - john.doe@foobar.com
+```
