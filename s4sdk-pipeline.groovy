@@ -3,7 +3,7 @@
 final def pipelineSdkVersion = 'master'
 
 pipeline {
-    agent none
+    agent any
     options {
         timeout(time: 120, unit: 'MINUTES')
         timestamps()
