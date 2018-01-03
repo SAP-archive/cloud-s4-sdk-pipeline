@@ -133,7 +133,30 @@ Example of jacocoExcludes:
 | `neoTargets`| | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
 | `appUrls` | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
 
+#### artifactDeployment
 
+##### nexus
+
+ The deployment of artifacts to nexus can be configured with a map containing the following properties:
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `version`| nexus3 | Version of nexus |
+| `url` | | Url of the nexus without http |
+| `repository` | | Name of the nexus repository|
+| `additionalClassifiers` | | List of additional classifiers that should be deployed to nexus. Each item is a map of a type and a classifier name.|
+
+Example
+```
+artifactDeployment:
+  nexus:
+    version: nexus2
+    url: nexus.mycorp:8080/nexus
+    repository: snapshots
+    additionalClassifiers:
+      - type: jar
+        classifier: classes
+```
 ### Step configuration
 
 #### executeMaven
