@@ -182,7 +182,7 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 
 #### sendNotifications
 
-The `sendNotifications` post build action can be used to send notifications to project members in case of a unsuccessful build outcome.
+The `sendNotifications` post build action can be used to send notifications to project members in case of a unsuccessful build outcome or if the build goes back to normal.
 By default, an email is sent to the list of users who committed a change since the last non-broken build. Additionally, a set of recipients can be defined that should always receive notifications.
 
 | Property | Default Value | Description |
