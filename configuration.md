@@ -141,9 +141,9 @@ Example of jacocoExcludes:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `version`| nexus3 | Version of nexus |
-| `url` | | Url of the nexus without http |
-| `repository` | | Name of the nexus repository|
+| `version`| nexus3 | Version of nexus. Can be `nexus2` or `nexus3`. |
+| `url` | | URL of the nexus. The scheme part of the URL will not be considered, because only `http` is supported. |
+| `repository` | | Name of the nexus repository. |
 | `additionalClassifiers` | | List of additional classifiers that should be deployed to nexus. Each item is a map of a type and a classifier name.|
 
 Example
