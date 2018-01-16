@@ -193,7 +193,7 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `dockerImage` | s4sdk/docker-node-chromium | The image to be used for executing npm commands. |
-
+| `defaultNpmRegistry` | | The default npm registry url to be used as the remote mirror. |
 
 ### Post action configuration
 
