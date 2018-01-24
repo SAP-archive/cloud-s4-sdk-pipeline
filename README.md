@@ -14,8 +14,8 @@
  To use the pipeline you need a Jenkins server which has the [pipeline library](https://github.com/SAP/cloud-s4-sdk-pipeline-lib) as shared library configured.
  The best way to achieve this is to use the SAP S/4HANA Cloud SDK Cx Server.
  
- For instantiating the SAP S/4HANA Cloud SDK Cx Server, you need to provide a suitable host with a linux operating system and Docker installed. Please also ensure that the user with whom you start the Cx Server belongs to the
- docker group.
+ For instantiating the SAP S/4HANA Cloud SDK Cx Server, you need to provide a suitable host with a linux operating system and Docker installed.
+ Please also ensure that the user with whom you start the Cx Server belongs to the `docker` group.
  
  Your project source files need to be available on a git or github server, which is accessible from the Cx Server host.
  
@@ -37,12 +37,12 @@
   ./cx-server start
  ```
 
- In Jenkins click on "New Item" and create a new "Multibranch Pipeline" for your repository.  
+ In Jenkins, click on "New Item" and create a new "Multibranch Pipeline" for your repository.  
   
  ## Download and Installation
  
- In order to use the pipeline just load the pipeline within your Jenkinsfile that is placed in the root of your project repository. 
- Create a file called Jenkinsfile and add the following example code:
+ In order to use the pipeline just load the pipeline within your `Jenkinsfile` that is placed in the root of your project repository. 
+ Create a file called `Jenkinsfile` and add the following example code:
  
  ```groovy
  #!/usr/bin/env groovy 
