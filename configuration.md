@@ -140,7 +140,7 @@ Example of jacocoExcludes:
     jacocoExcludes:
       - '**/HelloWorld.class'
       - '**/generated/**'
-``` 
+```
 
 #### productionDeployment
 
@@ -174,6 +174,20 @@ artifactDeployment:
       - type: jar
         classifier: classes
 ```
+
+#### whitesourceScan
+
+Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans.
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `product` | | Name of your product in WhiteSource. |
+| `orgToken` | | Unique identifier of your organization in WhiteSource, also referred to as 'API Token'. |
+
+Please note that this configuration only affects the backend project.
+For the frontend, a `whitesource.config.json` file needs to be present.
+See the [official documentation](https://www.whitesourcesoftware.com/how-to-install-npm/) for more info.
+
 ### Step configuration
 
 #### executeMaven
@@ -208,7 +222,7 @@ By default, an email is sent to the list of users who committed a change since t
 | `skipFeatureBranches` | false | If set to `true`, notifications will only be sent for the productive branch as defined in the general configuration section. |
 | `recipients` | | List of email adresses that should be notified in addition to the standard recipients. |
 
-Example for `sendNotification`: 
+Example for `sendNotification`:
 ```yaml
 postActions:
   sendNotification:
