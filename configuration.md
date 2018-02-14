@@ -2,12 +2,12 @@
 
 The SAP S/4HANA Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
 To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. This comprises:
- * the general configuration on project level,
+ * the general configuration on the project level,
  * the stage level configurations to set configuration values for specific stages,
  * the step configurations to set default values for steps,
- * and the post action configurations to configure post build behavior.
+ * and the post action configurations to configure post-build behavior.
 
- If a property is configured on step as well as stage level, the stage level value takes precedence.
+ If a property is configured on a step as well as the stage level, the stage level value takes precedence.
 
 ### General configuration
 
@@ -50,7 +50,7 @@ general:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `pmdExcludes` | | A comma separated list of exclusions expressed as an [Ant style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**` |
+| `pmdExcludes` | | A comma-separated list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**` |
 | `findbugsExcludesFile` | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
 
 #### unitTests
@@ -64,9 +64,9 @@ general:
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `dockerImage` | maven:3.5-jdk-8-alpine | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
-| `retry` | 1 | The amount of maximal times that integration tests will try before aborting the build. **Note:** This will consume more time for the jenkins build. |
+| `retry` | 1 | The number of times that integration tests will retry before aborting the build. **Note:** This will consume more time for the jenkins build. |
 | `forkCount` | 1C | The number of JVM processes that are spawned to run the tests in parallel. |
-| `credentials` | | The list of system credentials to be injected during integration tests. The following example will provision the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
+| `credentials` | | The list of system credentials to be injected during integration tests. The following example will provide the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
 
 Example for `credentials`:
 ```yaml
@@ -91,7 +91,7 @@ credentials:
 | `neoTargets` | | The Neo deployment targets to be used for running the end to end tests. |
 | `appUrls` | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId as shown below  |
 
-Example for target defintions:
+Example for target definitions:
 ```yaml
 cfTargets:
   - org: 'MyOrg'
@@ -114,7 +114,7 @@ neoTargets:
       runtimeVersion: '2'
 ```
 
-Example for appUrls defintion with credentials:
+Example for appUrls definitions with credentials:
 ```yaml
 appUrls:
  - url: 'https://approuter.cfapps.hana.ondemand.com'
@@ -131,17 +131,46 @@ appUrls:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `jacocoExcludes` | | A list of exclusions expressed as an [Ant style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
+| `jacocoExcludes` | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
 | `nonErpDestinations` | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
 
 Example of jacocoExcludes:
 ```yaml
-  s4SdkQualityChecks:
-    jacocoExcludes:
-      - '**/HelloWorld.class'
-      - '**/generated/**'
-```
+s4SdkQualityChecks:
+  jacocoExcludes:
+    - '**/HelloWorld.class'
+    - '**/generated/**'
+``` 
+#### checkmarxScan
+[Checkmarx](https://www.checkmarx.com/) is one of the security analysis tools which is supported by the  pipeline. 
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `groupId` | | Checkmarx Group ID|
+| `checkMarxProjectName` | | Name of the project on Checkmarx server.|
+| `filterPattern` |`!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, **/*.js, **/*.java, **/*.ts`| Files which needs to be skipped during scanning.|
+| `fullScansScheduled` | false| Toggle to enable or disable full scan on a certain schedule.|
+| `incremental` | true| Perform incremental scan with every run. If turned `false`, complete project is scanned on every submission.|
+| `vulnerabilityThresholdMedium` |0| The threshold for medium level threats. If the findings are greater than this value, pipeline execution will result in failure.|
+| `vulnerabilityThresholdLow` |99999| The threshold for low level threats. If the findings are greater than this value, pipeline execution will result in failure.|
+| `preset` |36| A predefined set of that can be executed on the project. You can configure this value in *Checkmarx->Management->Scan Settings-> Preset Manager*.|
+| `checkmarxCredentialsId` | | The Credential ID to connect to Checkmarx server.|
+| `checkmarxServerUrl` | | An URL to Checkmarx server.|
 
+Example Checkmarx configuration
+```yaml
+checkmarxScan:
+  groupId: '898faddf-9dca-0ce4-2221-5ba1e873a7a6'
+  vulnerabilityThresholdMedium: 5
+  checkMarxProjectName: 'My_Application'
+  vulnerabilityThresholdLow: 999999
+  filterPattern: '!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, **/*.js, **/*.java, **/*.ts'
+  fullScansScheduled: false
+  generatePdfReport: true
+  incremental: true
+  preset: '36'
+  checkmarxCredentialsId: CHECKMARX-SCAN
+  checkmarxServerUrl: http://localhost:8089
+```
 #### productionDeployment
 
 | Property | Default Value | Description |
@@ -209,20 +238,48 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | `dockerImage` | s4sdk/docker-node-chromium | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | The default npm registry url to be used as the remote mirror. |
 
+#### checkFindbugs
+[FindBugs](http://findbugs.sourceforge.net/) static code analysis is executed as part of the static code checks. 
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `includeFilterFile` | s4hana_findbugs_include_filter.xml | Bug definition filter file. |
+
+#### checkJMeter
+[Apache JMeter](http://jmeter.apache.org/) is executed as part of performance tests of the application. The user is free to choose between JMeter and Gatling or both.
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `options` |  | Options such as proxy. |
+| `testPlan` | `./performance-tests/*` | The directory where the test plans reside. Should reside in a subdirectory under `performance-tests` directory if both JMeter and Gatling are enabled.|
+| `dockerImage` | `famiko/jmeter-base` | JMeter docker image. |
+| `failThreshold ` | `100` | Marks build as `FAILURE` if the value exceeds the threshold. |
+| `unstableThreshold ` | `90` | Marks build as `UNSTABLE` if the value exceeds the threshold. |
+
+Example configuration file
+
+```yaml
+checkJMeter:
+  options: '-H my.proxy.server -P 8000'
+  testPlan: './performance-tests/JMeter/*' # mandatory parameter if both JMeter and gatling are enabled
+  dockerImage: 'famiko/jmeter-base'
+  failThreshold : 80
+  unstableThreshold: 70
+```
 ### Post action configuration
 
 #### sendNotification
 
-The `sendNotification` post build action can be used to send notifications to project members in case of a unsuccessful build outcome or if the build goes back to normal.
+The `sendNotification` post-build action can be used to send notifications to project members in case of an unsuccessful build outcome or if the build goes back to normal.
 By default, an email is sent to the list of users who committed a change since the last non-broken build. Additionally, a set of recipients can be defined that should always receive notifications.
 
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `enabled` | false | If set to `true`, notifications will be sent. |
 | `skipFeatureBranches` | false | If set to `true`, notifications will only be sent for the productive branch as defined in the general configuration section. |
-| `recipients` | | List of email adresses that should be notified in addition to the standard recipients. |
+| `recipients` | | List of email addresses that should be notified in addition to the standard recipients. |
 
-Example for `sendNotification`:
+Example for `sendNotification`: 
 ```yaml
 postActions:
   sendNotification:
