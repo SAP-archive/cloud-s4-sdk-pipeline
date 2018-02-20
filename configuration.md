@@ -226,7 +226,6 @@ The executeMaven step is used for all invocations of the mvn build tool. It is e
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `dockerImage` | maven:3.5-jdk-8-alpine | The image to be used for executing maven commands. |
-| `globalSettingsFile` | | The global settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 | `projectSettingsFile` | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
 #### executeNpm
@@ -236,7 +235,7 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `dockerImage` | s4sdk/docker-node-chromium | The image to be used for executing npm commands. |
-| `defaultNpmRegistry` | | The default npm registry url to be used as the remote mirror. |
+| `defaultNpmRegistry` | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
 
 #### checkFindbugs
 [FindBugs](http://findbugs.sourceforge.net/) static code analysis is executed as part of the static code checks. 
