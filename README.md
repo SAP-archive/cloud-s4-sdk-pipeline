@@ -60,7 +60,7 @@
  Currently, there are no known issues.
 
 ## How to obtain support
- If you need any support, have any question or have found a bug, please report it as issue in the repository.
+ If you need any support, have any question or have found a bug, please report it as an issue in the repository.
 
 ## License
  Copyright (c) 2017-2018 SAP SE or an SAP affiliate company. All rights reserved.
