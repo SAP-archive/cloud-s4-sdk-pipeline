@@ -40,6 +40,10 @@ pipeline {
                     when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
+                stage("Node Security Platform Scan") {
+                    when { expression { pipelineEnvironment.skipConfiguration.NODE_SECURITY_SCAN } }
+                    steps { stageNodeSecurityPlatform script: this }
+                }
             }
         }
 
@@ -61,8 +65,8 @@ pipeline {
             steps { stageS4SdkQualityChecks script: this }
         }
 
-        stage('Security Checks') {
-            when { expression { pipelineEnvironment.skipConfiguration.SECURITY_CHECKS } }
+        stage('Third-party Checks') {
+            when { expression { pipelineEnvironment.skipConfiguration.THIRD_PARTY_CHECKS } }
             parallel {
                 stage("Checkmarx Scan") {
                     when { expression { pipelineEnvironment.skipConfiguration.CHECKMARX_SCAN } }
@@ -72,10 +76,7 @@ pipeline {
                     when { expression { pipelineEnvironment.skipConfiguration.WHITESOURCE_SCAN } }
                     steps { stageWhitesourceScan script: this }
                 }
-                stage("Node Security Platform Scan") {
-                    when { expression { pipelineEnvironment.skipConfiguration.NODE_SECURITY_SCAN } }
-                    steps { stageNodeSecurityPlatform script: this }
-                }
+
             }
 
         }
