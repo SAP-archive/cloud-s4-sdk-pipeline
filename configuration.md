@@ -318,10 +318,11 @@ deployToCfWithCli:
 
 ### deployToNeoWithCli
 
-| Property | Default Value | Description |
+| Property | Default Value | Description | 
 | --- | --- | --- |
-| `dockerImage` | `s4sdk/docker-neo-cli` | A docker image that contains the Neo CLI |
+| `dockerImage` | | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
 
+Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt). 
 
 #### checkFindbugs
 [FindBugs](http://findbugs.sourceforge.net/) static code analysis is executed as part of the static code checks. 
