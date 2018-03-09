@@ -15,6 +15,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | --- | --- | --- |
 | `productiveBranch` | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
 | `projectName` | `artifactID` from pom | Name of the project |
+| `automaticVersioning` | `true` | Apply automated versioning schema as described in [automatic-release.md](doc/architecture/decisions/automatic-release.md) |
 
 #### features
 This section allows to enable or disable certain optional features.

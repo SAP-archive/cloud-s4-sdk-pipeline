@@ -14,6 +14,7 @@ pipeline {
         stage('Init') {
             steps {
                 library "s4sdk-pipeline-library@${pipelineSdkVersion}"
+                library 'piper-library-os@f6c71a84849c9afd07f28b06e1e440b1b38b5e2c'
                 node('') {
                     checkout scm
                     initS4SdkPipeline script: this
