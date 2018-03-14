@@ -15,6 +15,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | --- | --- | --- |
 | `productiveBranch` | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
 | `projectName` | `artifactID` from pom | Name of the project |
+| `automaticVersioning` | `true` | Apply automated versioning schema as described in [automatic-release.md](doc/architecture/decisions/automatic-release.md) |
 
 #### features
 This section allows to enable or disable certain optional features.
@@ -316,12 +317,13 @@ deployToCfWithCli:
   apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
-###deployToNeoWithCli
+### deployToNeoWithCli
 
-| Property | Default Value | Description |
+| Property | Default Value | Description | 
 | --- | --- | --- |
-| `dockerImage` | `s4sdk/docker-neo-cli` | A docker image that contains the Neo CLI |
+| `dockerImage` | | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
 
+Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt). 
 
 #### checkFindbugs
 [FindBugs](http://findbugs.sourceforge.net/) static code analysis is executed as part of the static code checks. 

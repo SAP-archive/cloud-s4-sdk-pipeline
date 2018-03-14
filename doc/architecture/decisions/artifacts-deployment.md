@@ -1,7 +1,15 @@
-## Artifacts Deployment
+# Artifacts Deployment
+
+## Status
+
+Accepted
+
+## Context
+
 Deploying artifacts to nexus was done with this plugin before, but a bug was reported.
 When reading a child pom without `version`, for example, it does not retrieve the information inherited from the parent pom.
 We have to investigate alternatives.
+
 ### Alternatives
 * [Apache Maven Deploy Plugin](http://maven.apache.org/plugins/maven-deploy-plugin/)
 * Maven lifecycle phase : deploy

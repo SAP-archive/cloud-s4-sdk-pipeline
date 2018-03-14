@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v5'
+final def pipelineSdkVersion = 'v6'
 
 pipeline {
     agent any
@@ -14,6 +14,7 @@ pipeline {
         stage('Init') {
             steps {
                 library "s4sdk-pipeline-library@${pipelineSdkVersion}"
+                library 'piper-library-os@8a4ad54a21d0c557e5c8607bf3a2eacee0460b1d'
                 node('') {
                     checkout scm
                     initS4SdkPipeline script: this
