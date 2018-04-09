@@ -83,19 +83,16 @@ pipeline {
 
         }
 
-        stage('Deployment') {
-            parallel {
-                stage('Production Deployment') {
-                    when { expression { pipelineEnvironment.skipConfiguration.PRODUCTION_DEPLOYMENT } }
-                    steps { stageProductionDeployment script: this }
-                }
-
-                stage('Artifact Deployment') {
-                    when { expression { pipelineEnvironment.skipConfiguration.ARTIFACT_DEPLOYMENT } }
-                    steps { stageArtifactDeployment script: this }
-                }
-            }
+        stage('Artifact Deployment') {
+            when { expression { pipelineEnvironment.skipConfiguration.ARTIFACT_DEPLOYMENT } }
+            steps { stageArtifactDeployment script: this }
         }
+
+        stage('Production Deployment') {
+            when { expression { pipelineEnvironment.skipConfiguration.PRODUCTION_DEPLOYMENT } }
+            steps { stageProductionDeployment script: this }
+        }
+
     }
     post {
         always{
