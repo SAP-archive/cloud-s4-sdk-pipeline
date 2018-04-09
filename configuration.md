@@ -15,7 +15,6 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | --- | --- | --- |
 | `productiveBranch` | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
 | `projectName` | `artifactID` from pom | Name of the project |
-| `automaticVersioning` | `true` | Apply automated versioning schema as described in [automatic-release.md](doc/architecture/decisions/automatic-release.md) |
 
 #### features
 This section allows to enable or disable certain optional features.
@@ -368,6 +367,21 @@ checkJMeter:
   unstableThreshold: 70
 ```
 
+#### automaticVersioning
+The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
+Architectural details of this step can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `enabled` | `true` | Apply automated versioning scheme. To disable this feature, set the value to `false` |
+
+Example:
+
+```yaml
+automaticVersioning:
+  enabled: false
+```
+
 ### Post action configuration
 
 #### sendNotification
@@ -391,3 +405,4 @@ postActions:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
 ```
+
