@@ -1,6 +1,6 @@
-## Operations Guide for `cx-server`
+## Operations Guide for Cx Server
 
-This guide describes life-cycle management of the Continuous Integration and Delivery (CI/CD) infrastructure.
+This guide describes life-cycle management of the Cx Server for Continuous Integration and Delivery. The server is controlled with the `cx-server` script.
 
 ### Introduction
 
@@ -8,16 +8,14 @@ The `cx-server` directory is included in projects which are created by using the
 It contains a life-cycle management utility script `cx-server` and a configuration file `server.cfg`.
 
 #### start
-You can start the Jenkins server by launching command.
+You can start the Jenkins server by launching the `start` command.
 
 ```bash
 ./cx-server start
 ``` 
 
 When launched, it checks if the Docker container named `s4sdk-jenkins-master` already exists.
-If yes, it starts the container if it is stopped.
-Otherwise, it spawns a new Docker container of Jenkins with the latest image of `s4sdk/jenkins-master`.
-The Docker image and the Docker registry be used can be configured in `server.cfg` file.
+If yes, it restarts the stopped container. Otherwise, it spawns a new Docker container based on the configuration in `server.cfg`.
 
 Example:
 
@@ -30,11 +28,11 @@ docker_image="s4sdk/jenkins-master:latest"
 ``` 
 
 #### stop
-The `cx-server` can be stopped with the help of below command.
+The Cx Server can be stopped with the `stop` command.
 ```bash
 ./cx-server stop
 ``` 
-This stops the Jenkins Docker container if it is running.
+This stops the Jenkins Docker container if it is running. A subsequent `start` command restores the container.
 
 #### remove
 This command removes the Jenkins container from the host if it is not running.
@@ -75,10 +73,28 @@ Example:
 > **Warning:** In order to restore the Jenkins home directory, this command stops the Jenkins server first and **delete the content of the Jenkins home directory**.
 > After the completion of the restore operation, it starts the Jenkins server upon user confirmation.
 
-#### update
-The `cx-server` script can be updated via the `update` command, if a new version is available.
+#### update script
+The `cx-server` script can be updated via the `update script` command, if a new version is available.
 ```bash
-./cx-server update
+./cx-server update script
+```
+
+#### update image
+By default, the Cx Server image defined by `docker_image` in `server.cfg` always points to the newest released version.
+In productive environments, you will however likely want to fix the Cx Server image to a specific version.
+By defining `docker_image` with a version tag (e.g. `docker_image=s4sdk/jenkins-master:v3`), you avoid unintended updates as a side-effect of restarting the Continuous Delivery server.
+However, this introduces the risk of getting stuck on an outdated version. Therefore, if you are using an outdated Cx Server version, the `cx-server` script will warn you and recommend to run the `cx-server update image` command.
+The `cx-server update image` command updates the Cx Server to the newest available version.
+If `v6` is the newest released version, running an update with `docker_image=s4sdk/jenkins-master:v3` will update the configuration to `docker_image=s4sdk/jenkins-master:v6`.
+For this, it executes the following sequence of steps:
+* Stop potentially running Cx Server instance
+* Perform full backup of home directory
+* Update `docker_image` value in `server.cfg` to newest version
+* Start Cx Server
+
+Note: The command only works if you use the default image from Docker Hub.
+```bash
+./cx-server update image
 ```
 
 #### Caching mechanism 
