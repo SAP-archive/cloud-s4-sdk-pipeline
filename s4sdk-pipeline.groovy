@@ -15,6 +15,7 @@ pipeline {
             steps {
                 library "s4sdk-pipeline-library@${pipelineSdkVersion}"
                 stageInitS4sdkPipeline script: this
+                abortOldBuilds script: this
             }
         }
 
