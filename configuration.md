@@ -16,6 +16,23 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | `productiveBranch` | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
 | `projectName` | `artifactID` from pom | Name of the project |
 
+#### automaticVersioning
+The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
+Architectural details of this step can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `automaticVersioning` | `true` | Apply automated versioning scheme. To disable this feature, set the value to `false` |
+
+Example:
+
+```yaml
+general:
+  productiveBranch: 'master'
+  automaticVersioning: true
+```
+
+
 #### features
 This section allows to enable or disable certain optional features.
 This concept is known as *Feature Toggles*.
@@ -40,7 +57,7 @@ general:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | `maven:3.5-jdk-8-alpine` | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | `maven:3.5-jdk-8-alpine` | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
 #### buildFrontend
 
@@ -59,13 +76,13 @@ general:
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | `maven:3.5-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | `maven:3.5-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
 #### integrationTests
 
 | Property | Default Value | Description |
 | --- | --- | --- |
-| `dockerImage` | `maven:3.5-jdk-8-alpine` | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the executeMaven step. |
+| `dockerImage` | `maven:3.5-jdk-8-alpine` | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 | `retry` | `1` | The number of times that integration tests will retry before aborting the build. **Note:** This will consume more time for the jenkins build. |
 | `forkCount` | `1C` | The number of JVM processes that are spawned to run the tests in parallel. |
 | `credentials` | | The list of system credentials to be injected during integration tests. The following example will provide the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
@@ -274,8 +291,8 @@ See the [official documentation](https://www.whitesourcesoftware.com/how-to-inst
 
 ### Step configuration
 
-#### executeMaven
-The executeMaven step is used for all invocations of the mvn build tool. It is either used directly for executing specific maven phases such as `test`, or indirectly for steps that execute maven plugins such as `checkPmd`.
+#### mavenExecute
+The mavenExecute step is used for all invocations of the mvn build tool. It is either used directly for executing specific maven phases such as `test`, or indirectly for steps that execute maven plugins such as `checkPmd`.
 
 | Property | Default Value | Description |
 | --- | --- | --- |
@@ -365,21 +382,6 @@ checkJMeter:
   dockerImage: 'famiko/jmeter-base'
   failThreshold : 80
   unstableThreshold: 70
-```
-
-#### automaticVersioning
-The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
-Architectural details of this step can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
-
-| Property | Default Value | Description |
-| --- | --- | --- |
-| `enabled` | `true` | Apply automated versioning scheme. To disable this feature, set the value to `false` |
-
-Example:
-
-```yaml
-automaticVersioning:
-  enabled: false
 ```
 
 ### Post action configuration
