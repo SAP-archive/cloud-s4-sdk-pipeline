@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v6'
+final def pipelineSdkVersion = 'v7'
 
 pipeline {
     agent any
@@ -14,11 +14,8 @@ pipeline {
         stage('Init') {
             steps {
                 library "s4sdk-pipeline-library@${pipelineSdkVersion}"
-                library 'piper-library-os@8a4ad54a21d0c557e5c8607bf3a2eacee0460b1d'
-                node('') {
-                    checkout scm
-                    initS4SdkPipeline script: this
-                }
+                stageInitS4sdkPipeline script: this
+                abortOldBuilds script: this
             }
         }
 
@@ -26,7 +23,7 @@ pipeline {
             parallel {
                 stage("Backend") { steps { stageBuildBackend script: this } }
                 stage("Frontend") {
-                    when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_BUILD } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.FRONT_END_BUILD } }
                     steps { stageBuildFrontend script: this }
                 }
             }
@@ -38,25 +35,25 @@ pipeline {
                 stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
                 stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
                 stage("Frontend Unit Tests") {
-                    when { expression { pipelineEnvironment.skipConfiguration.FRONT_END_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.FRONT_END_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
                 stage("Node Security Platform Scan") {
-                    when { expression { pipelineEnvironment.skipConfiguration.NODE_SECURITY_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.NODE_SECURITY_SCAN } }
                     steps { stageNodeSecurityPlatform script: this }
                 }
             }
         }
 
         stage('Remote Tests') {
-            when { expression { pipelineEnvironment.skipConfiguration.REMOTE_TESTS } }
+            when { expression { commonPipelineEnvironment.configuration.skipping.REMOTE_TESTS } }
             parallel {
                 stage("End to End Tests") {
-                    when { expression { pipelineEnvironment.skipConfiguration.E2E_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.E2E_TESTS } }
                     steps { stageEndToEndTests script: this }
                 }
                 stage("Performance Tests") {
-                    when { expression { pipelineEnvironment.skipConfiguration.PERFORMANCE_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.PERFORMANCE_TESTS } }
                     steps { stagePerformanceTests script: this }
                 }
             }
@@ -67,14 +64,14 @@ pipeline {
         }
 
         stage('Third-party Checks') {
-            when { expression { pipelineEnvironment.skipConfiguration.THIRD_PARTY_CHECKS } }
+            when { expression { commonPipelineEnvironment.configuration.skipping.THIRD_PARTY_CHECKS } }
             parallel {
                 stage("Checkmarx Scan") {
-                    when { expression { pipelineEnvironment.skipConfiguration.CHECKMARX_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.CHECKMARX_SCAN } }
                     steps { stageCheckmarxScan script: this }
                 }
                 stage("WhiteSource Scan") {
-                    when { expression { pipelineEnvironment.skipConfiguration.WHITESOURCE_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.skipping.WHITESOURCE_SCAN } }
                     steps { stageWhitesourceScan script: this }
                 }
 
@@ -82,24 +79,21 @@ pipeline {
 
         }
 
-        stage('Deployment') {
-            parallel {
-                stage('Production Deployment') {
-                    when { expression { pipelineEnvironment.skipConfiguration.PRODUCTION_DEPLOYMENT } }
-                    steps { stageProductionDeployment script: this }
-                }
-
-                stage('Artifact Deployment') {
-                    when { expression { pipelineEnvironment.skipConfiguration.ARTIFACT_DEPLOYMENT } }
-                    steps { stageArtifactDeployment script: this }
-                }
-            }
+        stage('Artifact Deployment') {
+            when { expression { commonPipelineEnvironment.configuration.skipping.ARTIFACT_DEPLOYMENT } }
+            steps { stageArtifactDeployment script: this }
         }
+
+        stage('Production Deployment') {
+            when { expression { commonPipelineEnvironment.configuration.skipping.PRODUCTION_DEPLOYMENT } }
+            steps { stageProductionDeployment script: this }
+        }
+
     }
     post {
-        always{
-            script{
-                if(pipelineEnvironment.skipConfiguration.SEND_NOTIFICATION){
+        always {
+            script {
+                if (commonPipelineEnvironment.configuration.skipping.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
             }

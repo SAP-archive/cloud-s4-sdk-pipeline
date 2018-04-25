@@ -30,7 +30,7 @@ To make it as secrets, `mvn --encrypt-master-password <password>` has to be exec
 
 
 #### Maven lifecycle phase: deploy
-By default, the mave lifecycle phase `deploy` binds to the goal `deploy:deploy` of the `Apache Maven Deploy Plugin`.
+By default, the maven lifecycle phase `deploy` binds to the goal `deploy:deploy` of the `Apache Maven Deploy Plugin`.
 ##### :+1:
 - Same as the `Apache Maven Deploy Plugin`
 - You don't have to pass the parameters as `Apache Maven Deploy Plugin` and `Nexus Artifact Uploader`, 
@@ -56,4 +56,3 @@ Unfortunately, however, `Apache Maven JAR Plugin` does not provide an option to 
 `Nexus Artifact Uploader` is chosen, because:
 - `Maven lifecycle phase: deploy` does not meet our build-once principle.
 - `Nexus Artifact Uploader` has the same situation regarding parameters as `Apache Maven Deploy Plugin`, but can handle credentials as a Jenkins plugin.
-
