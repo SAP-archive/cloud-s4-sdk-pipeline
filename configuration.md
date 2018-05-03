@@ -289,6 +289,28 @@ Please note that this configuration only affects the backend project.
 For the frontend, a `whitesource.config.json` file needs to be present.
 See the [official documentation](https://www.whitesourcesoftware.com/how-to-install-npm/) for more info.
 
+#### sourceClearScan
+Configure [SourceClear](https://www.sourceclear.com/) scans.
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `credentialsId` | | Jenkins credentials id for the SourceClear API token. See [SourceClear docs for details](https://www.sourceclear.com/docs/jenkins-script/). |
+| `config` | | Additional configuration for the SourceClear agent. The key-value pairs will be added to `srcclr.yml`. |
+
+Please note that your project can't have a `srcclr.yml` file.
+The pipeline creates a config file with optimized settings.
+If you wish to configure SourceClear, add your config entries as in the example.
+
+Example:
+
+```yaml
+sourceClearScan:
+  credentialsId: 'SRCCLR_API_TOKEN'
+  config:
+    vuln_methods_extra_ignored_directories: docs, integration-tests
+    scope: compile
+```
+
 ### Step configuration
 
 #### mavenExecute
@@ -306,6 +328,13 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | --- | --- | --- |
 | `dockerImage` | `s4sdk/docker-node-chromium` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
+
+
+#### executeSourceClearScan
+
+| Property | Default Value | Description |
+| --- | --- | --- |
+| `dockerImage` | `s4sdk/docker-maven-npm` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
 #### deployToCfWithCli
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.
