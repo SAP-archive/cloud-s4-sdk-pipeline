@@ -283,7 +283,7 @@ Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) sc
 | Property | Default Value | Description |
 | --- | --- | --- |
 | `product` | | Name of your product in WhiteSource. |
-| `orgToken` | | Unique identifier of your organization in WhiteSource, also referred to as 'API Token'. |
+| `credentialsId` | | Unique identifier of the `Secret Text` on Jenkins server that stores your organization(API Token) of WhiteSource. |
 
 Please note that this configuration only affects the backend project.
 For the frontend, a `whitesource.config.json` file needs to be present.
