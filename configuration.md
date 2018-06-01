@@ -285,9 +285,7 @@ Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) sc
 | `product` | | Name of your product in WhiteSource. |
 | `credentialsId` | | Unique identifier of the `Secret Text` on Jenkins server that stores your organization(API Token) of WhiteSource. |
 
-Please note that this configuration only affects the backend project.
-For the frontend, a `whitesource.config.json` file needs to be present.
-See the [official documentation](https://www.whitesourcesoftware.com/how-to-install-npm/) for more info.
+Please note that you can't have a `whitesource.config.json` in your project, since the Pipeline generates one from this configuration.
 
 #### sourceClearScan
 Configure [SourceClear](https://www.sourceclear.com/) scans.
