@@ -98,5 +98,5 @@ In addition to the default checks of those tools, it adds the following SAP S/4H
 ### Third-Party Tools
 
 The SAP S/4HANA Cloud SDK Pipeline also integrates with commercial third party code analyzer services, if you wish to use them.
-Currently, [Checkmarx](https://www.checkmarx.com/) and [WhiteSource](https://www.whitesourcesoftware.com/) are available.
+Currently, [Checkmarx](https://www.checkmarx.com/), [WhiteSource](https://www.whitesourcesoftware.com/), and [SourceClear](https://www.sourceclear.com/) are available.
 For those scans to be enabled, they need to be configured in the [pipeline configuration file](../../configuration.md).

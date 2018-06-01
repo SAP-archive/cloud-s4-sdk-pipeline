@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v7'
+final def pipelineSdkVersion = 'v8'
 
 pipeline {
     agent any
@@ -74,7 +74,10 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.skipping.WHITESOURCE_SCAN } }
                     steps { stageWhitesourceScan script: this }
                 }
-
+                stage("SourceClear Scan") {
+                    when { expression { commonPipelineEnvironment.configuration.skipping.SOURCE_CLEAR_SCAN } }
+                    steps { stageSourceClearScan script: this }
+                }
             }
 
         }
