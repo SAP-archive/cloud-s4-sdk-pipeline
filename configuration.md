@@ -1,3 +1,40 @@
+# SAP S/4HANA Cloud SDK Pipeline Configuration Docs
+
+## Table of Contents
+
+* [Pipeline configuration](#pipeline-configuration)
+  * [General configuration](#general-configuration)
+    * [automaticVersioning](#automaticversioning)
+    * [features](#features)
+  * [Stage configuration](#stage-configuration)
+    * [buildBackend](#buildbackend)
+    * [buildFrontend](#buildfrontend)
+    * [staticCodeChecks](#staticcodechecks)
+    * [unitTests](#unittests)
+    * [integrationTests](#integrationtests)
+    * [frontendUnitTests](#frontendunittests)
+    * [endToEndTests](#endtoendtests)
+    * [performanceTests](#performancetests)
+    * [s4SdkQualityChecks](#s4sdkqualitychecks)
+    * [checkmarxScan](#checkmarxscan)
+    * [productionDeployment](#productiondeployment)
+    * [artifactDeployment](#artifactdeployment)
+      * [nexus](#nexus)
+    * [nodeSecurityScan](#nodesecurityscan)
+    * [whitesourceScan](#whitesourcescan)
+    * [sourceClearScan](#sourceclearscan)
+  * [Step configuration](#step-configuration)
+    * [mavenExecute](#mavenexecute)
+    * [executeNpm](#executenpm)
+    * [executeSourceClearScan](#executesourceclearscan)
+    * [deployToCfWithCli](#deploytocfwithcli)
+  * [deployToNeoWithCli](#deploytoneowithcli)
+    * [checkFindbugs](#checkfindbugs)
+    * [checkGatling](#checkgatling)
+    * [checkJMeter](#checkjmeter)
+  * [Post action configuration](#post-action-configuration)
+    * [sendNotification](#sendnotification)
+
 ## Pipeline configuration
 
 The SAP S/4HANA Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
