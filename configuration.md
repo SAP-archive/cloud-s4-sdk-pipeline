@@ -257,6 +257,11 @@ productionDeployment:
      credentialId: e2e-test-user-cf
   cfTargets:
    - space: 'Prod'
+     org: 'myorg'
+     appName: 'exampleapp'
+     manifest: 'manifest.yml'
+     credentialsId: 'CF-DEPLOY'
+     apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 Example of deployment to Neo:
 
