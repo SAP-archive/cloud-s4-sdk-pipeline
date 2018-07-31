@@ -72,6 +72,8 @@ Code coverage refers to how much of your application code is tested.
 The build fails, if the test coverage of your code drops below a certain threshold.
 To fix such a build failure, check which parts of your code are not tested yet and write missing tests.
 
+The code coverage is tested using [JaCoCo Java Code Coverage Library](https://www.eclemma.org/jacoco/).
+
 ## Non-Functional Tests
 
 ### Performance
