@@ -412,7 +412,7 @@ Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE]
 | --- | --- | --- | --- |
 | `includeFilterFile` | | `s4hana_findbugs_include_filter.xml` | Bug definition filter file. |
 
-Please note that the step is called `checkFindbugs` for backwards compatibility, but uses its successor, SpotBugs.
+Please note that the step is called `checkFindbugs` for backwards compatibility, but uses its successor SpotBugs.
 
 #### checkGatling
 [Gatling](https://gatling.io/) is used as one of the performance tests tool.
