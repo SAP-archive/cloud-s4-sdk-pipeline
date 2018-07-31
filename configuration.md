@@ -28,7 +28,7 @@
     * [executeNpm](#executenpm)
     * [executeSourceClearScan](#executesourceclearscan)
     * [deployToCfWithCli](#deploytocfwithcli)
-  * [deployToNeoWithCli](#deploytoneowithcli)
+    * [deployToNeoWithCli](#deploytoneowithcli)
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
@@ -397,7 +397,7 @@ deployToCfWithCli:
   apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
-### deployToNeoWithCli
+#### deployToNeoWithCli
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -406,11 +406,13 @@ deployToCfWithCli:
 Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt). 
 
 #### checkFindbugs
-[FindBugs](http://findbugs.sourceforge.net/) static code analysis is executed as part of the static code checks. 
+[SpotBugs](https://spotbugs.github.io/) static code analysis is executed as part of the static code checks. 
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `includeFilterFile` | | `s4hana_findbugs_include_filter.xml` | Bug definition filter file. |
+
+Please note that the step is called `checkFindbugs` for backwards compatibility, but uses its successor, SpotBugs.
 
 #### checkGatling
 [Gatling](https://gatling.io/) is used as one of the performance tests tool.
