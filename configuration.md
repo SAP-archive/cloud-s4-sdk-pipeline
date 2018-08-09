@@ -218,7 +218,6 @@ For `cfTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `smokeTestStatusCode` | | `200` | Return code for the smoke test |
 | `org` | X** | | The organization where you want to deploy your app |
 | `space` | X** | | The space where you want to deploy your app |
 | `appName` | X** |  | Name of the application. |
@@ -226,7 +225,7 @@ For `cfTargets` the following properties can be defined:
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the cloud foundry endpoint. |
 
-** The parameters can either be specified here on globally for the step `deployToCfWithCli`.
+** The parameters can either be specified here or globally for the step `deployToCfWithCli`.
 
 Example:
 
