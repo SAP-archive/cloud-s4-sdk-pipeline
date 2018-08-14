@@ -131,3 +131,13 @@ If you prefer to use different caching mechanism or not using any, you can disab
 ```bash
 cache_enabled=false
 ```
+
+### Disk space cleanup
+If you encounter an issue related to diskspace on a cx-server, you can free up space by launching [system prune](https://docs.docker.com/engine/reference/commandline/system_prune/) command.
+
+***WARNING***
+Do not launch this command when cx-server is not running. Because the command will remove all the containers that are stopped. In addition, it also removes the cache and docker images that are not used anymore. 
+
+```bash
+docker system prune --all
+```
