@@ -27,7 +27,7 @@
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
     * [executeSourceClearScan](#executesourceclearscan)
-    * [deployToCfWithCli](#deploytocfwithcli)
+    * [cloudFoundryDeploy](#cloudfoundrydeploy)
     * [deployToNeoWithCli](#deploytoneowithcli)
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
@@ -223,9 +223,9 @@ For `cfTargets` the following properties can be defined:
 | `appName` | X** |  | Name of the application. |
 | `manifest` | X** |  | Manifest file that needs to be used. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
-| `apiEndpoint` | X** |  | URL to the cloud foundry endpoint. |
+| `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 
-** The parameters can either be specified here or globally for the step `deployToCfWithCli`.
+** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
 
 Example:
 
@@ -370,30 +370,40 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-maven-npm` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
-#### deployToCfWithCli
+#### cloudFoundryDeploy
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
 | `smokeTestStatusCode` | | `200` | Return code for the smoke test |
-| `org` | | | The organization and space where you want to deploy your app |
+|`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
+
+
+The following parameters can be configured for the Cloud Foundry environment.
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `org` | | | The organization where you want to deploy your app |
+| `space` | | | The space where you want to deploy your app |
 | `appName` | |  | Name of the application. |
 | `manifest` | |  | Manifest file that needs to be used. |
 | `credentialsId` | |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
-| `apiEndpoint` | |  | URL to the cloud foundry endpoint. |
+| `apiEndpoint` | | `https://api.cf.eu10.hana.ondemand.com` | URL to the Cloud Foundry endpoint. |
 
 Example:
 
 ```yaml
-deployToCfWithCli:
+cloudFoundryDeploy:
   dockerImage: 's4sdk/docker-cf-cli'
   smokeTestStatusCode: '200'
-  org: 'myorg'
-  appName: 'exampleapp'
-  manifest: 'manifest.yml'
-  credentialsId: 'CF-DEPLOY'
-  apiEndpoint: '<Cloud Foundry API endpoint>'
+  cloudFoundry:
+    org: 'orgname'
+    space: 'spacename'
+    appName: 'exampleapp'
+    manifest: 'manifest.yml'
+    credentialsId: 'CF-DEPLOY'
+    apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
 #### deployToNeoWithCli
