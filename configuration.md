@@ -6,6 +6,7 @@
   * [General configuration](#general-configuration)
     * [automaticVersioning](#automaticversioning)
     * [features](#features)
+    * [jenkinsKubernetes](#jenkinsKubernetes)
   * [Stage configuration](#stage-configuration)
     * [buildBackend](#buildbackend)
     * [buildFrontend](#buildfrontend)
@@ -69,7 +70,6 @@ general:
   automaticVersioning: true
 ```
 
-
 #### features
 This section allows to enable or disable certain optional features.
 This concept is known as *Feature Toggles*.
@@ -86,6 +86,26 @@ general:
   projectName: 'example_project'
   features:
     parallelTestExecution: on
+```
+
+#### jenkinsKubernetes
+If the Jenkins is running on a kubernetes cluster as a pod, we can use the dynamic scaling feature in the pipeline. In order to enable this, an environment variable `ON_K8S` has to be set to `true` on the jenkins.
+
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `jnlpAgent` | | `s4sdk/jenkins-agent-k8s:latest` | Docker image for `jnlp` agent to be used |
+
+In the Jenkins configuration section under `Manage Jenkins` menu, set the value for your environment variable under `Global properties` section.
+  
+![Environment variable configuration](images/k8s-environment-config.jpg)
+ 
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `s4sdk/jnlp-agent-k8s` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below. 
+
+```yaml
+general:
+  jenkinsKubernetes:
+    jnlpAgent: s4sdk/jenkins-agent-k8s:latest
 ```
 
 ### Stage configuration

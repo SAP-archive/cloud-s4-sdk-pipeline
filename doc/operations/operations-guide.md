@@ -7,7 +7,7 @@ This guide describes life-cycle management of the Cx Server for Continuous Integ
 The `cx-server` directory is included in projects which are created by using the SAP S/4HANA Cloud SDK Maven Archetypes.
 It contains a life-cycle management utility script `cx-server` and a configuration file `server.cfg`.
 
-For convinient usage of the script, a [completion script](https://raw.githubusercontent.com/SAP/cloud-s4-sdk-pipeline-docker/master/s4sdk-jenkins-master/cx-server/cx-server-completion.bash) for `cx-server` is provided. Source it in your shell, or refer to the documentation of your operating system for information on how to install this script system wide.
+For convenient usage of the script, a [completion script](https://raw.githubusercontent.com/SAP/cloud-s4-sdk-pipeline-docker/master/s4sdk-jenkins-master/cx-server/cx-server-completion.bash) for `cx-server` is provided. Source it in your shell, or refer to the documentation of your operating system for information on how to install this script system wide.
 
 #### start
 You can start the Jenkins server by launching the `start` command.
