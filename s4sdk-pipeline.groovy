@@ -20,12 +20,8 @@ pipeline {
         }
 
         stage('Build') {
-            parallel {
-                stage("Backend") { steps { stageBuildBackend script: this } }
-                stage("Frontend") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.FRONT_END_BUILD } }
-                    steps { stageBuildFrontend script: this }
-                }
+            steps {
+                stageBuild script: this
             }
         }
 

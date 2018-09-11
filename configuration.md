@@ -8,8 +8,6 @@
     * [features](#features)
     * [jenkinsKubernetes](#jenkinsKubernetes)
   * [Stage configuration](#stage-configuration)
-    * [buildBackend](#buildbackend)
-    * [buildFrontend](#buildfrontend)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
     * [integrationTests](#integrationtests)
@@ -33,6 +31,8 @@
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
+    * [mtaBuild](#mtabuild)
+      * [dockerImage](#dockerimage)
   * [Post action configuration](#post-action-configuration)
     * [sendNotification](#sendnotification)
 
@@ -109,18 +109,6 @@ general:
 ```
 
 ### Stage configuration
-
-#### buildBackend
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
-
-#### buildFrontend
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-node-chromium` | The docker image to be used for building the application frontend. **Note:** This will only change the docker image used for building the frontend. End to end tests and other npm based stages will still use their individual default values. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
 
 #### staticCodeChecks
 
@@ -478,6 +466,15 @@ checkJMeter:
   failThreshold : 80
   unstableThreshold: 70
 ```
+
+#### mtaBuild
+
+##### `dockerImage`
+
+This option is __mandatory__ for building a multi-target application archives.
+
+A custom built image needs to include Multi-target Application Archive Builder.
+Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up.
 
 ### Post action configuration
 
