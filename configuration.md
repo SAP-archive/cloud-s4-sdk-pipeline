@@ -22,6 +22,7 @@
     * [nodeSecurityScan](#nodesecurityscan)
     * [whitesourceScan](#whitesourcescan)
     * [sourceClearScan](#sourceclearscan)
+    * [fortifyScan](#fortifyscan)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
@@ -31,6 +32,7 @@
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
+    * [executeFortifyScan](#executefortifyscan)
     * [mtaBuild](#mtabuild)
       * [dockerImage](#dockerimage)
   * [Post action configuration](#post-action-configuration)
@@ -353,6 +355,31 @@ sourceClearScan:
     scope: compile
 ```
 
+#### fortifyScan
+Configure Fortify scans.
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `sscUrl` | X | | URL how your Fortify client can be reached. |
+| `fortifyApiCredentialId` | X | | ID of the credentials you want to use for the Fortify API. |
+| `fortifyBasicAuthId` | X | | ID for basic authentication towards your Fortify client. |
+| `fortifyProjectName` | X | | Name of your project in Fortify. |
+| `projectVersionId` | X | | ID of your project in Fortify. |
+
+
+If you wish to configure Fortify, add your config entries as in the example.
+
+Example:
+
+```yaml
+fortifyScan:
+    sscUrl: 'https://fortify.dummy.corp.domain/ssc'
+    fortifyApiCredentialId: 'FortifyApiToken'
+    fortifyBasicAuthId: 'FortifyBasicAuth'
+    fortifyProjectName: 'mySampleProject'
+    projectVersionId: '12345'
+```
+
 ### Step configuration
 
 #### mavenExecute
@@ -467,6 +494,20 @@ checkJMeter:
   unstableThreshold: 70
 ```
 
+#### executeFortifyScan
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `dockerImage` | X | | URL to a docker image running your fortify agent. |
+| `fortifyCredentialId` | X | | ID of credentials to be used when running the docker agent. |
+
+Example:
+
+```yaml
+executeFortifyScan:
+  dockerImage: 'docker.dummy.corp.domain/jenkins-agent-fortify:latest'
+  fortifyCredentialId: 'FortifyAuthToken'
+```
 #### mtaBuild
 
 ##### `dockerImage`

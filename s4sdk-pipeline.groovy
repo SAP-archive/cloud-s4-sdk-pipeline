@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 
+// TODO: Change back to master before merging!
 final def pipelineSdkVersion = 'master'
 
 pipeline {
@@ -73,6 +74,10 @@ pipeline {
                 stage("SourceClear Scan") {
                     when { expression { commonPipelineEnvironment.configuration.skipping.SOURCE_CLEAR_SCAN } }
                     steps { stageSourceClearScan script: this }
+                }
+                stage("Fortify Scan") {
+                    when { expression { commonPipelineEnvironment.configuration.skipping.FORTIFY_SCAN } }
+                    steps { stageFortifyScan script: this }
                 }
             }
 
