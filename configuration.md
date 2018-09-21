@@ -6,9 +6,8 @@
   * [General configuration](#general-configuration)
     * [automaticVersioning](#automaticversioning)
     * [features](#features)
+    * [jenkinsKubernetes](#jenkinsKubernetes)
   * [Stage configuration](#stage-configuration)
-    * [buildBackend](#buildbackend)
-    * [buildFrontend](#buildfrontend)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
     * [integrationTests](#integrationtests)
@@ -23,15 +22,19 @@
     * [nodeSecurityScan](#nodesecurityscan)
     * [whitesourceScan](#whitesourcescan)
     * [sourceClearScan](#sourceclearscan)
+    * [fortifyScan](#fortifyscan)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
     * [executeSourceClearScan](#executesourceclearscan)
-    * [deployToCfWithCli](#deploytocfwithcli)
+    * [cloudFoundryDeploy](#cloudfoundrydeploy)
     * [deployToNeoWithCli](#deploytoneowithcli)
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
+    * [executeFortifyScan](#executefortifyscan)
+    * [mtaBuild](#mtabuild)
+      * [dockerImage](#dockerimage)
   * [Post action configuration](#post-action-configuration)
     * [sendNotification](#sendnotification)
 
@@ -69,7 +72,6 @@ general:
   automaticVersioning: true
 ```
 
-
 #### features
 This section allows to enable or disable certain optional features.
 This concept is known as *Feature Toggles*.
@@ -88,19 +90,27 @@ general:
     parallelTestExecution: on
 ```
 
+#### jenkinsKubernetes
+If the Jenkins is running on a kubernetes cluster as a pod, we can use the dynamic scaling feature in the pipeline. In order to enable this, an environment variable `ON_K8S` has to be set to `true` on the jenkins.
+
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `jnlpAgent` | | `s4sdk/jenkins-agent-k8s:latest` | Docker image for `jnlp` agent to be used |
+
+In the Jenkins configuration section under `Manage Jenkins` menu, set the value for your environment variable under `Global properties` section.
+  
+![Environment variable configuration](images/k8s-environment-config.jpg)
+ 
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `s4sdk/jnlp-agent-k8s` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below. 
+
+```yaml
+general:
+  jenkinsKubernetes:
+    jnlpAgent: s4sdk/jenkins-agent-k8s:latest
+```
+
 ### Stage configuration
-
-#### buildBackend
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for building the application backend. **Note:** This will only change the docker image used for building the backend. Tests and other maven based stages will still use their individual default values. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
-
-#### buildFrontend
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-node-chromium` | The docker image to be used for building the application frontend. **Note:** This will only change the docker image used for building the frontend. End to end tests and other npm based stages will still use their individual default values. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
 
 #### staticCodeChecks
 
@@ -218,15 +228,14 @@ For `cfTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `smokeTestStatusCode` | | `200` | Return code for the smoke test |
 | `org` | X** | | The organization where you want to deploy your app |
 | `space` | X** | | The space where you want to deploy your app |
 | `appName` | X** |  | Name of the application. |
 | `manifest` | X** |  | Manifest file that needs to be used. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
-| `apiEndpoint` | X** |  | URL to the cloud foundry endpoint. |
+| `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 
-** The parameters can either be specified here on globally for the step `deployToCfWithCli`.
+** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
 
 Example:
 
@@ -346,6 +355,31 @@ sourceClearScan:
     scope: compile
 ```
 
+#### fortifyScan
+Configure Fortify scans.
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `sscUrl` | X | | URL how your Fortify client can be reached. |
+| `fortifyApiCredentialId` | X | | ID of the credentials you want to use for the Fortify API. |
+| `fortifyBasicAuthId` | X | | ID for basic authentication towards your Fortify client. |
+| `fortifyProjectName` | X | | Name of your project in Fortify. |
+| `projectVersionId` | X | | ID of your project in Fortify. |
+
+
+If you wish to configure Fortify, add your config entries as in the example.
+
+Example:
+
+```yaml
+fortifyScan:
+    sscUrl: 'https://fortify.dummy.corp.domain/ssc'
+    fortifyApiCredentialId: 'FortifyApiToken'
+    fortifyBasicAuthId: 'FortifyBasicAuth'
+    fortifyProjectName: 'mySampleProject'
+    projectVersionId: '12345'
+```
+
 ### Step configuration
 
 #### mavenExecute
@@ -371,30 +405,40 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-maven-npm` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
-#### deployToCfWithCli
+#### cloudFoundryDeploy
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
 | `smokeTestStatusCode` | | `200` | Return code for the smoke test |
-| `org` | | | The organization and space where you want to deploy your app |
+|`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
+
+
+The following parameters can be configured for the Cloud Foundry environment.
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `org` | | | The organization where you want to deploy your app |
+| `space` | | | The space where you want to deploy your app |
 | `appName` | |  | Name of the application. |
 | `manifest` | |  | Manifest file that needs to be used. |
 | `credentialsId` | |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
-| `apiEndpoint` | |  | URL to the cloud foundry endpoint. |
+| `apiEndpoint` | | `https://api.cf.eu10.hana.ondemand.com` | URL to the Cloud Foundry endpoint. |
 
 Example:
 
 ```yaml
-deployToCfWithCli:
+cloudFoundryDeploy:
   dockerImage: 's4sdk/docker-cf-cli'
   smokeTestStatusCode: '200'
-  org: 'myorg'
-  appName: 'exampleapp'
-  manifest: 'manifest.yml'
-  credentialsId: 'CF-DEPLOY'
-  apiEndpoint: '<Cloud Foundry API endpoint>'
+  cloudFoundry:
+    org: 'orgname'
+    space: 'spacename'
+    appName: 'exampleapp'
+    manifest: 'manifest.yml'
+    credentialsId: 'CF-DEPLOY'
+    apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
 #### deployToNeoWithCli
@@ -449,6 +493,29 @@ checkJMeter:
   failThreshold : 80
   unstableThreshold: 70
 ```
+
+#### executeFortifyScan
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `dockerImage` | X | | URL to a docker image running your fortify agent. |
+| `fortifyCredentialId` | X | | ID of credentials to be used when running the docker agent. |
+
+Example:
+
+```yaml
+executeFortifyScan:
+  dockerImage: 'docker.dummy.corp.domain/jenkins-agent-fortify:latest'
+  fortifyCredentialId: 'FortifyAuthToken'
+```
+#### mtaBuild
+
+##### `dockerImage`
+
+This option is __mandatory__ for building a multi-target application archives.
+
+A custom built image needs to include Multi-target Application Archive Builder.
+Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up.
 
 ### Post action configuration
 

@@ -1,6 +1,6 @@
 # SAP S/4HANA Cloud SDK Pipeline
  
- ![Picture of Pipeline](s4sdk-pipeline.png)
+ ![Picture of Pipeline](images/s4sdk-pipeline.png)
  
  ## Description
 

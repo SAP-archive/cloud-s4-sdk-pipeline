@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v9'
+final def pipelineSdkVersion = 'v10'
 
 pipeline {
     agent any
@@ -20,12 +20,8 @@ pipeline {
         }
 
         stage('Build') {
-            parallel {
-                stage("Backend") { steps { stageBuildBackend script: this } }
-                stage("Frontend") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.FRONT_END_BUILD } }
-                    steps { stageBuildFrontend script: this }
-                }
+            steps {
+                stageBuild script: this
             }
         }
 
@@ -78,6 +74,10 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.skipping.SOURCE_CLEAR_SCAN } }
                     steps { stageSourceClearScan script: this }
                 }
+                stage("Fortify Scan") {
+                    when { expression { commonPipelineEnvironment.configuration.skipping.FORTIFY_SCAN } }
+                    steps { stageFortifyScan script: this }
+                }
             }
 
         }
@@ -96,7 +96,7 @@ pipeline {
     post {
         always {
             script {
-                if (commonPipelineEnvironment.configuration.skipping.SEND_NOTIFICATION) {
+                if (commonPipelineEnvironment.configuration.skipping?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
             }

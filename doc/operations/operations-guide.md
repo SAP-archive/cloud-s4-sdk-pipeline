@@ -7,6 +7,8 @@ This guide describes life-cycle management of the Cx Server for Continuous Integ
 The `cx-server` directory is included in projects which are created by using the SAP S/4HANA Cloud SDK Maven Archetypes.
 It contains a life-cycle management utility script `cx-server` and a configuration file `server.cfg`.
 
+For convenient usage of the script, a [completion script](https://raw.githubusercontent.com/SAP/cloud-s4-sdk-pipeline-docker/master/s4sdk-jenkins-master/cx-server/cx-server-completion.bash) for `cx-server` is provided. Source it in your shell, or refer to the documentation of your operating system for information on how to install this script system wide.
+
 #### start
 You can start the Jenkins server by launching the `start` command.
 
@@ -128,4 +130,14 @@ If you prefer to use different caching mechanism or not using any, you can disab
 
 ```bash
 cache_enabled=false
+```
+
+### Disk space cleanup
+If you encounter an issue related to diskspace on a cx-server, you can free up space by launching [system prune](https://docs.docker.com/engine/reference/commandline/system_prune/) command.
+
+***WARNING***
+Do not launch this command when cx-server is not running. Because the command will remove all the containers that are stopped. In addition, it also removes the cache and docker images that are not used anymore. 
+
+```bash
+docker system prune --all
 ```
