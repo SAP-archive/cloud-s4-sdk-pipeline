@@ -1,6 +1,5 @@
 #!/usr/bin/env groovy
 
-// TODO: Change back to master before merging!
 final def pipelineSdkVersion = 'master'
 
 pipeline {
