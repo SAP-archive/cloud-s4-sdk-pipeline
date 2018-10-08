@@ -5,12 +5,16 @@ To do so, we do collect non-personal telemetry data.
 
 ## Hashing
 
-We use hashed values for some data points, to allow us to correlate data by users.
+We use hashed values for some data points, to allow us to correlate data by projects.
 The hashes are not reversible, and can't be used to identify users.
 
 The hash is calculated locally on your machine and no original values are transmitted.
 
-A custom salt value is used.
+A per-project generated salt value is used to compute the hashes.
+This salt is private to the project, and not known to SAP SE.
+
+With this salted hash, it is possible to correlate actions triggered in the same project.
+It is not possible to know the name of the project, or other identifying attributes.
 
 ## Information we collect
 
