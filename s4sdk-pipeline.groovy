@@ -103,6 +103,7 @@ pipeline {
                 if (commonPipelineEnvironment.configuration.skipping?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
+                sendAnalytics script:this
             }
         }
         failure { deleteDir() }
