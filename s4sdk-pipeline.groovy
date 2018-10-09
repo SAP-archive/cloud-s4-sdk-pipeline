@@ -78,6 +78,10 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.skipping.FORTIFY_SCAN } }
                     steps { stageFortifyScan script: this }
                 }
+                stage("Additional Tools") {
+                    when { expression { commonPipelineEnvironment.configuration.skipping.ADDITIONAL_TOOLS } }
+                    steps { stageAdditionalTools script: this }
+                }
             }
 
         }
