@@ -23,7 +23,7 @@ general:
     * _Cx Server [Lifecycle phase]_
     * _Maven Archetype generate_
 * Hash of Maven group id + artifact id (refer to [section hashing](#hashing) for details)
-* Hash of the Jenkins job URL (refer to [section hashing](#hashing) for details)
+* Hash of the Jenkins job URL and the Jenkins job ID(refer to [section hashing](#hashing) for details)
 * Repository branch type ("productive" or "non-productive")
 * Configuration parameters of the pipeline step, for example
     * Docker image
