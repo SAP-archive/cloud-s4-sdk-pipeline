@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v10'
+final def pipelineSdkVersion = 'v11'
 
 pipeline {
     agent any
@@ -78,6 +78,10 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.skipping.FORTIFY_SCAN } }
                     steps { stageFortifyScan script: this }
                 }
+                stage("Additional Tools") {
+                    when { expression { commonPipelineEnvironment.configuration.skipping.ADDITIONAL_TOOLS } }
+                    steps { stageAdditionalTools script: this }
+                }
             }
 
         }
@@ -99,6 +103,7 @@ pipeline {
                 if (commonPipelineEnvironment.configuration.skipping?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
+                sendAnalytics script:this
             }
         }
         failure { deleteDir() }

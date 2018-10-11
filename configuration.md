@@ -6,7 +6,7 @@
   * [General configuration](#general-configuration)
     * [automaticVersioning](#automaticversioning)
     * [features](#features)
-    * [jenkinsKubernetes](#jenkinsKubernetes)
+    * [jenkinsKubernetes](#jenkinskubernetes)
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
@@ -55,6 +55,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | --- | --- | --- | --- |
 | `productiveBranch` | | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
 | `projectName` | | `artifactID` from pom | Name of the project |
+| `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 
 #### automaticVersioning
 The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
@@ -99,10 +100,10 @@ If the Jenkins is running on a kubernetes cluster as a pod, we can use the dynam
 | `jnlpAgent` | | `s4sdk/jenkins-agent-k8s:latest` | Docker image for `jnlp` agent to be used |
 
 In the Jenkins configuration section under `Manage Jenkins` menu, set the value for your environment variable under `Global properties` section.
-  
+
 ![Environment variable configuration](images/k8s-environment-config.jpg)
- 
-The Jenkins spins up `jnlp` agent nodes on demand. By default, the `s4sdk/jnlp-agent-k8s` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below. 
+
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `s4sdk/jnlp-agent-k8s` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
 
 ```yaml
 general:
@@ -179,9 +180,9 @@ s4SdkQualityChecks:
     - '**/HelloWorld.class'
     - '**/generated/**'
 ```
- 
+
 #### checkmarxScan
-[Checkmarx](https://www.checkmarx.com/) is one of the security analysis tools which is supported by the  pipeline. 
+[Checkmarx](https://www.checkmarx.com/) is one of the security analysis tools which is supported by the  pipeline.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -222,7 +223,7 @@ checkmarxScan:
 | `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
 
 
-You can either specify the property `cfTargets` or `neoTargets`. 
+You can either specify the property `cfTargets` or `neoTargets`.
 
 For `cfTargets` the following properties can be defined:
 
@@ -447,10 +448,10 @@ cloudFoundryDeploy:
 | --- | --- | --- | --- |
 | `dockerImage` | X | | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
 
-Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt). 
+Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt).
 
 #### checkFindbugs
-[SpotBugs](https://spotbugs.github.io/) static code analysis is executed as part of the static code checks. 
+[SpotBugs](https://spotbugs.github.io/) static code analysis is executed as part of the static code checks.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -540,4 +541,3 @@ postActions:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
 ```
-

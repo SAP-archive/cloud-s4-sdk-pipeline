@@ -56,6 +56,12 @@
 
  After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline. 
 
+## Analytics
+To improve SAP S/4HANA Cloud SDK Pipeline, we do collect non-personal telemetry data.
+
+For details about which data is collected, and for information on how to opt-out, consult the [analytics documentation](doc/operations/analytics.md).
+
+
 ## Known Issues
  Currently, there are no known issues.
 
