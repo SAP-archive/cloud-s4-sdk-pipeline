@@ -31,25 +31,25 @@ pipeline {
                 stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
                 stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
                 stage("Frontend Unit Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.FRONT_END_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.FRONT_END_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
                 stage("Node Security Platform Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.NODE_SECURITY_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.NODE_SECURITY_SCAN } }
                     steps { stageNodeSecurityPlatform script: this }
                 }
             }
         }
 
         stage('Remote Tests') {
-            when { expression { commonPipelineEnvironment.configuration.skipping.REMOTE_TESTS } }
+            when { expression { commonPipelineEnvironment.configuration.runStage.REMOTE_TESTS } }
             parallel {
                 stage("End to End Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.E2E_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.E2E_TESTS } }
                     steps { stageEndToEndTests script: this }
                 }
                 stage("Performance Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.PERFORMANCE_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.PERFORMANCE_TESTS } }
                     steps { stagePerformanceTests script: this }
                 }
             }
@@ -60,26 +60,26 @@ pipeline {
         }
 
         stage('Third-party Checks') {
-            when { expression { commonPipelineEnvironment.configuration.skipping.THIRD_PARTY_CHECKS } }
+            when { expression { commonPipelineEnvironment.configuration.runStage.THIRD_PARTY_CHECKS } }
             parallel {
                 stage("Checkmarx Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.CHECKMARX_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.CHECKMARX_SCAN } }
                     steps { stageCheckmarxScan script: this }
                 }
                 stage("WhiteSource Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.WHITESOURCE_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.WHITESOURCE_SCAN } }
                     steps { stageWhitesourceScan script: this }
                 }
                 stage("SourceClear Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.SOURCE_CLEAR_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.SOURCE_CLEAR_SCAN } }
                     steps { stageSourceClearScan script: this }
                 }
                 stage("Fortify Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.FORTIFY_SCAN } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.FORTIFY_SCAN } }
                     steps { stageFortifyScan script: this }
                 }
                 stage("Additional Tools") {
-                    when { expression { commonPipelineEnvironment.configuration.skipping.ADDITIONAL_TOOLS } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.ADDITIONAL_TOOLS } }
                     steps { stageAdditionalTools script: this }
                 }
             }
@@ -87,12 +87,12 @@ pipeline {
         }
 
         stage('Artifact Deployment') {
-            when { expression { commonPipelineEnvironment.configuration.skipping.ARTIFACT_DEPLOYMENT } }
+            when { expression { commonPipelineEnvironment.configuration.runStage.ARTIFACT_DEPLOYMENT } }
             steps { stageArtifactDeployment script: this }
         }
 
         stage('Production Deployment') {
-            when { expression { commonPipelineEnvironment.configuration.skipping.PRODUCTION_DEPLOYMENT } }
+            when { expression { commonPipelineEnvironment.configuration.runStage.PRODUCTION_DEPLOYMENT } }
             steps { stageProductionDeployment script: this }
         }
 
@@ -100,7 +100,7 @@ pipeline {
     post {
         always {
             script {
-                if (commonPipelineEnvironment.configuration.skipping?.SEND_NOTIFICATION) {
+                if (commonPipelineEnvironment.configuration.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
                 sendAnalytics script:this
