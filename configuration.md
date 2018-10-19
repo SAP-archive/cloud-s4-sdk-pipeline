@@ -155,12 +155,22 @@ integrationTests:
 #### endToEndTests
 
 For the stage `endToEndTests` the same configuration options are available as for the stage `productionDeployment`.
-Furthermore it is possible to activate Zero Downtime Deployment with the option `enableZeroDowntimeDeployment`. This will lead to a Blue-Green-Deployment on SCP Cloud Foundry respectively to a Rolling Update on SCP Neo. By deault this feature is turned off.
+
+In addition to these options also the following ones are available for end-to-end tests:
+
+It is possible to activate zero downtime deployment in end-to-end tests with the option `enableZeroDowntimeDeployment`.
+This will lead to a blue-green-deployment on SCP Cloud Foundry respectively to a rolling update on SCP Neo.
+By default this feature is turned off.
+
+Running end-to-end tests can be restricted to the `productiveBranch` with the option `onlyRunInProductiveBranch`.
+This might be useful when the end-to-end tests slow down development, and build failure on the `productiveBranch` is acceptable.
+By default this feature is turned off.
 
 Example:
 ```yaml
 endToEndTests:
   enableZeroDowntimeDeployment: true
+  onlyRunInProductiveBranch: true
 ```
 
 #### performanceTests

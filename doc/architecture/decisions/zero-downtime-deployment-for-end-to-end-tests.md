@@ -13,10 +13,11 @@ Deploying multiple services at once in this scenario can cause issues when runni
 
 ### Decision
 
-We provide the possibility to activate Zero Downtime Deployment in the End-To-End Tests. This feature is disabled by default.
+We provide the possibility to activate Zero Downtime Deployment in the End-To-End Tests.
+This feature is disabled by default.
 
 ## Consequences
 
 * The pipeline becomes more complex
-* When using one test landscape, seperate teams can work on their microservices without affecting other teams depending on their microservice
+* When using one test landscape, separate teams can work on their microservices without affecting other teams depending on their microservice
 * Zero Downtime Deployment needs more resources (e.g. memory, routes)
