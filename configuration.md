@@ -279,7 +279,7 @@ For `neoTargets` the following properties can be defined:
 | `account` | X | | Identifier of the subaccount|
 | `application` | X | | Name of the application in your account |
 | `credentialsId` | X | | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
-| `ev` | | | List of strings representing one environment variable assignment in the form of 'KEY=VALUE'|
+| `environment` | | | Map of environment variables in the form of KEY: VALUE|
 | `vmArguments` | | | String of VM arguments passed to the JVM|
 | `runtime` | X | | Name of the runtime: neo-java-web, neо-javaee6-wp, neо-javaee7-wp. See the [runtime](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
 | `runtimeVersion` | X | | Version of the runtime. See [runtime-version](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
@@ -294,8 +294,8 @@ productionDeployment:
     account: '<Sub account>'
     application: 'exampleapp'
     credentialsId: 'NEO-DEPLOY-PROD'
-    ev:
-      - 'STAGE=Production'
+    environment:
+      STAGE: Production
     vmArguments: '-Dargument1=value1 -Dargument2=value2'
     runtime: 'neo-javaee6-wp'
     runtimeVersion: '2'
