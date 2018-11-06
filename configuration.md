@@ -167,11 +167,23 @@ Running end-to-end tests can be restricted to the `productiveBranch` with the op
 This might be useful when the end-to-end tests slow down development, and build failure on the `productiveBranch` is acceptable.
 By default this feature is turned off.
 
+Additional parameters can be passed for each end-to-end test deployment by specifying _optional_ `parameters` for an application URL.
+These parameters are appended to the npm command during execution.
+This could be used for example to split the entire end-to-end test scenario into multiple sub-scenarios and running these sub-scenarios on different deployments.
+For example, when using nightwatch, these scenarios can be defined via annotations in the test descriptions and can be called with the `--tag` parameter as shown in the example below.
+
 Example:
 ```yaml
 endToEndTests:
   enableZeroDowntimeDeployment: true
   onlyRunInProductiveBranch: true
+  appUrls:
+   - url: <application url>
+     credentialId: e2e-test-user-cf
+     parameters: '--tag scenario1'
+   - url: <application url 2>
+     credentialId: e2e-test-user-cf
+     parameters: '--tag scenario2 --tag scenario3'
 ```
 
 #### performanceTests
