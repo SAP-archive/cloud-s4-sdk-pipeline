@@ -355,12 +355,21 @@ nodeSecurityScan:
 ```
 
 #### whitesourceScan
-Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans.
+Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans. The minimum required maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
+
+```xml
+<plugin>
+    <groupId>org.whitesource</groupId>
+    <artifactId>whitesource-maven-plugin</artifactId>
+    <version>18.6.2</version>
+</plugin>
+```
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `product` | X | | Name of your product in WhiteSource. |
 | `credentialsId` | X | | Unique identifier of the `Secret Text` on Jenkins server that stores your organization(API Token) of WhiteSource. |
+| `whitesourceUserTokenCredentialsId` |  | | Unique identifier of the `Secret Text` on Jenkins server that stores WhiteSource `userKey` of a user. This is required only if the administrator of the WhiteSource service has enabled additional access level control. More details can be found [here](https://whitesource.atlassian.net/wiki/spaces/WD/pages/417529857/User+Level+Access+Control+in+Integrations+and+APIs).  |
 
 Please note that you can not have a `whitesource.config.json` in your project, since the Pipeline generates one from this configuration.
 
