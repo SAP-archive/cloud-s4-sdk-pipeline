@@ -1,22 +1,40 @@
-# Analytics
+# Usage Analytics
 
-We do want to improve the SAP S/4HANA Cloud SDK Pipeline based on information about how it is used.
-To do so, we do collect non-personal telemetry data.
+This document describes which data is collected by the s4sdk-maven-plugin as well as the Continuous Delivery Toolkit.
 
 Please note that this additionally includes the analytics done by SAP/jenkins-library, [see here](https://sap.github.io/jenkins-library/configuration/#collecting-telemetry-data) for details.
 
-## Opt-out
+## Data Collected by Maven plugin
 
-Analytics is enabled by default.
+The following project-specific usage data is collected:
+  - Project identifier (SHA-256 hash of root project's groupId + artifactId + optional salt)
+  - Operating system information
+    - Name
+    - Version
+    - Locale
+  - Java information
+    - Vendor
+    - Version
+  - Maven information
+    - Version
+  - Compiler information
+      - Maven plugin version
+      - Source argument (-source)
+      - Target argument (-target)
+  - SDK depedencies (groupId, artifactId, version)
+  - SDK plugins (groupId, artifactId, version)
+  - Third-party dependencies (groupId, version) with groupIds that start with: 
+    - "org.springframework"
+    - "javax"
+    - "org.projectlombok"
+    - "com.google.guava"
+  - Third-party plugins (groupId, version) with groupIds that start with:
+    - "org.projectlombok"
+  - Project information
+    - is compatible with Continuous Delivery Toolkit?
+    - is Application Programming Model project?
 
-If you wish to disable it both for SAP S/4HANA Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `pipeline_config.yml` in the `general` section as in this example:
-
-```
-general:
-  collectTelemetryData: false
-```
-
-## Information we collect
+## Data Collected by Build Pipeline
 
 * Name of the activity, for example
     * _Pipeline [Step]_
@@ -34,21 +52,6 @@ general:
 * Outcome of the action (success or failure)
 * Operating system information (name, version, locale, ..)
 
-## Hashing
+## Opt-out
 
-We use hashed values for some data points, to allow us to correlate data by projects.
-The hashes are not reversible, and can't be used to identify users.
-
-The hash is calculated locally on your machine and no original values are transmitted.
-
-A per-project generated salt value is used to compute the hashes.
-This salt is private to the project, and not known to SAP SE.
-
-With this salted hash, it is possible to correlate actions triggered in the same project.
-It is not possible to know the name of the project, or other identifying attributes.
-
-For example, the data point we want to collect might be the URL of a Jenkins job, like `http://my-ci.corp/job/address-manager/`.
-The salt is a random string, like `KOMNTRTMYK` for example.
-
-The resulting hash looks like `918414eb6ea8a10db9467a08e9cab28d3d4e1299`, and will be the same if the job URL and the salt are the same over multiple entries, allowing to correlate them.
-It is not possible to see when two different salted hashes had the same original value.
+To opt out from usage data collection, follow the guide [here](https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/).
