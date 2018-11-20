@@ -56,6 +56,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | `productiveBranch` | | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
 | `projectName` | | `artifactID` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
+| `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
 
 #### automaticVersioning
 The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
@@ -166,11 +167,23 @@ Running end-to-end tests can be restricted to the `productiveBranch` with the op
 This might be useful when the end-to-end tests slow down development, and build failure on the `productiveBranch` is acceptable.
 By default this feature is turned off.
 
+Additional parameters can be passed for each end-to-end test deployment by specifying _optional_ `parameters` for an application URL.
+These parameters are appended to the npm command during execution.
+This could be used for example to split the entire end-to-end test scenario into multiple sub-scenarios and running these sub-scenarios on different deployments.
+For example, when using nightwatch, these scenarios can be defined via annotations in the test descriptions and can be called with the `--tag` parameter as shown in the example below.
+
 Example:
 ```yaml
 endToEndTests:
   enableZeroDowntimeDeployment: true
   onlyRunInProductiveBranch: true
+  appUrls:
+   - url: <application url>
+     credentialId: e2e-test-user-cf
+     parameters: '--tag scenario1'
+   - url: <application url 2>
+     credentialId: e2e-test-user-cf
+     parameters: '--tag scenario2 --tag scenario3'
 ```
 
 #### performanceTests
@@ -279,7 +292,7 @@ For `neoTargets` the following properties can be defined:
 | `account` | X | | Identifier of the subaccount|
 | `application` | X | | Name of the application in your account |
 | `credentialsId` | X | | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
-| `ev` | | | List of strings representing one environment variable assignment in the form of 'KEY=VALUE'|
+| `environment` | | | Map of environment variables in the form of KEY: VALUE|
 | `vmArguments` | | | String of VM arguments passed to the JVM|
 | `runtime` | X | | Name of the runtime: neo-java-web, neо-javaee6-wp, neо-javaee7-wp. See the [runtime](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
 | `runtimeVersion` | X | | Version of the runtime. See [runtime-version](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
@@ -294,8 +307,8 @@ productionDeployment:
     account: '<Sub account>'
     application: 'exampleapp'
     credentialsId: 'NEO-DEPLOY-PROD'
-    ev:
-      - 'STAGE=Production'
+    environment:
+      STAGE: Production
     vmArguments: '-Dargument1=value1 -Dargument2=value2'
     runtime: 'neo-javaee6-wp'
     runtimeVersion: '2'
@@ -342,12 +355,21 @@ nodeSecurityScan:
 ```
 
 #### whitesourceScan
-Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans.
+Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans. The minimum required maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
+
+```xml
+<plugin>
+    <groupId>org.whitesource</groupId>
+    <artifactId>whitesource-maven-plugin</artifactId>
+    <version>18.6.2</version>
+</plugin>
+```
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `product` | X | | Name of your product in WhiteSource. |
 | `credentialsId` | X | | Unique identifier of the `Secret Text` on Jenkins server that stores your organization(API Token) of WhiteSource. |
+| `whitesourceUserTokenCredentialsId` |  | | Unique identifier of the `Secret Text` on Jenkins server that stores WhiteSource `userKey` of a user. This is required only if the administrator of the WhiteSource service has enabled additional access level control. More details can be found [here](https://whitesource.atlassian.net/wiki/spaces/WD/pages/417529857/User+Level+Access+Control+in+Integrations+and+APIs).  |
 
 Please note that you can not have a `whitesource.config.json` in your project, since the Pipeline generates one from this configuration.
 

@@ -2,14 +2,56 @@
 
 This guide describes life-cycle management of the Cx Server for Continuous Integration and Delivery. The server is controlled with the `cx-server` script.
 
-### Introduction
-
+#### Introduction
 The `cx-server` directory is included in projects which are created by using the SAP S/4HANA Cloud SDK Maven Archetypes.
 It contains a life-cycle management utility script `cx-server` and a configuration file `server.cfg`.
 
-For convenient usage of the script, a [completion script](https://raw.githubusercontent.com/SAP/cloud-s4-sdk-pipeline-docker/master/s4sdk-jenkins-master/cx-server/cx-server-completion.bash) for `cx-server` is provided. Source it in your shell, or refer to the documentation of your operating system for information on how to install this script system wide.
+For the convenient usage of the script, a [completion script](https://raw.githubusercontent.com/SAP/cloud-s4-sdk-pipeline-docker/master/s4sdk-jenkins-master/cx-server/cx-server-completion.bash) for `cx-server` is provided. 
+Source it in your shell, or refer to the documentation of your operating system for information on how to install this script system wide.
 
-#### start
+#### System requirement
+
+##### Productive usage
+In order to setup the cx-server for the productive purpose, we recommend the minimum hardware and software requirements as mentioned below.
+As of now, we do not support the productive setup on a Windows operating system.
+
+| Property | Recommendation |
+| --- | --- |
+| Operating System | `Ubuntu 16.04.4 LTS`  |
+| Docker | `18.06.1-ce` |
+| Memory  | `4GB` reserved for docker |
+
+##### Development usage
+The `cx-server` can also run on a Windows or MacOs. But, only for the development purposes. 
+In order to run the `cx-server` on Windows, you need to share the `C` drive with a docker demon as explained [here](https://docs.docker.com/docker-for-windows/#shared-drives). 
+Set the docker memory to at least 4GB, you can [configure](https://docs.docker.com/docker-for-windows/#advanced) this under the `Advanced` settings tab.
+ 
+#### Configuring the `cx-server`
+The `cx-server` can be customized to fit your use case. The `server.cfg` file contains the configuration details of your `cx-server`.
+
+  | Property | Mandatory | Default Value | Description |
+  | --- | --- | --- | --- |
+  | `docker_image` | X | `s4sdk/jenkins-master:latest`|  Jenkins docker image name with the version to be used|
+  | `docker_registry` |  | Default docker registry used by the docker demon on the host machine |  Docker registry to be used to pull docker images from|
+  |`jenkins_home`| X|`jenkins_home_volume`| The volume to be used as a `jenkins_home`. Please ensure, this volume is accessible by the user with id `1000` |
+  |`http_port`| X|`80`||
+  |`http_proxy`| | | Effective value of 'http_proxy' environment variables|
+  |`https_proxy`| | | Effective value of 'https_proxy' environment variables|
+  |`no_proxy`| | | Whitelisting of hosts from the proxy. It will be appended to any previous definition of `no_proxy`|
+  |`backup_directory`| | `(pwd)/backup` | Directory where the backup of the jenkins home directory contents are stored|
+  |`backup_file_name`| |`jenkins_home_YYYY-MM-DDThhmmUTC.tar.gz`| Name of the backup file to be created|
+  |`x_java_opts`| || JAVA_OPT that needs to be passed to the Jenkins container|
+  |`cache_enabled`| |`true` | Flag to enable or disable the caching mechanism for `npm` and `maven` dependencies|
+  |`mvn_repository_url`| | Maven central repository URL| It will be used if you need to configure a custom maven repository|
+  |`npm_registry_url`| | Central NPM registry| It will be used if you need to configure a custom npm registry|
+  |`x_nexus_java_opts`| | | You can configure the JAVA_OPTS of the download cache server using this option|
+
+
+>**Note:** Please note that if you are using proxy settings and configured them in `server.cfg`, you also have to configure them in the Jenkins UI under `advanced` section of `Plugin Manager`(<Jenkins_URL>/pluginManager/advanced).
+The variables set in `server.cfg` will be written into the environment of the corresponding containers and will be only used by the containers that are spawned by the Jenkins during pipeline execution.
+
+#### Life-cycle of `cx-server` 
+##### start
 You can start the Jenkins server by launching the `start` command.
 
 ```bash
@@ -19,32 +61,22 @@ You can start the Jenkins server by launching the `start` command.
 When launched, it checks if the Docker container named `s4sdk-jenkins-master` already exists.
 If yes, it restarts the stopped container. Otherwise, it spawns a new Docker container based on the configuration in `server.cfg`.
 
-Example:
-
-```bash
-# Address of the used docker registry
-docker_registry=registry.hub.docker.com
-
-# Name of the used docker image
-docker_image="s4sdk/jenkins-master:latest"
-``` 
-
-#### stop
+##### stop
 The Cx Server can be stopped with the `stop` command.
 ```bash
 ./cx-server stop
 ``` 
 This stops the Jenkins Docker container if it is running. A subsequent `start` command restores the container.
 
-#### remove
+##### remove
 This command removes the Jenkins container from the host if it is not running.
 
 ```bash
 ./cx-server remove
 ```
 
-#### backup
-The `jenkins_home` contains the state of the Jenkins which includes important details such as settings, Jenkins workspace and job details.
+##### backup
+The `jenkins_home` contains the state of the Jenkins which includes important details such as settings, Jenkins workspace, and job details.
 Considering the importance of it, taking regular backup of the `jenkins_home` is **highly recommended**. 
 
 ```bash
@@ -52,18 +84,9 @@ Considering the importance of it, taking regular backup of the `jenkins_home` is
 ```
 This command creates a backup file and stores it on a host machine inside a directory named `backup`. In order to store the backup on external storage, you can customize the location and name of the backup file in the `server.cfg`.
 
-Example:
-```bash
-# Absolute path to a directory where the backup of the jenkins_volume stored
-backup_directory="$(pwd)/backup"
-
-# Name of the backup file
-backup_file_name="jenkins_home_$(date -u +%Y-%m-%dT%H%M%Z).tar.gz"
-```
-
 > **Note:** Administrator of the Jenkins must ensure that the backup is stored in a safe storage.
 
-#### restore
+##### restore
 In an event of a server crash, the state of the Jenkins can be restored to a previously saved state if there is a backup file available. You need to execute the `restore` command along with the absolute path to the backup file that you want to restore the state to.
  
 Example:
@@ -75,13 +98,13 @@ Example:
 > **Warning:** In order to restore the Jenkins home directory, this command stops the Jenkins server first and **delete the content of the Jenkins home directory**.
 > After the completion of the restore operation, it starts the Jenkins server upon user confirmation.
 
-#### update script
+##### update script
 The `cx-server` script can be updated via the `update script` command, if a new version is available.
 ```bash
 ./cx-server update script
 ```
 
-#### update image
+##### update image
 By default, the Cx Server image defined by `docker_image` in `server.cfg` always points to the newest released version.
 In productive environments, you will however likely want to fix the Cx Server image to a specific version.
 By defining `docker_image` with a version tag (e.g. `docker_image=s4sdk/jenkins-master:v3`), you avoid unintended updates as a side-effect of restarting the Continuous Delivery server.
@@ -102,15 +125,7 @@ Note: The command only works if you use the default image from Docker Hub.
 #### Caching mechanism 
 The `cx-server` provides the local cache for maven and node dependencies. This is enabled by default. A Docker image of [Sonatype Nexus OSS 3.x](https://www.sonatype.com/download-oss-sonatype) is used for this. 
 
-By default the caching service makes use of maven central and npm registry are used for downloading the dependencies. This can be customized in `server.cfg` as shown below.
-
-```bash
-### maven proxy target (default is maven central)
-mvn_repository_url="https://your-local-maven-repo.corp/maven2/"
-
-### npm proxy target (default is central npm registy)
-npm_registry_url="https://your-local-npm-registry.corp/"
-```
+By default the caching service makes use of maven central and npm registries for downloading the dependencies. This can be customized in `server.cfg`. 
 
 In a distributed build environment, the Nexus server is started on each agent.
 The agent initializer script `launch-s4sdk-agent.sh` takes care of the automatic start of the caching server.
@@ -132,7 +147,15 @@ If you prefer to use different caching mechanism or not using any, you can disab
 cache_enabled=false
 ```
 
-### Disk space cleanup
+#### Plugins
+All the plugins that are required to run the SAP S/4HANA Cloud SDK Continuous Delivery Pipeline
+are already pre-installed. If you update or downgrade them to a specific version, it will be lost every time the `cx-server` image is updated. All the plugins are updated with the latest version. 
+If there is a need, the user can install additional plugins and configure them. 
+However, the `cx-server update` will not update the plugins that are custom installed.
+
+#### Troubleshooting
+ 
+##### Disk space cleanup
 If you encounter an issue related to diskspace on a cx-server, you can free up space by launching [system prune](https://docs.docker.com/engine/reference/commandline/system_prune/) command.
 
 ***WARNING***
@@ -141,3 +164,15 @@ Do not launch this command when cx-server is not running. Because the command wi
 ```bash
 docker system prune --all
 ```
+
+##### Logs
+
+You can find the logs of the `cx-server` and the caching server as part of the Docker logs on the host machine. 
+
+```
+docker logs s4sdk-jenkins-master
+docker logs s4sdk-nexus
+```
+
+
+
