@@ -1,22 +1,84 @@
-# Analytics
+# Usage Analytics
 
-We do want to improve the SAP S/4HANA Cloud SDK Pipeline based on information about how it is used.
-To do so, we do collect non-personal telemetry data.
+This document describes which data is collected by the SAP S/4HANA Cloud SDK Maven Plugin as well as its Continuous Delivery Toolkit.
 
-Please note that this additionally includes the analytics done by SAP/jenkins-library, [see here](https://sap.github.io/jenkins-library/configuration/#collecting-telemetry-data) for details.
+To learn more about the background, we recommend to read [this blog post](https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/).
 
-## Opt-out
+## Data Collected by Maven Plugin
 
-Analytics is enabled by default.
+The following project-specific usage data is collected:
+  - Project identifier (SHA-256 hash of root project's groupId + artifactId + optional salt)
+  - Operating system information
+    - Name
+    - Version
+    - Locale
+  - Java information
+    - Vendor
+    - Version
+  - Maven information
+    - Version
+  - Compiler information
+      - Maven plugin version
+      - Source argument (-source)
+      - Target argument (-target)
+  - SDK depedencies (groupId, artifactId, version)
+  - SDK plugins (groupId, artifactId, version)
+  - Third-party dependencies (groupId, version) with groupIds that start with: 
+    - "org.springframework"
+    - "javax"
+    - "org.projectlombok"
+    - "com.google.guava"
+  - Third-party plugins (groupId, version) with groupIds that start with:
+    - "org.projectlombok"
+  - Project information
+    - is compatible with Continuous Delivery Toolkit?
+    - is Application Programming Model project?
 
-If you wish to disable it both for SAP S/4HANA Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `pipeline_config.yml` in the `general` section as in this example:
-
+**Disclaimer:** This list is maintained manually and may therefore not always reflect the latest state of data collection.
+You can check which information is transmitted by considering the log output of the Maven plugin.
 ```
-general:
-  collectTelemetryData: false
+[INFO] SAP S/4HANA Cloud SDK - Usage Analytics
+[INFO] 
+[INFO] Thank you for contributing to our anonymized usage statistics!
+[INFO] This allows us to improve the SAP S/4HANA Cloud SDK based on your usage.
+[INFO] 
+[INFO] We respect your privacy and intellectual property. Therefore, we only
+[INFO] collect non-sensitive data about the use of the SDK. We do not collect
+[INFO] personal information or data about the inner workings of your project.
+[INFO] 
+[INFO] If you prefer to opt out or want to learn more, visit:
+[INFO] https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/
+[INFO] 
+[INFO] Project identifier:
+[INFO]   17ed01aa4e6291157fc684cc2c19e00802b6195919176a011562390c2999efd5
+[INFO]   (salted hash of project's groupId and artifactId)
+[INFO] 
+[INFO] Operating System:  Mac OS X, 10.14.1, en_US
+[INFO] Java version:      1.8.0_192, Oracle Corporation
+[INFO] Maven version:     3.6.0
+[INFO] Compiler:          plugin 3.1, source (n/a), target (n/a)
+[INFO] 
+[INFO] SDK artifacts:
+[INFO]   cloudplatform:scp-cf:2.8.1
+[INFO]   plugins:s4sdk-maven-plugin:2.8.1
+[INFO]   quality:listeners-all:2.8.1
+[INFO]   s4hana-all:2.8.1
+[INFO]   testutil:2.8.1
+[INFO] 
+[INFO] Relevant third party artifacts:
+[INFO]   javax.inject:1
+[INFO]   javax.servlet:3.1.0
+[INFO] 
+[INFO] Project structure:
+[INFO]   [x] compatible with Continuous Delivery Toolkit
+[INFO]   [ ] Application Programming Model project
+[INFO] 
+[INFO] Sending usage data to SAP analytics service ...
+[INFO] Success (0.286 s).
 ```
+Furthermore, you can use the `-X` debug flag of Maven to inspect the request that is sent to the SAP analytics service.
 
-## Information we collect
+## Data Collected by Build Pipeline
 
 * Name of the activity, for example
     * _Pipeline [Step]_
@@ -34,21 +96,38 @@ general:
 * Outcome of the action (success or failure)
 * Operating system information (name, version, locale, ..)
 
-## Hashing
+Please note that this additionally includes the analytics done by SAP/jenkins-library, [see here](https://sap.github.io/jenkins-library/configuration/#collecting-telemetry-data) for details.
 
-We use hashed values for some data points, to allow us to correlate data by projects.
-The hashes are not reversible, and can't be used to identify users.
+**Disclaimer:** This list is maintained manually and may therefore not always reflect the latest state of data collection.
+You can check which information is transmitted by searching the log of your Jenkins jobs for the string `Sending telemetry data`.
+Please consider the following example log message:
+```
+18:02:54 Sending telemetry data: [event_type:pipeline_stage, custom3:stage_name, e_3:initS4sdkPipeline, custom4:stage_result, e_4:SUCCESS, custom5:start_time, e_5:1541437347881, custom6:duration, e_6:26677, custom7:project_extensions, e_7:false, custom8:global_extensions, e_8:false, action_name:SAP S/4HANA Cloud SDK, idsite:2ff12ff4-f7cc-e3a0-1eca-eec552a3d077, idsitesub:pipeline, url:https://github.com/SAP/cloud-s4-sdk-pipeline/tree/master/doc/operations/analytics.md, custom1:build_url_hash, e_a:86648dd02153fedb42d8b293060573bb513a6d11, custom10:build_number, e_10:3db762cb24aeeb39e8b6c92ef365c48560240538, custom2:project_id_hash, e_2:693db57a02e56cf24823bc5be20c9e7767042285]
+```
 
-The hash is calculated locally on your machine and no original values are transmitted.
+## Opt-Out
 
-A per-project generated salt value is used to compute the hashes.
-This salt is private to the project, and not known to SAP SE.
+Collection of usage data is enabled by default.
 
-With this salted hash, it is possible to correlate actions triggered in the same project.
-It is not possible to know the name of the project, or other identifying attributes.
+If you wish to disable it, please perform the following steps:
 
-For example, the data point we want to collect might be the URL of a Jenkins job, like `http://my-ci.corp/job/address-manager/`.
-The salt is a random string, like `KOMNTRTMYK` for example.
+For both the SAP S/4HANA Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `pipeline_config.yml` in the general section as in this example:
 
-The resulting hash looks like `918414eb6ea8a10db9467a08e9cab28d3d4e1299`, and will be the same if the job URL and the salt are the same over multiple entries, allowing to correlate them.
-It is not possible to see when two different salted hashes had the same original value.
+```
+general:
+  collectTelemetryData: false
+```
+
+In your Maven projects, set the `skip` flag in the configuration of the `s4sdk-maven-plugin` to `true`:
+
+```
+<plugin>
+    <groupId>com.sap.cloud.s4hana.plugins</groupId>
+    <artifactId>s4sdk-maven-plugin</artifactId>
+    ...
+    <configuration>
+        <skip>true</skip>
+    </configuration>
+    ...
+</plugin>
+```
