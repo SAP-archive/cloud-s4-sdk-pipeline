@@ -1,6 +1,7 @@
 ## Context
 
 Please provide a description of what your change does and why it is needed.
+Try [completing this sentence](https://chris.beams.io/posts/git-commit/#imperative): *If applied, this commit will ...*
 
 ## Definition of Done
 Please consider all items and remove only if not applicable.
