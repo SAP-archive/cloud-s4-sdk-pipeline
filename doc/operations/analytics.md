@@ -84,8 +84,8 @@ Furthermore, you can use the `-X` debug flag of Maven to inspect the request tha
     * _Pipeline [Step]_
     * _Cx Server [Lifecycle phase]_
     * _Maven Archetype generate_
-* Hash of Maven group id + artifact id (refer to [section hashing](#hashing) for details)
-* Hash of the Jenkins job URL and the Jenkins job ID(refer to [section hashing](#hashing) for details)
+* Hash of Maven group id + artifact id (If configured in the file `application/pom.xml`, the hash is salted, see [this blog post](https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/) for details)
+* Hash of the Jenkins job URL and the Jenkins job ID
 * Repository branch type ("productive" or "non-productive")
 * Configuration parameters of the pipeline step, for example
     * Docker image
