@@ -539,7 +539,6 @@ checkJMeter:
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` | X | | Docker image with your Fortify agent. No public default image is provided, thus a custom image is required. |
-| `pathToPom` | | `application/pom.xml` | Path to the pom file of the project that needs to be scanned by Fortify |
 | `verbose` | | `false` | Sends the verbose out put to the Jenkins log |
 | `sourceVersion` | | `1.8` | Java version of the source code that needs to be scanned |
 | `buildId` | | `pom.artifactId-pom.version` | The build ID for the Fortify scan |
