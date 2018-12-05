@@ -400,24 +400,23 @@ Configure Fortify scans.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `sscUrl` | X | | URL how your Fortify client can be reached. |
-| `fortifyApiCredentialId` | X | | ID of the credentials you want to use for the Fortify API. |
-| `fortifyBasicAuthId` | X | | ID for basic authentication towards your Fortify client. |
+| `sscUrl` | X | | URL how your Fortify Software Security Center client can be reached. |
+| `fortifyCredentialId` | X | | ID of the credentials (username, password) you want to use for the Fortify Software Security Center. Can be configured in `executeFortifyScan` or here. |
 | `fortifyProjectName` | X | | Name of your project in Fortify. |
 | `projectVersionId` | X | | ID of your project in Fortify. |
 
 
 If you wish to configure Fortify, add your config entries as in the example.
+For the fine tuning of fortify scan, please refer `executeFortifyScan` configuration.
 
 Example:
 
 ```yaml
 fortifyScan:
-    sscUrl: 'https://fortify.dummy.corp.domain/ssc'
-    fortifyApiCredentialId: 'FortifyApiToken'
-    fortifyBasicAuthId: 'FortifyBasicAuth'
-    fortifyProjectName: 'mySampleProject'
-    projectVersionId: '12345'
+  sscUrl: 'https://fortify.dummy.corp.domain/ssc'
+  fortifyCredentialId: 'fortifyCredentialId'
+  fortifyProjectName: 'mySampleProject'
+  projectVersionId: '12345'
 ```
 
 ### Step configuration
@@ -452,6 +451,7 @@ A step configuration regarding Cloud Foundry deployment. This is required by sta
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
 | `smokeTestStatusCode` | | `200` | Return code for the smoke test |
+|`keepOldInstance`| | true | In case of a `blue-green` deployment the old instance will be stopped and will remain in the Cloud Foundry space by default. If this option is set to false, the old instance will be deleted. |
 |`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
 
 
@@ -538,16 +538,26 @@ checkJMeter:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | X | | URL to a docker image running your fortify agent. |
-| `fortifyCredentialId` | X | | ID of credentials to be used when running the docker agent. |
+| `dockerImage` | X | | Docker image with your Fortify agent. No public default image is provided, thus a custom image is required. |
+| `verbose` | | `false` | Sends the verbose out put to the Jenkins log |
+| `sourceVersion` | | `1.8` | Java version of the source code that needs to be scanned |
+| `buildId` | | `pom.artifactId-pom.version` | The build ID for the Fortify scan |
+| `use64BitVersion` | | `true` |  Runs Fortify SCA inside the 64-bit JRE |
+| `maximumMemoryUsage` | | `3000M` | Maximum heap size of the JVM which runs Fortify SCA |
+| `exclude` | | `**/resources/**/*,**/target/**/*,**/unit-tests/**/*,**/integration-tests/**/*` | File and directories that needs to excluded from the scanning |
+| `skipNgComponents` | | `true` | Skip the `node` modules from the scanning  |
+| `additionalScanOptions` | |  | Additional Fortify options such as thread count, alias usage etc.  |
+
 
 Example:
 
 ```yaml
 executeFortifyScan:
-  dockerImage: 'docker.dummy.corp.domain/jenkins-agent-fortify:latest'
-  fortifyCredentialId: 'FortifyAuthToken'
+  dockerImage: 'docker.dummy.corp.domain/jenkins-agent-fortify:latest',
+  fortifyCredentialId: 'fortifyCredentialId',
+  additionalScanOptions: '-quick -Dfortify.sca.Xss=8M -Dfortify.sca.numOfWorkerThreads=8'
 ```
+
 #### mtaBuild
 
 ##### `dockerImage`
