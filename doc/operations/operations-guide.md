@@ -31,10 +31,13 @@ The `cx-server` can be customized to fit your use case. The `server.cfg` file co
 
   | Property | Mandatory | Default Value | Description |
   | --- | --- | --- | --- |
-  | `docker_image` | X | `s4sdk/jenkins-master:latest`|  Jenkins docker image name with the version to be used|
-  | `docker_registry` |  | Default docker registry used by the docker demon on the host machine |  Docker registry to be used to pull docker images from|
+  |`docker_image` | X | `s4sdk/jenkins-master:latest`|  Jenkins docker image name with the version to be used|
+  |`docker_registry` |  | Default docker registry used by the docker demon on the host machine |  Docker registry to be used to pull docker images from|
   |`jenkins_home`| X|`jenkins_home_volume`| The volume to be used as a `jenkins_home`. Please ensure, this volume is accessible by the user with id `1000` |
-  |`http_port`| X|`80`||
+  |`http_port`| X (If `tls_enabled` is `false`)|`80`||
+  |`tls_enabled`| |`false`| Use Transport Layer Security encryption for additional security|
+  |`tls_certificate_directory`| X (If `tls_enabled` is `true`) | | Absolute path to the directory where the `jenkins.key` and `jenkins.crt` files exists|
+  |`https_port`| X (If `tls_enabled` is `true`)|`443`||
   |`http_proxy`| | | Effective value of 'http_proxy' environment variables|
   |`https_proxy`| | | Effective value of 'https_proxy' environment variables|
   |`no_proxy`| | | Whitelisting of hosts from the proxy. It will be appended to any previous definition of `no_proxy`|
@@ -147,9 +150,33 @@ If you prefer to use different caching mechanism or not using any, you can disab
 cache_enabled=false
 ```
 
+#### TLS encryption
+The `cx-server` can be configured to use the TLS certificate for additional security. 
+In order to enable this, set the `tls_enabled` flag to true in the `server.cfg`. 
+It is also important to provide the certificates and a private key to `cx-server`.
+Set the `tls_certificate_directory` in the `server.cfg` to the directory where the certificate and private key(RSA) exists.
+[Here](self-signed-tls.md) you can find a guide to create your self-signed certificate. 
+Please note that currently the TLS encryption is not supported for the Windows environment.
+
+Example:
+
+```bash
+tls_enabled=true
+tls_certificate_directory="/var/tls/jenkins"
+https_port="443"
+```
+>**Note:** If you are enabling the TLS for already existing `cx-server`, then please remove the old container so that the new changes can take effect. 
+You can do it by executing below commands.
+```bash
+./cx-server stop
+./cx-server remove
+./cx-server start
+```
+
 #### Plugins
 All the plugins that are required to run the SAP S/4HANA Cloud SDK Continuous Delivery Pipeline
-are already pre-installed. If you update or downgrade them to a specific version, it will be lost every time the `cx-server` image is updated. All the plugins are updated with the latest version. 
+are already pre-installed. If you update or downgrade them to a specific version, it will be lost every time the `cx-server` image is updated. 
+All the plugins are updated with the latest version. 
 If there is a need, the user can install additional plugins and configure them. 
 However, the `cx-server update` will not update the plugins that are custom installed.
 
