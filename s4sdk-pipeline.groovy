@@ -36,10 +36,6 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.runStage.FRONT_END_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
-                stage("Node Security Platform Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.runStage.NODE_SECURITY_SCAN } }
-                    steps { stageNodeSecurityPlatform script: this }
-                }
             }
         }
 
@@ -88,7 +84,6 @@ pipeline {
                     steps { stageAdditionalTools script: this }
                 }
             }
-
         }
 
         stage('Artifact Deployment') {

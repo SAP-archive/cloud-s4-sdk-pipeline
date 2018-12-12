@@ -340,20 +340,6 @@ artifactDeployment:
         classifier: classes
 ```
 
-#### nodeSecurityScan
-Security scan of node modules is performed by [Node Security Platform](https://nodesecurity.io/).
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `enabled`| |  | Set the flag to `true` to enable NSP scan |
-
-Example:
-
-```yaml
-nodeSecurityScan:
-  enabled: true
-```
-
 #### whitesourceScan
 Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans. The minimum required maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
 
