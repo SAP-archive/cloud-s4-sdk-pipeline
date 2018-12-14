@@ -60,6 +60,14 @@ You can start the Jenkins server by launching the `start` command.
 When launched, it checks if the Docker container named `s4sdk-jenkins-master` already exists.
 If yes, it restarts the stopped container. Otherwise, it spawns a new Docker container based on the configuration in `server.cfg`.
 
+##### status
+
+The status command provides basic overview about your Cx Server instance.
+
+```bash
+./cx-server status
+``` 
+
 ##### stop
 The Cx Server can be stopped with the `stop` command.
 ```bash
