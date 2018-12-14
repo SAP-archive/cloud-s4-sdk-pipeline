@@ -34,24 +34,20 @@ The `cx-server` can be customized to fit your use case. The `server.cfg` file co
   |`docker_image` | X | `s4sdk/jenkins-master:latest`|  Jenkins docker image name with the version to be used|
   |`docker_registry` |  | Default docker registry used by the docker demon on the host machine |  Docker registry to be used to pull docker images from|
   |`jenkins_home`| X|`jenkins_home_volume`| The volume to be used as a `jenkins_home`. Please ensure, this volume is accessible by the user with id `1000` |
-  |`http_port`| X (If `tls_enabled` is `false`)|`80`||
+  |`http_port`| X (If `tls_enabled` is `false`) |`80`| The HTTP port on which the server listens for incoming connections.|
   |`tls_enabled`| |`false`| Use Transport Layer Security encryption for additional security|
   |`tls_certificate_directory`| X (If `tls_enabled` is `true`) | | Absolute path to the directory where the `jenkins.key` and `jenkins.crt` files exists|
-  |`https_port`| X (If `tls_enabled` is `true`)|`443`||
-  |`http_proxy`| | | Effective value of 'http_proxy' environment variables|
-  |`https_proxy`| | | Effective value of 'https_proxy' environment variables|
+  |`https_port`| X (If `tls_enabled` is `true`)|`443`| The HTTPS port on which the server listens for incoming connections.|
+  |`http_proxy`| | | Effective value of `http_proxy` environment variable wich is automatically passed on to all containers in the CI/CD setup. The Java proxy configuration of Jenkins and the download cache are automatically derived from this value. Proxy authentication is supported by the syntax `http://username:password@myproxy.corp:8080`. |
+  |`https_proxy`| | | Same as `http_proxy` but for https URLs. Jenkins only supports one proxy URL. Therefore, if `https_proxy` and `http_proxy` are defined, the URL of `https_proxy` takes precedence for initializing the Jenkins proxy settings. |
   |`no_proxy`| | | Whitelisting of hosts from the proxy. It will be appended to any previous definition of `no_proxy`|
   |`backup_directory`| | `(pwd)/backup` | Directory where the backup of the jenkins home directory contents are stored|
   |`backup_file_name`| |`jenkins_home_YYYY-MM-DDThhmmUTC.tar.gz`| Name of the backup file to be created|
-  |`x_java_opts`| || JAVA_OPT that needs to be passed to the Jenkins container|
+  |`x_java_opts`| | | Additional `JAVA_OPTS` that need to be passed to the Jenkins container|
   |`cache_enabled`| |`true` | Flag to enable or disable the caching mechanism for `npm` and `maven` dependencies|
   |`mvn_repository_url`| | Maven central repository URL| It will be used if you need to configure a custom maven repository|
   |`npm_registry_url`| | Central NPM registry| It will be used if you need to configure a custom npm registry|
   |`x_nexus_java_opts`| | | You can configure the JAVA_OPTS of the download cache server using this option|
-
-
->**Note:** Please note that if you are using proxy settings and configured them in `server.cfg`, you also have to configure them in the Jenkins UI under `advanced` section of `Plugin Manager`(<Jenkins_URL>/pluginManager/advanced).
-The variables set in `server.cfg` will be written into the environment of the corresponding containers and will be only used by the containers that are spawned by the Jenkins during pipeline execution.
 
 #### Life-cycle of `cx-server` 
 ##### start
