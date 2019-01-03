@@ -19,7 +19,6 @@
     * [productionDeployment](#productiondeployment)
     * [artifactDeployment](#artifactdeployment)
       * [nexus](#nexus)
-    * [nodeSecurityScan](#nodesecurityscan)
     * [whitesourceScan](#whitesourcescan)
     * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
