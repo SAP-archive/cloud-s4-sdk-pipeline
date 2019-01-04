@@ -4,6 +4,9 @@ This document describes which data is collected by the SAP S/4HANA Cloud SDK Mav
 
 To learn more about the background, we recommend to read [this blog post](https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/).
 
+Please note that third party tools used by the SAP S/4HANA Cloud SDK may also collect usage data, which is not covered by this document.
+Consult the documentation of these tools, for example, [Jenkins telemetry](https://jenkins.io/blog/2018/10/09/telemetry/).
+
 ## Data Collected by Maven Plugin
 
 The following project-specific usage data is collected:
