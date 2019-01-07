@@ -11,12 +11,20 @@
  
  ## Requirements
  
+ ### Hardware requirements
+ 
+At least four gigabyte memory (available to Docker) and at least four gigabyte of disk space on the Jenkins master for downloading Docker images and the persistent storage of Jenkins.
+
+The pipeline will refuse to run with less than one gigabyte available disk space to prevent a situation where the disk is running full.
+
+### Software requirements
+
  To use the pipeline you need a Jenkins server which has the [pipeline library](https://github.com/SAP/cloud-s4-sdk-pipeline-lib) as shared library configured.
  The best way to achieve this is to use the SAP S/4HANA Cloud SDK Cx Server.
  
  For instantiating the SAP S/4HANA Cloud SDK Cx Server, you need to provide a suitable host with a Linux operating system and Docker installed.
  Please also ensure that the user with whom you start the Cx Server belongs to the `docker` group.
- 
+
  Your project source files need to be available on a git or GitHub server, which is accessible from the Cx Server host.
  
  The lifecycle of the Cx Server is maintained by a script called `cx-server`.

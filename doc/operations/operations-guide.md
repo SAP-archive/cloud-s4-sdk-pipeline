@@ -20,6 +20,7 @@ As of now, we do not support the productive setup on a Windows operating system.
 | Operating System | `Ubuntu 16.04.4 LTS`  |
 | Docker | `18.06.1-ce` |
 | Memory  | `4GB` reserved for docker |
+| Available Disk Space | `4GB` |
 
 ##### Development usage
 The `cx-server` can also run on a Windows or MacOs. But, only for the development purposes. 
