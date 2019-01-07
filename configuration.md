@@ -361,6 +361,8 @@ Please note that you can not have a `whitesource.config.json` in your project, s
 #### sourceClearScan
 Configure [SourceClear](https://www.sourceclear.com/) scans.
 
+**Note:** Please note that the SourceClear stage of this pipeline is not actively maintained anymore. In case of issues, feel free to contribute to this project by opening a pull request.
+
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `credentialsId` | X | | Jenkins credentials id for the SourceClear API token. See [SourceClear docs for details](https://www.sourceclear.com/docs/jenkins-script/). |
