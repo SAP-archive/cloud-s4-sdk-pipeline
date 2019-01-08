@@ -193,8 +193,8 @@ This stage uses the [`npm audit`](https://docs.npmjs.com/cli/audit) command to c
 The pipeline fails if one of the following thresholds is exceeded:
 
 * Zero vulnerabilities of category _critical_
-* One vulnerability of category _high_
-* Five vulnerabilities of category _moderate_
+* Zero vulnerabilities of category _high_
+* Two vulnerabilities of category _moderate_
 
 In case you audited an advisory, and it turns out to be a false positive, you can mark it as _audited_ by adding its id to the `auditedAdvisories` in the stage configuration.
 A false positive in this case is when you are confident that your application is not affected in any way by the underlying bug or vulnerability.
