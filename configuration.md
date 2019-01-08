@@ -13,6 +13,7 @@
     * [integrationTests](#integrationtests)
     * [frontendUnitTests](#frontendunittests)
     * [endToEndTests](#endtoendtests)
+    * [npmAudit](#npmaudit)
     * [performanceTests](#performancetests)
     * [s4SdkQualityChecks](#s4sdkqualitychecks)
     * [checkmarxScan](#checkmarxscan)
@@ -184,6 +185,33 @@ endToEndTests:
      credentialId: e2e-test-user-cf
      parameters: '--tag scenario2 --tag scenario3'
 ```
+
+#### npmAudit
+
+This stage uses the [`npm audit`](https://docs.npmjs.com/cli/audit) command to check for known vulnerabilities in dependencies.
+
+The pipeline fails if one of the following thresholds is exceeded:
+
+* Zero vulnerabilities of category _critical_
+* One vulnerability of category _high_
+* Five vulnerabilities of category _moderate_
+
+In case you audited an advisory, and it turns out to be a false positive, you can mark it as _audited_ by adding its id to the `auditedAdvisories` in the stage configuration.
+A false positive in this case is when you are confident that your application is not affected in any way by the underlying bug or vulnerability.
+
+Example:
+
+```yaml
+npmAudit:
+  auditedAdvisories:
+    - "123"
+    - "124"
+    - "777"
+```
+
+Please note that the __quotation marks are required__ in order to assure the id is parsed as a string.
+
+The pipeline will warn you, if an "audited advisory" is not actually detected in your project.
 
 #### performanceTests
 
