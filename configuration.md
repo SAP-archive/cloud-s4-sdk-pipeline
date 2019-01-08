@@ -204,12 +204,12 @@ Example:
 ```yaml
 npmAudit:
   auditedAdvisories:
-    - "123"
-    - "124"
-    - "777"
+    - 123
+    - 124
+    - 77
 ```
 
-Please note that the __quotation marks are required__ in order to assure the id is parsed as a string.
+**Note:** Do not prefix the id with leading zeros, as this would make the number interpreted as octal.
 
 The pipeline will warn you, if an "audited advisory" is not actually detected in your project.
 
