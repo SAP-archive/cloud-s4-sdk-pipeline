@@ -13,13 +13,13 @@
     * [integrationTests](#integrationtests)
     * [frontendUnitTests](#frontendunittests)
     * [endToEndTests](#endtoendtests)
+    * [npmAudit](#npmaudit)
     * [performanceTests](#performancetests)
     * [s4SdkQualityChecks](#s4sdkqualitychecks)
     * [checkmarxScan](#checkmarxscan)
     * [productionDeployment](#productiondeployment)
     * [artifactDeployment](#artifactdeployment)
       * [nexus](#nexus)
-    * [nodeSecurityScan](#nodesecurityscan)
     * [whitesourceScan](#whitesourcescan)
     * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
@@ -186,6 +186,33 @@ endToEndTests:
      parameters: '--tag scenario2 --tag scenario3'
 ```
 
+#### npmAudit
+
+This stage uses the [`npm audit`](https://docs.npmjs.com/cli/audit) command to check for known vulnerabilities in dependencies.
+
+The pipeline fails if one of the following thresholds is exceeded:
+
+* Zero vulnerabilities of category _critical_
+* Zero vulnerabilities of category _high_
+* Two vulnerabilities of category _moderate_
+
+In case you audited an advisory, and it turns out to be a false positive, you can mark it as _audited_ by adding its id to the `auditedAdvisories` in the stage configuration.
+A false positive in this case is when you are confident that your application is not affected in any way by the underlying bug or vulnerability.
+
+Example:
+
+```yaml
+npmAudit:
+  auditedAdvisories:
+    - 123
+    - 124
+    - 77
+```
+
+**Note:** Do not prefix the id with leading zeros, as this would make the number interpreted as octal.
+
+The pipeline will warn you, if an "audited advisory" is not actually detected in your project.
+
 #### performanceTests
 
 | Property | Mandatory | Default Value | Description |
@@ -200,6 +227,7 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
+| `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
 | `nonErpDestinations` | | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
 
 Example:
@@ -209,6 +237,8 @@ s4SdkQualityChecks:
   jacocoExcludes:
     - '**/HelloWorld.class'
     - '**/generated/**'
+  customODataServices:
+    - 'API_myCustomODataService'
 ```
 
 #### checkmarxScan
@@ -340,20 +370,6 @@ artifactDeployment:
         classifier: classes
 ```
 
-#### nodeSecurityScan
-Security scan of node modules is performed by [Node Security Platform](https://nodesecurity.io/).
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `enabled`| |  | Set the flag to `true` to enable NSP scan |
-
-Example:
-
-```yaml
-nodeSecurityScan:
-  enabled: true
-```
-
 #### whitesourceScan
 Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans. The minimum required maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
 
@@ -375,6 +391,8 @@ Please note that you can not have a `whitesource.config.json` in your project, s
 
 #### sourceClearScan
 Configure [SourceClear](https://www.sourceclear.com/) scans.
+
+**Note:** Please note that the SourceClear stage of this pipeline is not actively maintained anymore. In case of issues, feel free to contribute to this project by opening a pull request.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |

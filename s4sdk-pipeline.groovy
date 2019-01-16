@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v14'
+final def pipelineSdkVersion = 'v15'
 
 pipeline {
     agent any
@@ -36,9 +36,9 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.runStage.FRONT_END_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
-                stage("Node Security Platform Scan") {
-                    when { expression { commonPipelineEnvironment.configuration.runStage.NODE_SECURITY_SCAN } }
-                    steps { stageNodeSecurityPlatform script: this }
+                stage("NPM Dependency Audit") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.NPM_AUDIT } }
+                    steps { stageNpmAudit script: this }
                 }
             }
         }
@@ -88,7 +88,6 @@ pipeline {
                     steps { stageAdditionalTools script: this }
                 }
             }
-
         }
 
         stage('Artifact Deployment') {
