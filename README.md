@@ -64,6 +64,9 @@ The pipeline will refuse to run with less than one gigabyte available disk space
 
  After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline. 
 
+## Blog Posts
+In order to learn more about the SAP S/4HANA Cloud SDK Continuous Delivery pipeline, feel free to read our [blog post](https://blogs.sap.com/2017/09/20/continuous-integration-and-delivery).
+
 ## Analytics
 To improve SAP S/4HANA Cloud SDK Pipeline, we do collect non-personal telemetry data.
 
