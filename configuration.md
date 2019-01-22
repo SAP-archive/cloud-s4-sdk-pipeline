@@ -23,6 +23,7 @@
     * [whitesourceScan](#whitesourcescan)
     * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
+    * [lint](#lint)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
@@ -435,6 +436,25 @@ fortifyScan:
   fortifyCredentialId: 'fortifyCredentialId'
   fortifyProjectName: 'mySampleProject'
   projectVersionId: '12345'
+```
+
+#### lint
+
+The lint stage can enforce common coding guidelines within a team.
+
+It supports the SAPUI5 best practices Grunt plugin.
+This check is automatically running if an appropriate UI5 component is found.
+
+By default, the pipeline does not fail based on lint findings.
+If you'd like to enable thresholds for lint, you can it like in this example:
+
+```yaml
+lint:
+  ui5BestPractices:
+    failThreshold:
+      error: 3
+      warning: 5
+      info: 7
 ```
 
 ### Step configuration

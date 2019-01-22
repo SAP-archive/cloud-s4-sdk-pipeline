@@ -97,6 +97,12 @@ In addition to the default checks of those tools, it adds the following SAP S/4H
     * Reference the exception when logging inside a catch block
 * In order to allow a smooth transition from Neo to Cloud Foundry, you should use the platform independent abstractions provided by the SAP S4HANA Cloud SDK
 
+### Lint
+
+The pipeline uses the SAPUI5 best practices Grunt plugin for automatic analysis of JavaScript, JSON and XML files in frontend modules of your application.
+
+This allows to enforce a common coding style within a team of developers, thus making it easier to focus on the application code, rather then discussing minor style issues.
+
 ### Third-Party Tools
 
 The SAP S/4HANA Cloud SDK Pipeline also integrates with commercial third party code analyzer services, if you wish to use them.

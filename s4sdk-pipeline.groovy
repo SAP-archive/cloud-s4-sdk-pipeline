@@ -30,6 +30,10 @@ pipeline {
         stage('Local Tests') {
             parallel {
                 stage("Static Code Checks") { steps { stageStaticCodeChecks script: this } }
+                stage("Lint") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
+                    steps { stageLint script: this }
+                }
                 stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
                 stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
                 stage("Frontend Unit Tests") {
