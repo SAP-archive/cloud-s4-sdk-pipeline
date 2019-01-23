@@ -443,7 +443,11 @@ fortifyScan:
 The lint stage can enforce common coding guidelines within a team.
 
 It supports the SAPUI5 best practices Grunt plugin.
-This check is automatically running if an appropriate UI5 component is found.
+This check is automatically running if an appropriate UI5 component (`Component.js`) is found.
+
+**Note:** As of the writing of this document, only projects with exactly one `Component.js` files are supported.
+In case of multiple `Component.js` files in one project, the check is skipped.
+If this limitation is a problem for you, please create an [issue on the GitHub repository](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
 
 By default, the pipeline does not fail based on lint findings.
 If you'd like to enable thresholds for lint, you can it like in this example:
