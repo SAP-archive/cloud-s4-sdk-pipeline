@@ -492,7 +492,7 @@ A step configuration regarding Cloud Foundry deployment. This is required by sta
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
-| `smokeTestStatusCode` | | `200` | Return code for the smoke test |
+| `smokeTestStatusCode` | | `200` | Expected return code for smoke test success. |
 |`keepOldInstance`| | true | In case of a `blue-green` deployment the old instance will be stopped and will remain in the Cloud Foundry space by default. If this option is set to false, the old instance will be deleted. |
 |`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
 
