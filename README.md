@@ -48,8 +48,9 @@ To use one of the other archetypes, replace the value of `DarchetypeArtifactId` 
 In the new project, there is a folder called `cx-server`.
 This folder needs to be copied to the future host on which the Cx Server is intended to run.
 
-On the host machine execute the following command in the folder `cx-server`.
-This will start the Jenkins server.
+On the host machine, navigate to the `cx-server` directory and ensure that the `cx-server` file is executable.
+After that you can start the Jenkins server with following command:
+
 ```shell
 ./cx-server start
 ```
