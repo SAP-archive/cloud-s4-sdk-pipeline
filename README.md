@@ -84,7 +84,9 @@ For details about which data is collected, and for information on how to opt-out
 
 
 ## Known Issues
-Currently, there are no known issues.
+Known issues are collected in the [GitHub issues](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+If you encounter an issue, please report it there.
+Be sure to remove any confidential information before.
 
 ## How to obtain support
 If you need any support, have any question or have found a bug, please report it as an issue in the repository.
