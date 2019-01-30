@@ -29,7 +29,7 @@
     * [executeNpm](#executenpm)
     * [executeSourceClearScan](#executesourceclearscan)
     * [cloudFoundryDeploy](#cloudfoundrydeploy)
-    * [deployToNeoWithCli](#deploytoneowithcli)
+    * [neoDeploy](#neodeploy)
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
@@ -322,9 +322,10 @@ For `neoTargets` the following properties can be defined:
 | `host` | X | | Host of the region you want to deploy to, see [Regions](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html#loio350356d1dc314d3199dca15bd2ab9b0e)|
 | `account` | X | | Identifier of the subaccount|
 | `application` | X | | Name of the application in your account |
-| `credentialsId` | X | | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
+| `credentialsId` | | `CI_CREDENTIALS_ID` | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
 | `environment` | | | Map of environment variables in the form of KEY: VALUE|
 | `vmArguments` | | | String of VM arguments passed to the JVM|
+| `size`| | `lite` | Size of the JVM, e.g. `lite`, `pro'`, `prem`, `prem-plus` |
 | `runtime` | X | | Name of the runtime: neo-java-web, neо-javaee6-wp, neо-javaee7-wp. See the [runtime](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
 | `runtimeVersion` | X | | Version of the runtime. See [runtime-version](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
 
@@ -334,8 +335,8 @@ Example:
 ```yaml
 productionDeployment:
   neoTargets:
-  - host: '<URL to Neo Environment>'
-    account: '<Sub account>'
+  - host: 'eu1.hana.ondemand.com'
+    account: 'myAccount'
     application: 'exampleapp'
     credentialsId: 'NEO-DEPLOY-PROD'
     environment:
@@ -523,13 +524,44 @@ cloudFoundryDeploy:
     apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
-#### deployToNeoWithCli
+#### neoDeploy
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | X | | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
+| `dockerImage` | | `s4sdk/docker-neo-cli` | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
+| `neo` | X | | A map containing the configuration relevant for the deployment to Neo as listed below |
 
 Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt).
+
+The map for `neo` can contain the following parameters:
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `host` | X | | Host of the region you want to deploy to, see [Regions](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html#loio350356d1dc314d3199dca15bd2ab9b0e)|
+| `account` | X | | Identifier of the subaccount|
+| `application` | X | | Name of the application in your account |
+| `credentialsId` | | `CI_CREDENTIALS_ID` | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
+| `environment` | | | Map of environment variables in the form of KEY: VALUE|
+| `vmArguments` | | | String of VM arguments passed to the JVM|
+| `size`| | `lite` | Size of the JVM, e.g. `lite`, `pro`, `prem`, `prem-plus` |
+| `runtime` | X | | Name of the runtime: neo-java-web, neо-javaee6-wp, neо-javaee7-wp. See the [runtime](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
+| `runtimeVersion` | X | | Version of the runtime. See [runtime-version](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
+
+Example:
+
+```yaml
+neoDeploy:
+  neo:
+  - host: 'eu1.hana.ondemand.com'
+    account: 'myAccount'
+    application: 'exampleapp'
+    credentialsId: 'NEO-DEPLOY-PROD'
+    environment:
+      STAGE: Production
+    vmArguments: '-Dargument1=value1 -Dargument2=value2'
+    runtime: 'neo-javaee6-wp'
+    runtimeVersion: '2'
+```
 
 #### checkFindbugs
 [SpotBugs](https://spotbugs.github.io/) static code analysis is executed as part of the static code checks.
