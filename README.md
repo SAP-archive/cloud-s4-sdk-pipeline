@@ -65,14 +65,33 @@ Create a file called `Jenkinsfile` and add the following example code:
 ```groovy
 #!/usr/bin/env groovy 
 
+String pipelineVersion = "master"
+
 node {
     deleteDir()
-    sh "git clone --depth 1 https://github.com/SAP/cloud-s4-sdk-pipeline.git pipelines"
+    sh "git clone --depth 1 https://github.com/SAP/cloud-s4-sdk-pipeline.git -b ${pipelineVersion} pipelines"
     load './pipelines/s4sdk-pipeline.groovy'
 }
 ```
 
-After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline. 
+After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline.
+
+### Versioning
+
+The default `Jenkinsfile` consumes the `master` branch of the pipeline.
+The `master` branch is continuously updated to the latest and greatest version of the pipeline.
+However, those updates might in rare cases break your Jenkins build.
+
+For productive usage, it is recommended to use a released version and update as new versions are released.
+To do so, change the `pipelineVersion` to the respective git tag (for example `v15`).
+Released versions, including release notes are listed on the [GitHub releases page](https://github.com/SAP/cloud-s4-sdk-pipeline/releases).
+
+To stay updated with new pipeline releases, it is recommended to watch the releases of the [cloud-s4-sdk-pipeline](https://github.com/SAP/cloud-s4-sdk-pipeline) repository.
+Please refer to [GitHub documentation](https://help.github.com/articles/watching-and-unwatching-releases-for-a-repository/) for details on how to watch releases.
+By doing so, you will be notified on GitHub when a new version of the pipeline is released, and can update accordingly.
+
+It is recommended to always update to the latest version, for example by creating a pull request for the Jenkinsfile in your project.
+By doing so, you will notice potential upgrade issues in the pull request.
 
 ## Blog Posts
 In order to learn more about the SAP S/4HANA Cloud SDK Continuous Delivery pipeline, feel free to read our [blog post](https://blogs.sap.com/2017/09/20/continuous-integration-and-delivery).
