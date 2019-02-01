@@ -254,9 +254,9 @@ s4SdkQualityChecks:
 | `incremental` | | `true`| Perform incremental scan with every run. If turned `false`, complete project is scanned on every submission.|
 | `vulnerabilityThresholdMedium` | |`0`| The threshold for medium level threats. If the findings are greater than this value, pipeline execution will result in failure.|
 | `vulnerabilityThresholdLow` | |`99999`| The threshold for low level threats. If the findings are greater than this value, pipeline execution will result in failure.|
-| `preset` | |`36`| A predefined set of that can be executed on the project. You can configure this value in *Checkmarx->Management->Scan Settings-> Preset Manager*.|
-| `checkmarxCredentialsId` | | | The Credential ID to connect to Checkmarx server.|
-| `checkmarxServerUrl` | | | An URL to Checkmarx server.|
+| `preset` | |`36`| Name or numerical ID of Checkmarx preset to be used when scanning this project. When a name (string) is specified, the pipeline will try to discover the corresponding numerical ID via the Checkmarx API. Please also make sure to specify **checkmarxCredentialsId and checkmarxServerUrl in such a case**. For determining available presets in your Checkmarx webclient, go to *Checkmarx -> Management -> Scan Settings -> Preset Manager*. Alternatively, you can determine the numerical ID of your targeted preset by following those guides: [Token-based Authentication](https://checkmarx.atlassian.net/wiki/spaces/KC/pages/202506366/Token-based+Authentication+v8.6.0+and+up) and [Get All Preset Details](https://checkmarx.atlassian.net/wiki/spaces/KC/pages/222036317/Get+All+Preset+Details+-+GET+sast+presets) |
+| `checkmarxCredentialsId` | | | The Credential ID to connect to Checkmarx server. **This property becomes mandatory if the credentials are not configured in the Jenkins plugin itself**.|
+| `checkmarxServerUrl` | | | An URL to Checkmarx server. **This property becomes mandatory if the URL to the Checkmarx server is not configured in the Jenkins plugin itself**.|
 
 Example:
 
