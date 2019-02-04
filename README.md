@@ -19,16 +19,18 @@ The pipeline will refuse to run with less than one gigabyte available disk space
 
 ### Software requirements
 
-To use the pipeline you need a Jenkins server which has the [pipeline library](https://github.com/SAP/cloud-s4-sdk-pipeline-lib) as shared library configured.
-The best way to achieve this is to use the SAP S/4HANA Cloud SDK Cx Server.
-
 For instantiating the SAP S/4HANA Cloud SDK Cx Server, you need to provide a suitable host with a Linux operating system and Docker installed.
 Please also ensure that the user with whom you start the Cx Server belongs to the `docker` group.
 
+Please refer to the [operations guide](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/operations/operations-guide.md#system-requirement) for more details on hardware and software requirements.
+
 Your project source files need to be available on a git or GitHub server, which is accessible from the Cx Server host.
 
+## Download and Installation
+
 The lifecycle of the Cx Server is maintained by a script called `cx-server`.
-It can be found in the same named folder on the root of each SAP S/4HANA Cloud SDK project archetype. Together with the `server.cfg` file, this is all you need for starting your instance of the SAP S/4HANA Cloud SDK Cx Server.
+It can be found in the `cx-server` folder on the root of each SAP S/4HANA Cloud SDK project archetype.
+Together with the `server.cfg` file, this is all you need for starting your instance of the SAP S/4HANA Cloud SDK Cx Server.
 
 You might chose between the available archetypes, depending on the technology you prefer:
 
@@ -56,25 +58,6 @@ After that you can start the Jenkins server with following command:
 ```
 
 In Jenkins, click on "New Item" and create a new "Multi-branch Pipeline" for your repository.  
-
-## Download and Installation
-
-In order to use the pipeline just load the pipeline within your `Jenkinsfile` that is placed in the root of your project repository. 
-Create a file called `Jenkinsfile` and add the following example code:
-
-```groovy
-#!/usr/bin/env groovy 
-
-String pipelineVersion = "master"
-
-node {
-    deleteDir()
-    sh "git clone --depth 1 https://github.com/SAP/cloud-s4-sdk-pipeline.git -b ${pipelineVersion} pipelines"
-    load './pipelines/s4sdk-pipeline.groovy'
-}
-```
-
-After you commit your changes and the Jenkins server starts to build the project it will automatically use the pipeline.
 
 ### Versioning
 
