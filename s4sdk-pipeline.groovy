@@ -118,6 +118,9 @@ pipeline {
                 sendAnalytics script:this
             }
         }
+        success {
+            postActionArchiveReport script:this
+        }
         failure { deleteDir() }
     }
 }
