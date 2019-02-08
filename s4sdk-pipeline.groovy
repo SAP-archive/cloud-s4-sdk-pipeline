@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v15'
+final def pipelineSdkVersion = 'v16'
 
 pipeline {
     agent any
@@ -30,6 +30,10 @@ pipeline {
         stage('Local Tests') {
             parallel {
                 stage("Static Code Checks") { steps { stageStaticCodeChecks script: this } }
+                stage("Lint") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
+                    steps { stageLint script: this }
+                }
                 stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
                 stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
                 stage("Frontend Unit Tests") {
@@ -113,6 +117,9 @@ pipeline {
                 }
                 sendAnalytics script:this
             }
+        }
+        success {
+            postActionArchiveReport script:this
         }
         failure { deleteDir() }
     }

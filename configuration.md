@@ -23,12 +23,13 @@
     * [whitesourceScan](#whitesourcescan)
     * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
+    * [lint](#lint)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
     * [executeSourceClearScan](#executesourceclearscan)
     * [cloudFoundryDeploy](#cloudfoundrydeploy)
-    * [deployToNeoWithCli](#deploytoneowithcli)
+    * [neoDeploy](#neodeploy)
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
@@ -253,9 +254,9 @@ s4SdkQualityChecks:
 | `incremental` | | `true`| Perform incremental scan with every run. If turned `false`, complete project is scanned on every submission.|
 | `vulnerabilityThresholdMedium` | |`0`| The threshold for medium level threats. If the findings are greater than this value, pipeline execution will result in failure.|
 | `vulnerabilityThresholdLow` | |`99999`| The threshold for low level threats. If the findings are greater than this value, pipeline execution will result in failure.|
-| `preset` | |`36`| A predefined set of that can be executed on the project. You can configure this value in *Checkmarx->Management->Scan Settings-> Preset Manager*.|
-| `checkmarxCredentialsId` | | | The Credential ID to connect to Checkmarx server.|
-| `checkmarxServerUrl` | | | An URL to Checkmarx server.|
+| `preset` | |`36`| Name or numerical ID of Checkmarx preset to be used when scanning this project. When a name (string) is specified, the pipeline will try to discover the corresponding numerical ID via the Checkmarx API. Please also make sure to specify **checkmarxCredentialsId and checkmarxServerUrl in such a case**. For determining available presets in your Checkmarx webclient, go to *Checkmarx -> Management -> Scan Settings -> Preset Manager*. Alternatively, you can determine the numerical ID of your targeted preset by following those guides: [Token-based Authentication](https://checkmarx.atlassian.net/wiki/spaces/KC/pages/202506366/Token-based+Authentication+v8.6.0+and+up) and [Get All Preset Details](https://checkmarx.atlassian.net/wiki/spaces/KC/pages/222036317/Get+All+Preset+Details+-+GET+sast+presets) |
+| `checkmarxCredentialsId` | | | The Credential ID to connect to Checkmarx server. **This property becomes mandatory if the credentials are not configured in the Jenkins plugin itself**.|
+| `checkmarxServerUrl` | | | An URL to Checkmarx server. **This property becomes mandatory if the URL to the Checkmarx server is not configured in the Jenkins plugin itself**.|
 
 Example:
 
@@ -321,9 +322,10 @@ For `neoTargets` the following properties can be defined:
 | `host` | X | | Host of the region you want to deploy to, see [Regions](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html#loio350356d1dc314d3199dca15bd2ab9b0e)|
 | `account` | X | | Identifier of the subaccount|
 | `application` | X | | Name of the application in your account |
-| `credentialsId` | X | | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
+| `credentialsId` | | `CI_CREDENTIALS_ID` | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
 | `environment` | | | Map of environment variables in the form of KEY: VALUE|
 | `vmArguments` | | | String of VM arguments passed to the JVM|
+| `size`| | `lite` | Size of the JVM, e.g. `lite`, `pro'`, `prem`, `prem-plus` |
 | `runtime` | X | | Name of the runtime: neo-java-web, neо-javaee6-wp, neо-javaee7-wp. See the [runtime](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
 | `runtimeVersion` | X | | Version of the runtime. See [runtime-version](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
 
@@ -333,8 +335,8 @@ Example:
 ```yaml
 productionDeployment:
   neoTargets:
-  - host: '<URL to Neo Environment>'
-    account: '<Sub account>'
+  - host: 'eu1.hana.ondemand.com'
+    account: 'myAccount'
     application: 'exampleapp'
     credentialsId: 'NEO-DEPLOY-PROD'
     environment:
@@ -437,6 +439,29 @@ fortifyScan:
   projectVersionId: '12345'
 ```
 
+#### lint
+
+The lint stage can enforce common coding guidelines within a team.
+
+It supports the SAPUI5 best practices Grunt plugin.
+This check is automatically running if an appropriate UI5 component (`Component.js`) is found.
+
+**Note:** As of the writing of this document, only projects with exactly one `Component.js` files are supported.
+In case of multiple `Component.js` files in one project, the check is skipped.
+If this limitation is a problem for you, please create an [issue on the GitHub repository](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+
+By default, the pipeline does not fail based on lint findings.
+If you'd like to enable thresholds for lint, you can it like in this example:
+
+```yaml
+lint:
+  ui5BestPractices:
+    failThreshold:
+      error: 3
+      warning: 5
+      info: 7
+```
+
 ### Step configuration
 
 #### mavenExecute
@@ -468,7 +493,7 @@ A step configuration regarding Cloud Foundry deployment. This is required by sta
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
-| `smokeTestStatusCode` | | `200` | Return code for the smoke test |
+| `smokeTestStatusCode` | | `200` | Expected return code for smoke test success. |
 |`keepOldInstance`| | true | In case of a `blue-green` deployment the old instance will be stopped and will remain in the Cloud Foundry space by default. If this option is set to false, the old instance will be deleted. |
 |`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
 
@@ -499,13 +524,44 @@ cloudFoundryDeploy:
     apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
-#### deployToNeoWithCli
+#### neoDeploy
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | X | | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
+| `dockerImage` | | `s4sdk/docker-neo-cli` | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
+| `neo` | X | | A map containing the configuration relevant for the deployment to Neo as listed below |
 
 Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt).
+
+The map for `neo` can contain the following parameters:
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `host` | X | | Host of the region you want to deploy to, see [Regions](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html#loio350356d1dc314d3199dca15bd2ab9b0e)|
+| `account` | X | | Identifier of the subaccount|
+| `application` | X | | Name of the application in your account |
+| `credentialsId` | | `CI_CREDENTIALS_ID` | ID of the credentials stored in Jenkins and used to deploy to SAP Cloud Platform |
+| `environment` | | | Map of environment variables in the form of KEY: VALUE|
+| `vmArguments` | | | String of VM arguments passed to the JVM|
+| `size`| | `lite` | Size of the JVM, e.g. `lite`, `pro`, `prem`, `prem-plus` |
+| `runtime` | X | | Name of the runtime: neo-java-web, neо-javaee6-wp, neо-javaee7-wp. See the [runtime](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
+| `runtimeVersion` | X | | Version of the runtime. See [runtime-version](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/937db4fa204c456f9b7820f83bc87118.html) for more information.|
+
+Example:
+
+```yaml
+neoDeploy:
+  neo:
+  - host: 'eu1.hana.ondemand.com'
+    account: 'myAccount'
+    application: 'exampleapp'
+    credentialsId: 'NEO-DEPLOY-PROD'
+    environment:
+      STAGE: Production
+    vmArguments: '-Dargument1=value1 -Dargument2=value2'
+    runtime: 'neo-javaee6-wp'
+    runtimeVersion: '2'
+```
 
 #### checkFindbugs
 [SpotBugs](https://spotbugs.github.io/) static code analysis is executed as part of the static code checks.
