@@ -4,6 +4,9 @@ final def pipelineSdkVersion = 'master'
 
 pipeline {
     agent any
+     environment {
+        ON_K8S = 'true'
+    }
     options {
         timeout(time: 120, unit: 'MINUTES')
         timestamps()
