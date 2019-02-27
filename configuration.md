@@ -636,8 +636,9 @@ executeFortifyScan:
 
 ##### `dockerImage`
 
-This option is __mandatory__ for building a multi-target application archives.
+By default the image [`ppiper/mta-archive-builder`](https://hub.docker.com/r/ppiper/mta-archive-builder) is used.
 
+You can also build your own image, if you need to.
 A custom built image needs to include Multi-target Application Archive Builder.
 Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up.
 
