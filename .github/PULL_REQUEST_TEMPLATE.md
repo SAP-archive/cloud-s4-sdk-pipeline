@@ -5,7 +5,7 @@
 ## Definition of Done
 Please consider all items and remove only if not applicable.
 
-- [ ] I carefully reviewed my own pull request before assinging someone.
+- [ ] I carefully reviewed my own pull request before assigning someone.
 - [ ] Changes to the configuration are also documented in the [configuration.md](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/configuration.md)	
 - [ ] Important design decisions are documented as an [ADR](https://github.com/SAP/cloud-s4-sdk-pipeline/tree/master/doc/architecture/decisions)
 - [ ] There are tests covering this change
