@@ -46,7 +46,7 @@ pipeline {
                     steps { stageIntegrationTests script: this }
                 }
                 stage("Frontend Unit Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.runStage.FRONT_END_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.FRONTEND_UNIT_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
                 stage("NPM Dependency Audit") {
