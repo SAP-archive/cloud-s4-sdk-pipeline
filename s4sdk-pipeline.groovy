@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v16'
+final def pipelineSdkVersion = 'v17'
 
 pipeline {
     agent any
@@ -29,15 +29,24 @@ pipeline {
 
         stage('Local Tests') {
             parallel {
-                stage("Static Code Checks") { steps { stageStaticCodeChecks script: this } }
+                stage("Static Code Checks") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.STATIC_CODE_CHECKS } }
+                    steps { stageStaticCodeChecks script: this }
+                }
                 stage("Lint") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
                     steps { stageLint script: this }
                 }
-                stage("Backend Unit Tests") { steps { stageUnitTests script: this } }
-                stage("Backend Integration Tests") { steps { stageIntegrationTests script: this } }
+                stage("Backend Unit Tests") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.BACKEND_UNIT_TESTS } }
+                    steps { stageUnitTests script: this }
+                }
+                stage("Backend Integration Tests") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.INTEGRATION_TESTS } }
+                    steps { stageIntegrationTests script: this }
+                }
                 stage("Frontend Unit Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.runStage.FRONT_END_TESTS } }
+                    when { expression { commonPipelineEnvironment.configuration.runStage.FRONTEND_UNIT_TESTS } }
                     steps { stageFrontendUnitTests script: this }
                 }
                 stage("NPM Dependency Audit") {
@@ -62,6 +71,7 @@ pipeline {
         }
 
         stage('Quality Checks') {
+            when { expression { commonPipelineEnvironment.configuration.runStage.QUALITY_CHECKS } }
             steps {
                 milestone 50
                 stageS4SdkQualityChecks script: this
@@ -112,14 +122,18 @@ pipeline {
     post {
         always {
             script {
-                if (commonPipelineEnvironment.configuration.runStage?.SEND_NOTIFICATION) {
+                if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
                 sendAnalytics script:this
             }
         }
         success {
-            postActionArchiveReport script:this
+            script {
+                if (commonPipelineEnvironment?.configuration?.runStage?.ARCHIVE_REPORT) {
+                    postActionArchiveReport script: this
+                }
+            }
         }
         failure { deleteDir() }
     }

@@ -30,6 +30,9 @@ Set the docker memory to at least 4GB, you can [configure](https://docs.docker.c
 #### Configuring the `cx-server`
 The `cx-server` can be customized to fit your use case. The `server.cfg` file contains the configuration details of your `cx-server`.
 
+>**Note:** Using the environment variables apart from ${PWD} inside the `server.cfg` is not supported. 
+
+
   | Property | Mandatory | Default Value | Description |
   | --- | --- | --- | --- |
   |`docker_image` | X | `s4sdk/jenkins-master:latest`|  Jenkins docker image name with the version to be used|
@@ -37,12 +40,10 @@ The `cx-server` can be customized to fit your use case. The `server.cfg` file co
   |`jenkins_home`| X|`jenkins_home_volume`| The volume to be used as a `jenkins_home`. Please ensure, this volume is accessible by the user with id `1000` |
   |`http_port`| X (If `tls_enabled` is `false`) |`80`| The HTTP port on which the server listens for incoming connections.|
   |`tls_enabled`| |`false`| Use Transport Layer Security encryption for additional security|
-  |`tls_certificate_directory`| X (If `tls_enabled` is `true`) | | Absolute path to the directory where the `jenkins.key` and `jenkins.crt` files exists|
   |`https_port`| X (If `tls_enabled` is `true`)|`443`| The HTTPS port on which the server listens for incoming connections.|
   |`http_proxy`| | | Effective value of `http_proxy` environment variable wich is automatically passed on to all containers in the CI/CD setup. The Java proxy configuration of Jenkins and the download cache are automatically derived from this value. Proxy authentication is supported by the syntax `http://username:password@myproxy.corp:8080`. |
   |`https_proxy`| | | Same as `http_proxy` but for https URLs. Jenkins only supports one proxy URL. Therefore, if `https_proxy` and `http_proxy` are defined, the URL of `https_proxy` takes precedence for initializing the Jenkins proxy settings. |
   |`no_proxy`| | | Whitelisting of hosts from the proxy. It will be appended to any previous definition of `no_proxy`|
-  |`backup_directory`| | `(pwd)/backup` | Directory where the backup of the jenkins home directory contents are stored|
   |`backup_file_name`| |`jenkins_home_YYYY-MM-DDThhmmUTC.tar.gz`| Name of the backup file to be created|
   |`x_java_opts`| | | Additional `JAVA_OPTS` that need to be passed to the Jenkins container|
   |`cache_enabled`| |`true` | Flag to enable or disable the caching mechanism for `npm` and `maven` dependencies|
@@ -84,13 +85,12 @@ This command removes the Jenkins container from the host if it is not running.
 ```
 
 ##### backup
-The `jenkins_home` contains the state of the Jenkins which includes important details such as settings, Jenkins workspace, and job details.
-Considering the importance of it, taking regular backup of the `jenkins_home` is **highly recommended**. 
+The `jenkins_home` contains the state of the Jenkins which includes important details such as settings, Jenkins workspace, and job details. Considering the importance of it, taking regular backup of the `jenkins_home` is **highly recommended**. 
 
 ```bash
 ./cx-server backup
 ```
-This command creates a backup file and stores it on a host machine inside a directory named `backup`. In order to store the backup on external storage, you can customize the location and name of the backup file in the `server.cfg`.
+This command creates a backup file and stores it in the `backup` subfolder of the `cx-server` folder.
 
 > **Note:** Administrator of the Jenkins must ensure that the backup is stored in a safe storage.
 
@@ -156,22 +156,17 @@ cache_enabled=false
 ```
 
 #### TLS encryption
-The `cx-server` can be configured to use the TLS certificate for additional security. 
-In order to enable this, set the `tls_enabled` flag to true in the `server.cfg`. 
-It is also important to provide the certificates and a private key to `cx-server`.
-Set the `tls_certificate_directory` in the `server.cfg` to the directory where the certificate and private key(RSA) exists.
-[Here](self-signed-tls.md) you can find a guide to create your self-signed certificate. 
-Please note that currently the TLS encryption is not supported for the Windows environment.
+The `cx-server` can be configured to use a TLS certificate for additional security. 
+In order to enable TLS, store your certificate and private key in the folder `cx-server/tls`. The certificate has to be named `jenkins.crt`, the private key has to be named `jenkins.key`.
+
+[Here](self-signed-tls.md) you can find a guide to create your self-signed certificate. Please note that TLS encryption is not supported on Windows.
 
 Example:
 
 ```bash
 tls_enabled=true
-tls_certificate_directory="/var/tls/jenkins"
-https_port="443"
 ```
->**Note:** If you are enabling the TLS for already existing `cx-server`, then please remove the old container so that the new changes can take effect. 
-You can do it by executing below commands.
+>**Note:** If you are enabling the TLS for already existing `cx-server`, then please remove the old container and start a new instance so that the new changes can take effect. You can do it by executing below commands.
 ```bash
 ./cx-server stop
 ./cx-server remove

@@ -121,7 +121,7 @@ general:
   collectTelemetryData: false
 ```
 
-In your Maven projects, set the `skip` flag in the configuration of the `s4sdk-maven-plugin` to `true`:
+In your Maven projects, set the `skipUsageAnalytics` flag in the configuration of the `s4sdk-maven-plugin` to `true`:
 
 ```
 <plugin>
@@ -129,7 +129,7 @@ In your Maven projects, set the `skip` flag in the configuration of the `s4sdk-m
     <artifactId>s4sdk-maven-plugin</artifactId>
     ...
     <configuration>
-        <skip>true</skip>
+        <skipUsageAnalytics>true</skipUsageAnalytics>
     </configuration>
     ...
 </plugin>

@@ -55,7 +55,7 @@ To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `productiveBranch` | | `master` | The name of your default branch. This branch will be used for deploying your application. Other branches will skip deployment. |
-| `projectName` | | `artifactID` from pom | Name of the project |
+| `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
 
@@ -137,6 +137,7 @@ general:
 | `forkCount` | | `1C` | The number of JVM processes that are spawned to run the tests in parallel. |
 | `credentials` | | | The list of system credentials to be injected during integration tests. The following example will provide the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
 
+
 Example:
 ```yaml
 integrationTests:
@@ -146,6 +147,34 @@ integrationTests:
       credentialId: 'erp-credentials'
     - alias: 'SF'
       credentialId: 'successfactors-credentials'
+```
+
+The integration tests stage also offers the option to run a sidecar container, e.g. for running a database or another downstream system.
+To use this optional feature the following configuration values have to be provided:
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+|`sidecarImage` | | | Name of the Docker image that should be used. |
+|`sidecarName` | | | On Docker: Name of the container in local network. On Kubernetes: Name of the container. |
+|`sidecarReadyCommand` | | | Command executed inside the container which returns exit code 0 when the container is ready to be used. |
+|`sidecarEnvVars` | | | Environment variables to set in the container. |
+
+*Note: To access the container from your tests use the `sidecarName` as hostname on Docker or `localhost:portOfProcess` on Kubernetes.*
+
+Example:
+```yaml
+integrationTests:
+  retry: 2
+  credentials:
+    - alias: 'ERP'
+      credentialId: 'erp-credentials'
+    - alias: 'SF'
+      credentialId: 'successfactors-credentials'
+  sidecarName: 'postgres'
+  sidecarImage: 'postgres'
+  sidecarReadyCommand: 'pg_isready'
+  sidecarEnvVars:
+    PORT: 8234
 ```
 
 #### frontendUnitTests
@@ -636,8 +665,9 @@ executeFortifyScan:
 
 ##### `dockerImage`
 
-This option is __mandatory__ for building a multi-target application archives.
+By default the image [`ppiper/mta-archive-builder`](https://hub.docker.com/r/ppiper/mta-archive-builder) is used.
 
+You can also build your own image, if you need to.
 A custom built image needs to include Multi-target Application Archive Builder.
 Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up.
 
