@@ -28,7 +28,7 @@ Support for the different features of the pipeline may vary in each variant of t
 | Performance Tests         |   x   |     |  x  |
 | Resilience Checks         |   x   |     |  x  |
 | S4HANA Public APIs        |   x   |     |  x  |
-| CodeCoverage Checks       |   x   |     |  x  |
+| CodeCoverage Checks       |   x   |  x  |  x  |
 | Checkmarx Integration     |   x   |     |  x  |
 | Fortify Integration       |   x   |     |     |
 | SourceClear Integration   |   x   |     |     |
@@ -93,16 +93,20 @@ This directory has to be defined as path in the `manifest.yml`.
 #### Backend Integration Tests
 
 The command `npm run ci-integration-test` will be executed in this stage.
-Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-integration` in the root directory.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-integration` in the root directory of the project.
 The required format of the test result report is the JUnit format as an `.xml` file.
-The user is responsible to use a proper reporter for generating the results.
+For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-integration/` in the cobertura format as an `xml` file.
+The user is responsible to use a proper reporters for generating the results.
+We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
 
 #### Backend Unit Tests
 
 The command `npm run ci-backend-unit` will be executed in this stage.
-Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory of the project.
 The required format of the test result report is the JUnit format as an `.xml` file.
-The user is responsible to use a proper reporter for generating the results.
+For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-unit/` in the cobertura format as an `xml` file.
+The user is responsible to use a proper reporters for generating the results.
+We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
 
 ### Build Tool Independent Requirements
 
