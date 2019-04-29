@@ -134,7 +134,7 @@ npm run ci-e2e -- --launchUrl=https://path/to/your/running/application
 The credentials also defined in the file `pipeline_config.yml` will be available during the test execution as environment variables named `e2e_username` and `e2e_password`.
 
 The test results have to be stored in the folder `./s4hana_pipeline/reports/e2e` in the root directory.
-The required format of the test result report is the Cucumber format as an `.json` file.
+The required format of the test result report is the Cucumber format as an `.json` file or the JUnit format as an xml file.
 Also screenshots can be stored in this folder
 The screenshots and reports  will then be published in Jenkins.
 The user is responsible to use a proper reporter for generating the results.
