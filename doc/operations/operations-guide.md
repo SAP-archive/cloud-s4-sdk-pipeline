@@ -46,10 +46,10 @@ The `cx-server` can be customized to fit your use case. The `server.cfg` file co
   |`no_proxy`| | | Whitelisting of hosts from the proxy. It will be appended to any previous definition of `no_proxy`|
   |`backup_file_name`| |`jenkins_home_YYYY-MM-DDThhmmUTC.tar.gz`| Name of the backup file to be created|
   |`x_java_opts`| | | Additional `JAVA_OPTS` that need to be passed to the Jenkins container|
-  |`cache_enabled`| |`true` | Flag to enable or disable the caching mechanism for `npm` and `maven` dependencies|
-  |`mvn_repository_url`| | Maven central repository URL| It will be used if you need to configure a custom maven repository|
-  |`npm_registry_url`| | Central NPM registry| It will be used if you need to configure a custom npm registry|
-  |`x_nexus_java_opts`| | | You can configure the JAVA_OPTS of the download cache server using this option|
+  |`cache_enabled`| |`true` | Flag to enable or disable the caching mechanism (download cache) for Maven and npm dependencies|
+  |`mvn_repository_url`| | Maven central repository URL| Configure a custom maven source repository for the download cache, has no effect if the download cache is disabled.|
+  |`npm_registry_url`| | Central NPM registry| Configure a custom npm registry source for the download cache, has no effect if the download cache is disabled.|
+  |`x_nexus_java_opts`| | | You can configure the `JAVA_OPTS` of the download cache server using this option|
 
 #### Life-cycle of `cx-server` 
 ##### start

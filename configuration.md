@@ -35,7 +35,7 @@
     * [checkJMeter](#checkjmeter)
     * [executeFortifyScan](#executefortifyscan)
     * [mtaBuild](#mtabuild)
-      * [dockerImage](#dockerimage)
+    * [createHdiContainer](#createhdicontainer)
   * [Post action configuration](#post-action-configuration)
     * [sendNotification](#sendnotification)
 
@@ -132,11 +132,13 @@ general:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for running integration tests. **Note:** This will only change the docker image used for executing the integration tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 | `retry` | | `1` | The number of times that integration tests will retry before aborting the build. **Note:** This will consume more time for the jenkins build. |
-| `forkCount` | | `1C` | The number of JVM processes that are spawned to run the tests in parallel. |
+| `forkCount` | | `1C` | The number of JVM processes that are spawned to run the tests in parallel in case of using a maven based project structure. For more details visit the [surefire documentation](https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#forkCount). |
 | `credentials` | | | The list of system credentials to be injected during integration tests. The following example will provide the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
+| `createHdiContainer` | | False | Activates the creation of a HDI containers in CAP projects. The name of the container will contain the project name and a random id. |
+| `cloudFoundry` | X** | | The Cloud Foundry target (landscape, org, space, credentials) where the HDI container will be created. Please find the details below.  |
 
+** The parameter `cloudFoundry` is only mandatory if `createHdiContainer` is `true`.
 
 Example:
 ```yaml
@@ -160,6 +162,17 @@ To use this optional feature the following configuration values have to be provi
 |`sidecarEnvVars` | | | Environment variables to set in the container. |
 
 *Note: To access the container from your tests use the `sidecarName` as hostname on Docker or `localhost:portOfProcess` on Kubernetes.*
+
+The parameter `cloudFoundry` has to contain the following configuration values:
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `org` | X** | | Cloud Foundry organization |
+| `space` | X** | | Cloud Foundry space |
+| `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
+| `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
+
+** The parameters can either be specified here or globally in the general section.
 
 Example:
 ```yaml
@@ -247,7 +260,7 @@ The pipeline will warn you, if an "audited advisory" is not actually detected in
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `cfTargets` | | | The list of CloudFoundry deployment targets required for the performance test stage. |
+| `cfTargets` | | | The list of Cloud Foundry deployment targets required for the performance test stage. |
 | `neoTargets` | | | The list of Neo deployment targets required for the performance test stage. |
 
 For details on the properties `cfTargets` and `neoTargets` see the stage `productionDeployment`.
@@ -308,7 +321,7 @@ checkmarxScan:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `cfTargets` | | | The list of productive CloudFoundry deployment targets to be deployed when a build of your productive branch succeeds. |
+| `cfTargets` | | | The list of productive Cloud Foundry deployment targets to be deployed when a build of your productive branch succeeds. |
 | `neoTargets`| | | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
 | `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
 
@@ -663,13 +676,15 @@ executeFortifyScan:
 
 #### mtaBuild
 
-##### `dockerImage`
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `dockerImage` | | `ppiper/mta-archive-builder` | Docker image including Multi-target Application Archive Builder. Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up. |
 
-By default the image [`ppiper/mta-archive-builder`](https://hub.docker.com/r/ppiper/mta-archive-builder) is used.
+#### createHdiContainer
 
-You can also build your own image, if you need to.
-A custom built image needs to include Multi-target Application Archive Builder.
-Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up.
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `dockerImage` |  | `s4sdk/docker-cf-cli` | Docker image including the Cloud Foundry cli |
 
 ### Post action configuration
 
@@ -694,3 +709,4 @@ postActions:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
 ```
+
