@@ -46,6 +46,59 @@ Each variant of the pipeline has different requirements regarding the project st
 Stages not listed here do not have a special requirements.
 In any case, please also consult the [documentation of the pipeline configuration](../../configuration.md), as some stages have to be activated by providing configuration values.
 
+### Build Tool Independent Requirements
+
+In order to run in the pipeline your project has to include the following two files in the root folder: `Jenkinsfile` and `pipeline_config.yml`. 
+You can copy both files from this [github repository](../../archetype-resources).
+There are two variants of the configuration file. 
+Please pick the corresponding version for your deployment target and rename it properly.  
+
+#### Frontend Unit Tests
+
+The command `npm run ci-frontend-unit-test` will be executed in this stage.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/frontend-unit` in the root directory.
+The required format of the test result report is the JUnit format as an `.xml` file.
+The code coverage report has to be stored in the directory `./s4hana_pipeline/reports/frontend-unit/coverage/report-html/ut/` as an `index.html` file.
+This coverage report will then be published in Jenkins.
+The user is responsible to use a proper reporter for generating the results.
+
+#### End-to-End Tests
+
+This stage is only executed if you configured it in the file `pipeline_config.yml`.
+
+The command `npm run ci-e2e` will be executed in this stage.
+The url which is defined as `appUrl` in the file `pipeline_config.yml` will be passed as argument named `launchUrl` to the tests.
+This can be reproduced locally by executing:
+
+```
+npm run ci-e2e -- --launchUrl=https://path/to/your/running/application
+```
+
+The credentials also defined in the file `pipeline_config.yml` will be available during the test execution as environment variables named `e2e_username` and `e2e_password`.
+
+The test results have to be stored in the folder `./s4hana_pipeline/reports/e2e` in the root directory.
+The required format of the test result report is the Cucumber format as an `.json` file or the JUnit format as an xml file.
+Also screenshots can be stored in this folder
+The screenshots and reports  will then be published in Jenkins.
+The user is responsible to use a proper reporter for generating the results.
+
+#### Performance Tests
+
+This stage is only executed if you configured it in the file `pipeline_config.yml`.
+
+Performance tests can be executed using [JMeter](https://jmeter.apache.org/) or [Gatling](https://gatling.io/).
+
+If only JMeter is used as a performance tests tool then test plans can be placed in a default location, which is the directory `{project_root}/performance-tests`. However, if JMeter is used along with Gatling, then JMeter test plans should be kept in a subdirectory under a directory `performance-tests` for example`./performance-tests/JMeter/`.
+
+The gatling test project including the `pom.xml` should be placed in the directory `{project_root}/performance-tests`.
+Afterwards, Gatling has to be enable in the configuration.
+
+#### Deployments
+
+For all deployments to Cloud Foundry (excluding MTA) there has to be a file called `manifest.yml`.
+This file may only contain exactly one application.
+*Note: For JavaScript projects the path of the application should point to the folder `deployment`.*
+
 ### Java / Maven
 
 For Maven the pipeline expects the following structure.
@@ -108,50 +161,75 @@ For the code coverage the results have to be stored in the folder `./s4hana_pipe
 The user is responsible to use a proper reporters for generating the results.
 We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
 
-### Build Tool Independent Requirements
+### SAP Cloud Application Programming Model / MTA
 
-#### Frontend Unit Tests
+In general, the project has to follow the standard structure for SAP Cloud Application Programming Model.
+However, the pipeline expects the Java module `srv` to be a multi module containing exactly the two modules `application` and `integration-tests`. 
+This is similar to the structure of the maven archetype described above. 
+However, unit tests are located in the `application` module.
 
-The command `npm run ci-frontend-unit-test` will be executed in this stage.
-Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/frontend-unit` in the root directory.
-The required format of the test result report is the JUnit format as an `.xml` file.
-The code coverage report has to be stored in the directory `./s4hana_pipeline/reports/frontend-unit/coverage/report-html/ut/` as an `index.html` file.
-This coverage report will then be published in Jenkins.
-The user is responsible to use a proper reporter for generating the results.
+The mta build has to be instructed to build all maven modules except the module `integration-tests`. 
+Therefore, there should be a profile called `application` in place which only builds these modules.
+The definition in the `pom.xml` in the `srv` folder should like this:
 
-#### End-to-End Tests
+```xml
+<profiles>
+  <profile>
+    <id>default</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+    <modules>
+      <module>application</module>
+      <module>integration-tests</module>
+    </modules>
+  </profile>
+  <profile>
+    <id>application</id>
+    <modules>
+      <module>application</module>
+    </modules>
+  </profile>
+</profiles>
+```
 
-This stage is only executed if you configured it in the file `pipeline_config.yml`.
+Furthermore, the build descriptor `mta.yaml` has to be configured so that the application profile is used.
+In addition, the path to the build result located in `application/target/*.war` has to be configured.
 
-The command `npm run ci-e2e` will be executed in this stage.
-The url which is defined as `appUrl` in the file `pipeline_config.yml` will be passed as argument named `launchUrl` to the tests.
-This can be reproduced locally by executing:
+```yaml
+- name: my-app-srv
+  type: java
+  path: srv
+  ...
+  build-parameters:
+    builder: maven
+    maven-opts:
+      command: [ clean, install ]
+      profiles:
+        - application
+    build-result: application/target/*.war
+```
+
+The folder of such an project would look like as follows:
 
 ```
-npm run ci-e2e -- --launchUrl=https://path/to/your/running/application
-```
+├── Jenkinsfile
+├── app // web application
+├── db
+├── mta.yaml
+├── package-lock.json
+├── package.json
+├── pipeline_config.yml
+├── srv
+    ├── application
+        ├── pom.xml
+        └── src
+            ├── main
+            └── test // Unit-Tests
+    └── integration-tests
+        ├── pom.xml
+        ├── src
+            └── test
+``` 
 
-The credentials also defined in the file `pipeline_config.yml` will be available during the test execution as environment variables named `e2e_username` and `e2e_password`.
-
-The test results have to be stored in the folder `./s4hana_pipeline/reports/e2e` in the root directory.
-The required format of the test result report is the Cucumber format as an `.json` file or the JUnit format as an xml file.
-Also screenshots can be stored in this folder
-The screenshots and reports  will then be published in Jenkins.
-The user is responsible to use a proper reporter for generating the results.
-
-#### Performance Tests
-
-This stage is only executed if you configured it in the file `pipeline_config.yml`.
-
-Performance tests can be executed using [JMeter](https://jmeter.apache.org/) or [Gatling](https://gatling.io/).
-
-If only JMeter is used as a performance tests tool then test plans can be placed in a default location, which is the directory `{project_root}/performance-tests`. However, if JMeter is used along with Gatling, then JMeter test plans should be kept in a subdirectory under a directory `performance-tests` for example`./performance-tests/JMeter/`.
-
-The gatling test project including the `pom.xml` should be placed in the directory `{project_root}/performance-tests`.
-Afterwards, Gatling has to be enable in the configuration.
-
-#### Deployments
-
-For all deployments to Cloud Foundry (excluding MTA) there has to be a file called `manifest.yml`.
-This file may only contain exactly one application.
-*Note: For JavaScript projects the path of the application should point to the folder `deployment`.*
+For the structure of the integration tests module we recommend to use the maven archetype as a blueprint. 

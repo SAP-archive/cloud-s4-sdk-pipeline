@@ -4,10 +4,17 @@
 
 ## Description
 
-The [SAP S/4HANA Cloud SDK](https://sap.com/s4sdk) helps to develop S/4HANA extension application on the SAP Cloud Platform. 
-Continuous integration and delivery (CI/CD) is an important aspect of cloud application development.
-This repository contains a Jenkins pipeline as code designed for the requirements and structure of application written with this SDK. 
-It contains the steps for building, testing and deploying applications to the SAP Cloud Platform.
+The [SAP S/4HANA Cloud SDK](https://sap.com/s4sdk) helps to efficiently build, test, and deliver SAP S/4HANA extensions.
+This repository contains a Jenkins Pipeline-as-Code that enables development teams to assure a high level of quality on process as well as code level. While the SAP S/4HANA Cloud SDK enables to build high-quality cloud applications, this pipeline helps to assure high quality on project level by a set of standard and SDK-specific quality checks.
+
+The pipeline supports the following types of projects:
+
+* Java projects based on the [SAP S/4HANA Cloud SDK Archetypes](https://mvnrepository.com/artifact/com.sap.cloud.s4hana.archetypes).
+* JavaScript projects based on the [SAP S/4HANA Cloud SDK JavaScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-js).
+* TypeScript projects based on the [SAP S/4HANA Cloud SDK TypeScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-ts).
+* SAP Cloud Application Programming Model (CAP) projects based on the WebIDE Template. 
+
+You can find more details about the supported project types and build tools in our [documentation](doc/pipeline/build-tools.md).
 
 ## Requirements
 
