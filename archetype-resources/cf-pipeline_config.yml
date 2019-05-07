@@ -1,5 +1,5 @@
 ###
-# This file configures the SAP S/4HANA Cloud SDK Continuous Delivery pipeline of your project.
+# This file configures the SAP Cloud SDK Continuous Delivery pipeline of your project.
 # For a reference of the configuration concept and available options, please have a look into its documentation.
 #
 # The documentation for the most recent pipeline version can always be found at:

@@ -1,10 +1,10 @@
 # Usage Analytics
 
-This document describes which data is collected by the SAP S/4HANA Cloud SDK Maven Plugin as well as its Continuous Delivery Toolkit.
+This document describes which data is collected by the SAP Cloud SDK Maven Plugin as well as its Continuous Delivery Toolkit.
 
 To learn more about the background, we recommend to read [this blog post](https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/).
 
-Please note that third party tools used by the SAP S/4HANA Cloud SDK may also collect usage data, which is not covered by this document.
+Please note that third party tools used by the SAP Cloud SDK may also collect usage data, which is not covered by this document.
 Consult the documentation of these tools, for example, [Jenkins telemetry](https://jenkins.io/blog/2018/10/09/telemetry/).
 
 ## Data Collected by Maven Plugin
@@ -40,10 +40,10 @@ The following project-specific usage data is collected:
 **Disclaimer:** This list is maintained manually and may therefore not always reflect the latest state of data collection.
 You can check which information is transmitted by considering the log output of the Maven plugin.
 ```
-[INFO] SAP S/4HANA Cloud SDK - Usage Analytics
+[INFO] SAP Cloud SDK - Usage Analytics
 [INFO] 
 [INFO] Thank you for contributing to our anonymized usage statistics!
-[INFO] This allows us to improve the SAP S/4HANA Cloud SDK based on your usage.
+[INFO] This allows us to improve the SAP Cloud SDK based on your usage.
 [INFO] 
 [INFO] We respect your privacy and intellectual property. Therefore, we only
 [INFO] collect non-sensitive data about the use of the SDK. We do not collect
@@ -94,8 +94,8 @@ Furthermore, you can use the `-X` debug flag of Maven to inspect the request tha
     * Docker image
 * Versions of used artifacts
     * Continuous Delivery Server
-    * SAP S/4HANA Cloud SDK Pipeline
-    * SAP S/4HANA Cloud SDK Java libraries
+    * SAP Cloud SDK Pipeline
+    * SAP Cloud SDK Java libraries
 * Outcome of the action (success or failure)
 * Operating system information (name, version, locale, ..)
 
@@ -114,7 +114,7 @@ Collection of usage data is enabled by default.
 
 If you wish to disable it, please perform the following steps:
 
-For both the SAP S/4HANA Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `pipeline_config.yml` in the general section as in this example:
+For both the SAP Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `pipeline_config.yml` in the general section as in this example:
 
 ```
 general:

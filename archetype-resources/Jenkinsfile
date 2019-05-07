@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy 
 
 /*
- * This file bootstraps the codified Continuous Delivery pipeline for SAP S/4HANA extensions.
+ * This file bootstraps the codified Continuous Delivery pipeline for SAP extensions.
  * The pipeline helps you to deliver software changes quickly and in a reliable manner.
  * A suitable Jenkins instance is required to run the pipeline.
  * The Jenkins can easily be bootstraped using the life-cycle script located inside the 'cx-server' directory.
