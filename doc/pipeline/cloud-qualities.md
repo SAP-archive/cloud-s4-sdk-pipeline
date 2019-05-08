@@ -1,14 +1,14 @@
-# Checked Qualities in the SAP S/4HANA Cloud SDK Pipeline
+# Checked Qualities in the SAP Cloud SDK Pipeline
 
-The goal of the SAP S/4HANA Cloud SDK Pipeline is to help you build high quality applications which run on SAP Cloud Platform.
-To achieve this, the SAP S/4HANA Cloud SDK Pipeline checks qualities when building your application.
-This document summarizes the qualities that are checked by the SAP S/4HANA Cloud SDK Pipeline.
+The goal of the SAP Cloud SDK Pipeline is to help you build high quality applications which run on SAP Cloud Platform.
+To achieve this, the SAP Cloud SDK Pipeline checks qualities when building your application.
+This document summarizes the qualities that are checked by the SAP Cloud SDK Pipeline.
 
-## SAP S/4HANA Cloud SDK Specific Checks
+## SAP Cloud SDK Specific Checks
 
 ### Required Dependencies
 
-For the SAP S/4HANA Cloud SDK specific checks to work, a few dependencies are required in unit and integration tests.
+For the SAP Cloud SDK specific checks to work, a few dependencies are required in unit and integration tests.
 If one of the following dependencies is missing in either the unit tests or integration tests module, the build fails:
 
 * `com.sap.cloud.s4hana.quality:odata-querylistener`
@@ -30,7 +30,7 @@ To mitigate unreliable networks, a pattern called _circuit breaker_ is commonly 
 The idea is that you define a fallback action in case the network fails too often in a short time span.
 The fallback might use cached data, or default values, depending on what works best in your problem domain.
 
-To implement this pattern, the SAP S/4HANA Cloud SDK integrates with the [Hystrix](https://github.com/Netflix/Hystrix) library.
+To implement this pattern, the SAP Cloud SDK integrates with the [Hystrix](https://github.com/Netflix/Hystrix) library.
 
 This quality check tests, that your remote calls are wrapped in a Hystrix command.
 The build will fail with a error message like `Your project accesses downstream systems in a non-resilient manner` if this is not the case.
@@ -87,9 +87,9 @@ More information on testing the performance of your application is available in 
 ### Static Code Checks
 
 Static code checks look for potential issues in code without running the program.
-The SAP S/4HANA Cloud SDK Pipeline includes commonly used static checks using both [PMD](https://pmd.github.io/) and [SpotBugs](https://spotbugs.github.io/).
+The SAP Cloud SDK Pipeline includes commonly used static checks using both [PMD](https://pmd.github.io/) and [SpotBugs](https://spotbugs.github.io/).
 
-In addition to the default checks of those tools, it adds the following SAP S/4HANA Cloud SDK specific checks:
+In addition to the default checks of those tools, it adds the following SAP Cloud SDK specific checks:
 
 * When instantiating a logger, always use `CloudLoggerFactory` to use the logger provided by the SDK
 * To make post-mortem debugging possible
@@ -105,6 +105,6 @@ This allows to enforce a common coding style within a team of developers, thus m
 
 ### Third-Party Tools
 
-The SAP S/4HANA Cloud SDK Pipeline also integrates with commercial third party code analyzer services, if you wish to use them.
+The SAP Cloud SDK Pipeline also integrates with commercial third party code analyzer services, if you wish to use them.
 Currently, [Checkmarx](https://www.checkmarx.com/), [WhiteSource](https://www.whitesourcesoftware.com/), and [SourceClear](https://www.sourceclear.com/) are available.
 For those scans to be enabled, they need to be configured in the [pipeline configuration file](../../configuration.md).

@@ -1,10 +1,10 @@
 # Build Tools
 
-The SAP S/4HANA Cloud SDK supports multiple programming languages (Java and JavaScript) and can be used in the SAP Cloud Application Programming Model.
+The SAP Cloud SDK supports multiple programming languages (Java and JavaScript) and can be used in the SAP Cloud Application Programming Model.
 For each of these variants project templates exists.
 These templates introduce standard tooling, such as build tools, and a standard structure.
 
-The SAP S/4HANA Cloud SDK Continuous Delivery Toolkit expects that the project follows this structure and depends on the build tools introduced by these templates.
+The SAP Cloud SDK Continuous Delivery Toolkit expects that the project follows this structure and depends on the build tools introduced by these templates.
 
 The supported build tools are: [Maven](https://maven.apache.org/) for Java projects, [NPM](https://www.npmjs.com/) for JavaScript projects, and [MTA](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.03/en-US/4486ada1af824aadaf56baebc93d0256.html) for SAP Cloud Application Programming Model.
 

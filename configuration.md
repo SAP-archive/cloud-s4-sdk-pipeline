@@ -1,4 +1,4 @@
-# SAP S/4HANA Cloud SDK Pipeline Configuration Docs
+# SAP Cloud SDK Pipeline Configuration Docs
 
 ## Table of Contents
 
@@ -41,8 +41,8 @@
 
 ## Pipeline configuration
 
-The SAP S/4HANA Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
-To adjust the SAP S/4HANA Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. This comprises:
+The SAP Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
+To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. This comprises:
  * the general configuration on the project level,
  * the stage level configurations to set configuration values for specific stages,
  * the step configurations to set default values for steps,

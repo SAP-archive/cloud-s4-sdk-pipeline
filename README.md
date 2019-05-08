@@ -1,17 +1,17 @@
-# SAP S/4HANA Cloud SDK Pipeline
+# SAP Cloud SDK Pipeline
 
-![Visualisation of SAP S/4HANA Cloud SDK Pipeline](images/s4sdk-pipeline.gif)
+![Visualisation of SAP Cloud SDK Pipeline](images/s4sdk-pipeline.gif)
 
 ## Description
 
-The [SAP S/4HANA Cloud SDK](https://sap.com/s4sdk) helps to efficiently build, test, and deliver SAP S/4HANA extensions.
-This repository contains a Jenkins Pipeline-as-Code that enables development teams to assure a high level of quality on process as well as code level. While the SAP S/4HANA Cloud SDK enables to build high-quality cloud applications, this pipeline helps to assure high quality on project level by a set of standard and SDK-specific quality checks.
+The [SAP Cloud SDK](https://sap.com/s4sdk) helps to efficiently build, test, and deliver extensions of SAP solutions such as SAP S/4HANA.
+This repository contains a Jenkins Pipeline-as-Code that enables development teams to assure a high level of quality on process as well as code level. While the SAP Cloud SDK enables to build high-quality cloud applications, this pipeline helps to assure high quality on project level by a set of standard and SDK-specific quality checks.
 
 The pipeline supports the following types of projects:
 
-* Java projects based on the [SAP S/4HANA Cloud SDK Archetypes](https://mvnrepository.com/artifact/com.sap.cloud.s4hana.archetypes).
-* JavaScript projects based on the [SAP S/4HANA Cloud SDK JavaScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-js).
-* TypeScript projects based on the [SAP S/4HANA Cloud SDK TypeScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-ts).
+* Java projects based on the [SAP Cloud SDK Archetypes](https://mvnrepository.com/artifact/com.sap.cloud.s4hana.archetypes).
+* JavaScript projects based on the [SAP Cloud SDK JavaScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-js).
+* TypeScript projects based on the [SAP Cloud SDK TypeScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-ts).
 * SAP Cloud Application Programming Model (CAP) projects based on the WebIDE Template. 
 
 You can find more details about the supported project types and build tools in our [documentation](doc/pipeline/build-tools.md).
@@ -26,7 +26,7 @@ The pipeline will refuse to run with less than one gigabyte available disk space
 
 ### Software requirements
 
-For instantiating the SAP S/4HANA Cloud SDK Cx Server, you need to provide a suitable host with a Linux operating system and Docker installed.
+For instantiating the SAP Cloud SDK Cx Server, you need to provide a suitable host with a Linux operating system and Docker installed.
 Please also ensure that the user with whom you start the Cx Server belongs to the `docker` group.
 
 Please refer to the [operations guide](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/operations/operations-guide.md#system-requirement) for more details on hardware and software requirements.
@@ -36,8 +36,8 @@ Your project source files need to be available on a git or GitHub server, which 
 ## Download and Installation
 
 The lifecycle of the Cx Server is maintained by a script called `cx-server`.
-It can be found in the `cx-server` folder on the root of each SAP S/4HANA Cloud SDK project archetype.
-Together with the `server.cfg` file, this is all you need for starting your instance of the SAP S/4HANA Cloud SDK Cx Server.
+It can be found in the `cx-server` folder on the root of each SAP Cloud SDK project archetype.
+Together with the `server.cfg` file, this is all you need for starting your instance of the SAP Cloud SDK Cx Server.
 
 You might chose between the available archetypes, depending on the technology you prefer:
 
@@ -84,10 +84,10 @@ It is recommended to always update to the latest version, for example by creatin
 By doing so, you will notice potential upgrade issues in the pull request.
 
 ## Blog Posts
-In order to learn more about the SAP S/4HANA Cloud SDK Continuous Delivery pipeline, feel free to read our [blog post](https://blogs.sap.com/2017/09/20/continuous-integration-and-delivery).
+In order to learn more about the SAP Cloud SDK Continuous Delivery pipeline, feel free to read our [blog post](https://blogs.sap.com/2017/09/20/continuous-integration-and-delivery).
 
 ## Analytics
-To improve SAP S/4HANA Cloud SDK Pipeline, we do collect non-personal telemetry data.
+To improve SAP Cloud SDK Pipeline, we do collect non-personal telemetry data.
 
 For details about which data is collected, and for information on how to opt-out, consult the [analytics documentation](doc/operations/analytics.md).
 

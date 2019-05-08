@@ -3,7 +3,7 @@
 This guide describes life-cycle management of the Cx Server for Continuous Integration and Delivery. The server is controlled with the `cx-server` script.
 
 #### Introduction
-The `cx-server` directory is included in projects which are created by using the SAP S/4HANA Cloud SDK Maven Archetypes.
+The `cx-server` directory is included in projects which are created by using the SAP Cloud SDK Maven Archetypes.
 It contains a life-cycle management utility script `cx-server` and a configuration file `server.cfg`.
 
 For the convenient usage of the script, a [completion script](https://raw.githubusercontent.com/SAP/cloud-s4-sdk-pipeline-docker/master/s4sdk-jenkins-master/cx-server/cx-server-completion.bash) for `cx-server` is provided. 
@@ -174,7 +174,7 @@ tls_enabled=true
 ```
 
 #### Plugins
-All the plugins that are required to run the SAP S/4HANA Cloud SDK Continuous Delivery Pipeline
+All the plugins that are required to run the SAP Cloud SDK Continuous Delivery Pipeline
 are already pre-installed. If you update or downgrade them to a specific version, it will be lost every time the `cx-server` image is updated. 
 All the plugins are updated with the latest version. 
 If there is a need, the user can install additional plugins and configure them. 
