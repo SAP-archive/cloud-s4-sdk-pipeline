@@ -9,11 +9,23 @@ This document summarizes the qualities that are checked by the SAP Cloud SDK Pip
 ### Required Dependencies
 
 For the SAP Cloud SDK specific checks to work, a few dependencies are required in unit and integration tests.
+Those dependencies are already fulfilled if your project was created using one of the [Maven archetypes](https://github.com/sap/cloud-s4-sdk-pipeline#download-and-installation).
+
 If one of the following dependencies is missing in either the unit tests or integration tests module, the build fails:
 
 * `com.sap.cloud.s4hana.quality:odata-querylistener`
 * `com.sap.cloud.s4hana.quality:rfc-querylistener`
 * `com.sap.cloud.s4hana.quality:httpclient-listener`
+
+To add them all to the respective unit- and integration-test pom file, dependency `listeners-all` may be used as in this example:
+
+```
+<dependency>
+   <groupId>com.sap.cloud.s4hana.quality</groupId>
+   <artifactId>listeners-all</artifactId>
+   <scope>test</scope>
+</dependency>
+```
 
 ### Only Depend on Official API
 
