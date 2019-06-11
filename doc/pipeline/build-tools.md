@@ -34,10 +34,12 @@ Support for the different features of the pipeline may vary in each variant of t
 | SourceClear Integration   |   x   |     |     |
 | Whitesource Integration   |   x   |     |  x  |
 | Deployment to Nexus       |   x   |     |  x  |
-| Zero Downtime Deployment  |   x   |  x  |  x  |
+| Zero Downtime Deployment  |   x   |  x  |  x* |
 | Download Cache            |   x   |  x  |  x  |
 
 *Note: The MTA version of the pipeline currently supports only Java based backend services.*
+
+*MTA projects can only be deployed to the Cloud Foundry Environment
 
 ## Projects Requirements
 
