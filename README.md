@@ -42,7 +42,6 @@ Together with the `server.cfg` file, this is all you need for starting your inst
 You might chose between the available archetypes, depending on the technology you prefer:
 
 - `scp-cf-spring`
-- `scp-cf-tomcat`
 - `scp-cf-tomee`
 - `scp-neo-javaee7`
 
