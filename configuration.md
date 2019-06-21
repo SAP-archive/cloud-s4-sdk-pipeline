@@ -485,12 +485,8 @@ fortifyScan:
 
 The lint stage can enforce common coding guidelines within a team.
 
-It supports the SAPUI5 best practices Grunt plugin.
-This check is automatically running if an appropriate UI5 component (`Component.js`) is found.
-
-**Note:** As of the writing of this document, only projects with exactly one `Component.js` files are supported.
-In case of multiple `Component.js` files in one project, the check is skipped.
-If this limitation is a problem for you, please create an [issue on the GitHub repository](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+It supports the SAPUI5 best practices linter which operates on SAPUI5 components.
+A component is identified by a `Component.js` file in the directory.
 
 By default, the pipeline does not fail based on lint findings.
 If you'd like to enable thresholds for lint, you can it like in this example:
@@ -503,6 +499,20 @@ lint:
       warning: 5
       info: 7
 ```
+
+You can configure the linter by creating an `.eslintrc` file in the root directory of your component (where the `Component.js` is located).
+For example, to enable the language level ES6 for using modern JavaScript features, the file should look like this:
+
+```json
+{
+    "env": {
+        "es6": true
+    }
+}
+```
+
+Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
+For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
 
 ### Step configuration
 
@@ -709,4 +719,3 @@ postActions:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
 ```
-
