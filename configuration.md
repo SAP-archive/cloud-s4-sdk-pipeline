@@ -332,10 +332,10 @@ For `cfTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `org` | X** | | The organization where you want to deploy your app |
-| `space` | X** | | The space where you want to deploy your app |
-| `appName` | X** |  | Name of the application. |
-| `manifest` | X** |  | Manifest file that needs to be used. |
+| `org` | X** | | The organization where you want to deploy your app. |
+| `space` | X** | | The space where you want to deploy your app. |
+| `appName` | X** (not for MTA) |  | Name of the application. |
+| `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 
@@ -554,12 +554,14 @@ The following parameters can be configured for the Cloud Foundry environment.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `org` | | | The organization where you want to deploy your app |
-| `space` | | | The space where you want to deploy your app |
-| `appName` | |  | Name of the application. |
-| `manifest` | |  | Manifest file that needs to be used. |
-| `credentialsId` | |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
+| `org` | X** | | The organization where you want to deploy your app |
+| `space` | X** | | The space where you want to deploy your app |
+| `appName` | X** (not for MTA) |  | Name of the application. |
+| `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
+| `credentialsId` | X** |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | | `https://api.cf.eu10.hana.ondemand.com` | URL to the Cloud Foundry endpoint. |
+
+** Mandatory only if not defined within stage property cfTargets individually for the corresponding stages.
 
 Example:
 
