@@ -60,9 +60,11 @@ Please pick the corresponding version for your deployment target and rename it p
 The command `npm run ci-frontend-unit-test` will be executed in this stage.
 Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/frontend-unit` in the root directory.
 The required format of the test result report is the JUnit format as an `.xml` file.
-The code coverage report has to be stored in the directory `./s4hana_pipeline/reports/frontend-unit/coverage/report-html/ut/` as an `index.html` file.
-This coverage report will then be published in Jenkins.
-The user is responsible to use a proper reporter for generating the results.
+The code coverage report can be published as html report and in the cobertura format.
+The cobertura report have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-integration/` as an `xml` file called `cobertura.frontend.unit.xml`. 
+The html report has to be stored in the directory `./s4hana_pipeline/reports/coverage-reports/backend-integration/report-html/ut/` as an `index.html` file.
+These coverage reports will then be published in Jenkins.
+Furthermore, if configured in the `pipeline_config.yml`, the pipeline ensures the configured level of code coverage. 
 
 #### End-to-End Tests
 

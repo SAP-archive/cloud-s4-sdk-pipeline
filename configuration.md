@@ -272,6 +272,7 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
 | `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
 | `nonErpDestinations` | | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
+| `codeCoverageFrontend` | | | A map containing the thresholds unstable and failing. If the code coverage is lower than what is configured in unstable, the pipeline result is unstable. If it is lower than what is configured in failing, the pipeline will fail. |
 
 Example:
 
@@ -282,6 +283,9 @@ s4SdkQualityChecks:
     - '**/generated/**'
   customODataServices:
     - 'API_myCustomODataService'
+  codeCoverageFrontend:
+    unstable: 50
+    failing: 45
 ```
 
 #### checkmarxScan
