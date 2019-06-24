@@ -7,29 +7,51 @@ assignees: ''
 
 ---
 
-> Hey there. Thank you for reporting an issue with the Cloud SDK Pipeline. Please take the time to fill out the information in this template which is necessary to find out what went wrong. Be sure to remove any confidential information before publishing the issue on the internet.
+<!--
+Thank you for reporting an issue with the Cloud SDK Pipeline. Please take the time to fill out the information in this template which is necessary to find out what went wrong. Be sure to remove **any confidential** information before publishing the issue on the internet.
+-->
 
 ## Project Details
 
+<!--
+Please provide as much information about your project as possible.
+If you cannot share your project for confidentiality reasons, please consider providing a minimal working example https://en.wikipedia.org/w/index.php?title=Minimal_working_example&oldid=893866607
+-->
+
 * Link to GitHub repo (if available)
-* Project type (SDK Maven Archetype, MTA (which types of modules?), JavaScript)
+* Project type, for example:
+    * [ ] SDK Maven Archetype
+    * [ ] MTA (which types of modules?)
+    * [ ] JavaScript
+    * [ ] None of the above (unsupported)
 
 ## Link to Jenkins Job (if it can be shared)
+
+<!--
+It really helps to look into the Jenkins job, so if anonymous access is possible, please provide the link.
+-->
 
 https://myJenkins/job/MyProject/job/MyRepo/job/master/42
 
 ## Log Output
 
+<!--
+Please provide the relevant Jenkins log output below. Be sure to check above and below the actual error for helpful information. Be sure to redact confidential information before posting.
+-->
+
 ```
-Paste the relevant part of the log here (be sure to omit sensitive information)
+PLEASE PASTE YOUR LOG HERE WITHIN THE BACKTICKS
 ```
 
 ## Attempts to solve the issue
 
+<!--
 Please describe what you know about the issue and what you tried to solve it.
+-->
 
 ### Reproduce the issue locally
 
+<!--
 In case a maven/npm command or similar failed:
 
 * Does it work on your local machine?
@@ -40,3 +62,4 @@ Please provide the steps to reproduce the issue, for example like this:
 * Step 1: Type `mvn clean install` in the project's root directory
 * Step 2: Something else
 * Step 3: ...
+-->
