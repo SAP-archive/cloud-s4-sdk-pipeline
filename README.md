@@ -1,4 +1,4 @@
-# SAP Cloud SDK Pipeline <a target="_blank" href="https://sap.com/s4sdk" alt="SAP Cloud SDK for Continuous Delivery Logo" height="122.92" width="226.773" align="right"/></a>
+# SAP Cloud SDK Pipeline <a href="https://sap.com/s4sdk"><img src="https://help.sap.com/doc/6c02295dfa8f47cf9c08a19f2e172901/1.0/en-US/logo-for-cd.svg" alt="SAP Cloud SDK for Continuous Delivery Logo" height="122.92" width="226.773" align="right"/></a>
 
 ## Description
 
