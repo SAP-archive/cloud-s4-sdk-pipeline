@@ -419,7 +419,11 @@ artifactDeployment:
 ```
 
 #### whitesourceScan
-Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans. The minimum required maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
+Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans.
+The minimum required Maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
+
+Pipeline will execute `npx whitesource run` for npm projects.
+Please ensure that all `package.json` files have a `name` and `version` configured so that it is possible to distinguish between the different packages.
 
 ```xml
 <plugin>

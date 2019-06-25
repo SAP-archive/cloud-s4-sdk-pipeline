@@ -32,7 +32,7 @@ Support for the different features of the pipeline may vary in each variant of t
 | Checkmarx Integration     |   x   |     |  x  |
 | Fortify Integration       |   x   |     |     |
 | SourceClear Integration   |   x   |     |     |
-| Whitesource Integration   |   x   |     |  x  |
+| Whitesource Integration   |   x   |  x  |  x  |
 | Deployment to Nexus       |   x   |     |  x  |
 | Zero Downtime Deployment  |   x   |  x  |  x* |
 | Download Cache            |   x   |  x  |  x  |
