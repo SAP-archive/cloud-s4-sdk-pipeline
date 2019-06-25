@@ -272,6 +272,7 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
 | `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
 | `nonErpDestinations` | | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
+| `codeCoverageFrontend` | | | A map containing the thresholds unstable and failing. If the code coverage is lower than what is configured in unstable, the pipeline result is unstable. If it is lower than what is configured in failing, the pipeline will fail. |
 
 Example:
 
@@ -282,6 +283,9 @@ s4SdkQualityChecks:
     - '**/generated/**'
   customODataServices:
     - 'API_myCustomODataService'
+  codeCoverageFrontend:
+    unstable: 50
+    failing: 45
 ```
 
 #### checkmarxScan
@@ -332,10 +336,10 @@ For `cfTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `org` | X** | | The organization where you want to deploy your app |
-| `space` | X** | | The space where you want to deploy your app |
-| `appName` | X** |  | Name of the application. |
-| `manifest` | X** |  | Manifest file that needs to be used. |
+| `org` | X** | | The organization where you want to deploy your app. |
+| `space` | X** | | The space where you want to deploy your app. |
+| `appName` | X** (not for MTA) |  | Name of the application. |
+| `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 
@@ -415,7 +419,11 @@ artifactDeployment:
 ```
 
 #### whitesourceScan
-Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans. The minimum required maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
+Configure credentials for [WhiteSource](https://www.whitesourcesoftware.com/) scans.
+The minimum required Maven WhiteSource plugin version is `18.6.2`, ensure this in the plugins section of the project `pom.xml` file.
+
+Pipeline will execute `npx whitesource run` for npm projects.
+Please ensure that all `package.json` files have a `name` and `version` configured so that it is possible to distinguish between the different packages.
 
 ```xml
 <plugin>
@@ -485,12 +493,8 @@ fortifyScan:
 
 The lint stage can enforce common coding guidelines within a team.
 
-It supports the SAPUI5 best practices Grunt plugin.
-This check is automatically running if an appropriate UI5 component (`Component.js`) is found.
-
-**Note:** As of the writing of this document, only projects with exactly one `Component.js` files are supported.
-In case of multiple `Component.js` files in one project, the check is skipped.
-If this limitation is a problem for you, please create an [issue on the GitHub repository](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+It supports the SAPUI5 best practices linter which operates on SAPUI5 components.
+A component is identified by a `Component.js` file in the directory.
 
 By default, the pipeline does not fail based on lint findings.
 If you'd like to enable thresholds for lint, you can it like in this example:
@@ -503,6 +507,20 @@ lint:
       warning: 5
       info: 7
 ```
+
+You can configure the linter by creating an `.eslintrc` file in the root directory of your component (where the `Component.js` is located).
+For example, to enable the language level ES6 for using modern JavaScript features, the file should look like this:
+
+```json
+{
+    "env": {
+        "es6": true
+    }
+}
+```
+
+Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
+For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
 
 ### Step configuration
 
@@ -544,12 +562,14 @@ The following parameters can be configured for the Cloud Foundry environment.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `org` | | | The organization where you want to deploy your app |
-| `space` | | | The space where you want to deploy your app |
-| `appName` | |  | Name of the application. |
-| `manifest` | |  | Manifest file that needs to be used. |
-| `credentialsId` | |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
+| `org` | X** | | The organization where you want to deploy your app |
+| `space` | X** | | The space where you want to deploy your app |
+| `appName` | X** (not for MTA) |  | Name of the application. |
+| `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
+| `credentialsId` | X** |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | | `https://api.cf.eu10.hana.ondemand.com` | URL to the Cloud Foundry endpoint. |
+
+** Mandatory only if not defined within stage property cfTargets individually for the corresponding stages.
 
 Example:
 
@@ -709,4 +729,3 @@ postActions:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
 ```
-
