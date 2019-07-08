@@ -502,22 +502,14 @@ If you'd like to enable thresholds for lint, you can it like in this example:
 ```yaml
 lint:
   ui5BestPractices:
+    enableES6: true
     failThreshold:
       error: 3
       warning: 5
       info: 7
 ```
 
-You can configure the linter by creating an `.eslintrc` file in the root directory of your component (where the `Component.js` is located).
-For example, to enable the language level ES6 for using modern JavaScript features, the file should look like this:
-
-```json
-{
-    "env": {
-        "es6": true
-    }
-}
-```
+To enable ES6 language features, set the flag `enableES6` to `true` as in the example above.
 
 Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
 For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
