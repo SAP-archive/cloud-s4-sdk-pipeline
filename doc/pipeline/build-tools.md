@@ -30,7 +30,7 @@ Support for the different features of the pipeline may vary in each variant of t
 | S4HANA Public APIs        |   x   |     |  x  |
 | CodeCoverage Checks       |   x   |  x  |  x  |
 | Checkmarx Integration     |   x   |     |  x  |
-| Fortify Integration       |   x   |     |     |
+| Fortify Integration       |   x   |     |  x  |
 | SourceClear Integration   |   x   |     |     |
 | Whitesource Integration   |   x   |  x  |  x  |
 | Deployment to Nexus       |   x   |     |  x  |
