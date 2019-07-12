@@ -342,6 +342,7 @@ For `cfTargets` the following properties can be defined:
 | `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
+| `mtaExtensionDescriptor` |  |  | (**Only for MTA-projects**) Path to the mta extension description file. For more information on how to use those extension files please visit the [SAP HANA Developer Guide](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.02/en-US/51ac525c78244282919029d8f5e2e35d.html). |
 
 ** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
 
@@ -359,6 +360,7 @@ productionDeployment:
      manifest: 'manifest.yml'
      credentialsId: 'CF-DEPLOY'
      apiEndpoint: '<Cloud Foundry API endpoint>'
+     mtaExtensionDescriptor: 'path to mta extension description file'
 ```
 
 For `neoTargets` the following properties can be defined:
