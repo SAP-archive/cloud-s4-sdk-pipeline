@@ -301,8 +301,8 @@ s4SdkQualityChecks:
 | `vulnerabilityThresholdMedium` | |`0`| The threshold for medium level threats. If the findings are greater than this value, pipeline execution will result in failure.|
 | `vulnerabilityThresholdLow` | |`99999`| The threshold for low level threats. If the findings are greater than this value, pipeline execution will result in failure.|
 | `preset` | |`36`| Name or numerical ID of Checkmarx preset to be used when scanning this project. When a name (string) is specified, the pipeline will try to discover the corresponding numerical ID via the Checkmarx API. Please also make sure to specify **checkmarxCredentialsId and checkmarxServerUrl in such a case**. For determining available presets in your Checkmarx webclient, go to *Checkmarx -> Management -> Scan Settings -> Preset Manager*. Alternatively, you can determine the numerical ID of your targeted preset by following those guides: [Token-based Authentication](https://checkmarx.atlassian.net/wiki/spaces/KC/pages/202506366/Token-based+Authentication+v8.6.0+and+up) and [Get All Preset Details](https://checkmarx.atlassian.net/wiki/spaces/KC/pages/222036317/Get+All+Preset+Details+-+GET+sast+presets) |
-| `checkmarxCredentialsId` | | | The Credential ID to connect to Checkmarx server. **This property becomes mandatory if the credentials are not configured in the Jenkins plugin itself**.|
-| `checkmarxServerUrl` | | | An URL to Checkmarx server. **This property becomes mandatory if the URL to the Checkmarx server is not configured in the Jenkins plugin itself**.|
+| `checkmarxCredentialsId` | | | The Credential ID to connect to Checkmarx server. The credentials must be type username with password. **This property becomes mandatory if the credentials are not configured in the Jenkins plugin itself**.|
+| `checkmarxServerUrl` | | | An URL to Checkmarx server. **This property becomes mandatory if the URL to the Checkmarx server is not configured in the Jenkins plugin itself or if the `checkmarxCredentialsId` is configured**.|
 
 Example:
 
@@ -342,6 +342,7 @@ For `cfTargets` the following properties can be defined:
 | `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
+| `mtaExtensionDescriptor` |  |  | (**Only for MTA-projects**) Path to the mta extension description file. For more information on how to use those extension files please visit the [SAP HANA Developer Guide](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.02/en-US/51ac525c78244282919029d8f5e2e35d.html). |
 
 ** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
 
@@ -359,6 +360,7 @@ productionDeployment:
      manifest: 'manifest.yml'
      credentialsId: 'CF-DEPLOY'
      apiEndpoint: '<Cloud Foundry API endpoint>'
+     mtaExtensionDescriptor: 'path to mta extension description file'
 ```
 
 For `neoTargets` the following properties can be defined:
@@ -502,22 +504,14 @@ If you'd like to enable thresholds for lint, you can it like in this example:
 ```yaml
 lint:
   ui5BestPractices:
+    enableES6: true
     failThreshold:
       error: 3
       warning: 5
       info: 7
 ```
 
-You can configure the linter by creating an `.eslintrc` file in the root directory of your component (where the `Component.js` is located).
-For example, to enable the language level ES6 for using modern JavaScript features, the file should look like this:
-
-```json
-{
-    "env": {
-        "es6": true
-    }
-}
-```
+To enable ES6 language features, set the flag `enableES6` to `true` as in the example above.
 
 Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
 For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
