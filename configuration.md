@@ -119,7 +119,7 @@ general:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `pmdExcludes` | | | A comma-separated list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**` |
+| `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**/*.java` |
 | `findbugsExcludesFile` | | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
 
 #### unitTests
