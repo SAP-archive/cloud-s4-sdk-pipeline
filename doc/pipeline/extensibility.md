@@ -22,7 +22,9 @@ return this
 
 This needs to be saved to a file in your project's git repository with the name `pipeline/extensions/[Name of the Stage].groovy`.
 
-The method name, its parameter and the `return this` may not be changed.
+The map named `parameters` has the properties `script`, `originalStage`, `stageName`, and `config`.
+
+The method name `call`, its parameter `parameters` and the `return this` **may not be changed**.
 The `parameters.originalStage()` line calls the stage as it was implemented in the pipeline.
 You can have custom code before and after the `originalStage`, or you can even chose to not call it and implement the whole stage yourself.
 
