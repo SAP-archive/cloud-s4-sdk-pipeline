@@ -213,7 +213,7 @@ By default this feature is turned off.
 Additional parameters can be passed for each end-to-end test deployment by specifying _optional_ `parameters` for an application URL.
 These parameters are appended to the npm command during execution.
 This could be used for example to split the entire end-to-end test scenario into multiple sub-scenarios and running these sub-scenarios on different deployments.
-For example, when using nightwatch, these scenarios can be defined via annotations in the test descriptions and can be called with the `--tag` parameter as shown in the example below.
+For example, when using nightwatch-api, these scenarios can be defined via annotations in the test descriptions and can be called with the `--tag` parameter as shown in the example below. Another option is to execute the end to end tests with various web browsers, e.g. chrome or firefox.
 
 Example:
 ```yaml
@@ -223,10 +223,10 @@ endToEndTests:
   appUrls:
    - url: <application url>
      credentialId: e2e-test-user-cf
-     parameters: '--tag scenario1'
+     parameters: '--tag scenario1 --NIGHTWATCH_ENV=chrome'
    - url: <application url 2>
      credentialId: e2e-test-user-cf
-     parameters: '--tag scenario2 --tag scenario3'
+     parameters: '--tag scenario2 --tag scenario3 --NIGHTWATCH_ENV=firefox'
 ```
 
 #### npmAudit
