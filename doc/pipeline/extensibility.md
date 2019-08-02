@@ -14,7 +14,7 @@ The basic template for an extension looks like this:
 
 ```groovy
 def call(Map parameters) {
-    parameters.originalStage()
+    parameters.originalStage.call()
 }
 
 return this
@@ -25,8 +25,12 @@ This needs to be saved to a file in your project's git repository with the name 
 The map named `parameters` has the properties `script`, `originalStage`, `stageName`, and `config`.
 
 The method name `call`, its parameter `parameters` and the `return this` **may not be changed**.
-The `parameters.originalStage()` line calls the stage as it was implemented in the pipeline.
+The `parameters.originalStage.call()` line calls the stage as it was implemented in the pipeline.
 You can have custom code before and after the `originalStage`, or you can even chose to not call it and implement the whole stage yourself.
+
+**Breaking change**: In an older version of this document, the `.call` in `parameters.originalStage.call()` was omitted.
+This is not valid anymore in recent Jenkins versions.
+See [here](https://jenkins.io/redirect/pipeline-cps-method-mismatches) if you are interested in the details.
 
 One case where the extensibility can be used with high value and low risk is the `additionalTools` stage, which is part of the _third party check_.
 This stage does nothing in the Pipeline, its sole purpose is to be overwritten if you need to have custom third party tools in the pipeline.
@@ -41,7 +45,7 @@ As an example, if you want to use Checkstyle in your codebase, you might use an 
 ```groovy
 def call(Map parameters) {
 
-    parameters.originalStage() // Runs the built in linters
+    parameters.originalStage.call() // Runs the built in linters
 
     mavenExecute(
         script: parameters.script,
