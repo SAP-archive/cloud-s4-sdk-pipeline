@@ -48,7 +48,7 @@ You might chose between the available archetypes, depending on the technology yo
 To create a new project using the SDK execute the following command:
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=com.sap.cloud.s4hana.archetypes -DarchetypeArtifactId=scp-cf-tomee -DarchetypeVersion=RELEASE
+mvn archetype:generate -DarchetypeGroupId=com.sap.cloud.sdk.archetypes -DarchetypeArtifactId=scp-cf-tomee -DarchetypeVersion=RELEASE
 ```
 
 To use one of the other archetypes, replace the value of `DarchetypeArtifactId` accordingly.
