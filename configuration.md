@@ -295,7 +295,7 @@ s4SdkQualityChecks:
 | --- | --- | --- | --- |
 | `groupId` | X | | Checkmarx Group ID|
 | `checkMarxProjectName` | | projectName defined in general | Name of the project on Checkmarx server.|
-| `filterPattern` | |`!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, **/*.js, **/*.java, **/*.ts`| Files which needs to be skipped during scanning.|
+| `filterPattern` | |`'!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, !**/test/**, !s4hana_pipeline/**, !**/unit-tests/**, !**/integration-tests/**, !**/frontend-unit-tests/**, !**/e2e-tests/**, !**/performance-tests/**, **/*.js, **/*.java, **/*.ts`| Files which needs to be skipped during scanning.|
 | `fullScansScheduled` | | `false`| Toggle to enable or disable full scan on a certain schedule.|
 | `incremental` | | `true`| Perform incremental scan with every run. If turned `false`, complete project is scanned on every submission.|
 | `vulnerabilityThresholdMedium` | |`0`| The threshold for medium level threats. If the findings are greater than this value, pipeline execution will result in failure.|
