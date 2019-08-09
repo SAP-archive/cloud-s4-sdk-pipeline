@@ -158,7 +158,7 @@ We recommend the tools used in the `package.json` of this [example project](http
 
 #### Backend Unit Tests
 
-The command `npm run ci-backend-unit` will be executed in this stage.
+The command `npm run ci-backend-unit-test` will be executed in this stage.
 Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory of the project.
 The required format of the test result report is the JUnit format as an `.xml` file.
 For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-unit/` in the cobertura format as an `xml` file.
