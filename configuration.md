@@ -10,7 +10,8 @@
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
-    * [integrationTests](#integrationtests)
+    * [backendIntegrationTests](#backendintegrationtests)
+    * [frontendIntegrationTests](#frontendintegrationtests)
     * [frontendUnitTests](#frontendunittests)
     * [endToEndTests](#endtoendtests)
     * [npmAudit](#npmaudit)
@@ -128,7 +129,7 @@ general:
 | --- | --- | --- | --- |
 | `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
-#### integrationTests
+#### backendIntegrationTests
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -142,7 +143,7 @@ general:
 
 Example:
 ```yaml
-integrationTests:
+backendIntegrationTests:
   retry: 2
   credentials:
     - alias: 'ERP'
@@ -176,7 +177,7 @@ The parameter `cloudFoundry` has to contain the following configuration values:
 
 Example:
 ```yaml
-integrationTests:
+backendIntegrationTests:
   retry: 2
   credentials:
     - alias: 'ERP'
@@ -190,11 +191,17 @@ integrationTests:
     PORT: 8234
 ```
 
+#### frontendIntegrationTests
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `dockerImage` | | | The docker image to be used for running frontend integration tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
+
 #### frontendUnitTests
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-node-chromium` | The docker image to be used for running frontend unit tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
+| `dockerImage` | | | The docker image to be used for running frontend unit tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
 
 #### endToEndTests
 
