@@ -120,7 +120,7 @@ general:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**/*.java` |
+| `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the sources root folder, i.e. `application/src/main/java` for maven projects and `srv/src/main/java` for MTA projects.<br/>Example: `generated/**/*.java`. Please find more details in the [maven plugin documentation for pmd](https://maven.apache.org/plugins/maven-pmd-plugin/pmd-mojo.html#excludes). |
 | `findbugsExcludesFile` | | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
 
 #### unitTests
