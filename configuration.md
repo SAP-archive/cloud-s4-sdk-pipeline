@@ -350,6 +350,7 @@ For `cfTargets` the following properties can be defined:
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 | `mtaExtensionDescriptor` |  |  | (**Only for MTA-projects**) Path to the mta extension description file. For more information on how to use those extension files please visit the [SAP HANA Developer Guide](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.02/en-US/51ac525c78244282919029d8f5e2e35d.html). |
+| `mtaExtensionCredentials` |  |  | (**Only for MTA-projects**) Map of credentials that need to be replaced in the `mtaExtensionDescriptor`. This map needs to be created as `value-to-be-replaced`:`id-of-a-credential-in-jenkins` |
 
 ** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
 
@@ -366,10 +367,43 @@ productionDeployment:
      appName: 'exampleapp'
      manifest: 'manifest.yml'
      credentialsId: 'CF-DEPLOY'
-     apiEndpoint: '<Cloud Foundry API endpoint>'
-     mtaExtensionDescriptor: 'path to mta extension description file'
+     apiEndpoint: '<Cloud Foundry API endpoint>'       
 ```
 
+The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
+In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `pipeline_config.yml` as shown below.
+
+Please note currently only the Jenkins [Sercret text](https://jenkins.io/doc/book/using/using-credentials/) is the supported format for runtime credential substitution. 
+
+```yaml
+#pipeline_config.yml
+productionDeployment:
+  appUrls:
+   - url: <application url>
+     credentialId: e2e-test-user-cf
+  cfTargets:
+   - space: 'Prod'
+     org: 'myorg'
+     appName: 'exampleapp'
+     manifest: 'manifest.yml'
+     credentialsId: 'CF-DEPLOY'
+     apiEndpoint: '<Cloud Foundry API endpoint>'
+     mtaExtensionDescriptor: 'path to mta extension description file'
+     mtaExtensionCredentials:
+       brokerCredential: sercretText-id-in-jenkins
+```
+
+```yaml
+#extension_file.mtaext
+_schema-version: "3.1"
+version: 0.0.1
+extends: myApplication
+ID: my-application
+parameters:
+  broker-credentials: <%= brokerCredential %>
+```
+
+ 
 For `neoTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
