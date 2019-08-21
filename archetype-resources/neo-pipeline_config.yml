@@ -29,7 +29,7 @@ steps:
 
 ### Stage-specific configuration
 stages:
-#  integrationTests:
+#  backendIntegrationTests:
 #    credentials:
 #      - alias: 'mySystemAlias'
 #        credentialId: 'mySystemCredentialsId'

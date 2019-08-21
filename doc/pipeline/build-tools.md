@@ -14,28 +14,29 @@ The supported build tools are: [Maven](https://maven.apache.org/) for Java proje
 
 Support for the different features of the pipeline may vary in each variant of the SDK pipeline build tool. The following table gives an overview over the features available per build tool.
 
-| Feature                   | Maven | NPM | MTA |
-| ------------------------- |------ | --- | --- |
-| Automatic Versioning      |   x   |     |  x  |
-| Build                     |   x   |  x  |  x  |
-| Backend Integration Tests |   x   |  x  |  x  |
-| Backend Unit Tests        |   x   |  x  |  x  |
-| Frontend Unit Tests       |   x   |  x  |  x  |
-| NPM Dependency Audit      |   x   |  x  |  x  |
-| Linting                   |   x   |     |  x  |
-| Static Code Checks        |   x   |     |  x  |
-| End-To-End Tests          |   x   |     |  x  |
-| Performance Tests         |   x   |     |  x  |
-| Resilience Checks         |   x   |     |  x  |
-| S4HANA Public APIs        |   x   |     |  x  |
-| CodeCoverage Checks       |   x   |  x  |  x  |
-| Checkmarx Integration     |   x   |     |  x  |
-| Fortify Integration       |   x   |     |  x  |
-| SourceClear Integration   |   x   |     |     |
-| Whitesource Integration   |   x   |  x  |  x  |
-| Deployment to Nexus       |   x   |     |  x  |
-| Zero Downtime Deployment  |   x   |  x  |  x* |
-| Download Cache            |   x   |  x  |  x  |
+| Feature                    | Maven | NPM | MTA |
+| -------------------------- |------ | --- | --- |
+| Automatic Versioning       |   x   |     |  x  |
+| Build                      |   x   |  x  |  x  |
+| Backend Integration Tests  |   x   |  x  |  x  |
+| Frontend Integration Tests |       |  x  |     |
+| Backend Unit Tests         |   x   |  x  |  x  |
+| Frontend Unit Tests        |   x   |  x  |  x  |
+| NPM Dependency Audit       |   x   |  x  |  x  |
+| Linting                    |   x   |     |  x  |
+| Static Code Checks         |   x   |     |  x  |
+| End-To-End Tests           |   x   |     |  x  |
+| Performance Tests          |   x   |     |  x  |
+| Resilience Checks          |   x   |     |  x  |
+| S4HANA Public APIs         |   x   |     |  x  |
+| CodeCoverage Checks        |   x   |  x  |  x  |
+| Checkmarx Integration      |   x   |     |  x  |
+| Fortify Integration        |   x   |     |  x  |
+| SourceClear Integration    |   x   |     |     |
+| Whitesource Integration    |   x   |  x  |  x  |
+| Deployment to Nexus        |   x   |     |  x  |
+| Zero Downtime Deployment   |   x   |  x  |  x* |
+| Download Cache             |   x   |  x  |  x  |
 
 *Note: The MTA version of the pipeline currently supports only Java based backend services.*
 
@@ -61,10 +62,18 @@ The command `npm run ci-frontend-unit-test` will be executed in this stage.
 Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/frontend-unit` in the root directory.
 The required format of the test result report is the JUnit format as an `.xml` file.
 The code coverage report can be published as html report and in the cobertura format.
-The cobertura report have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-integration/` as an `xml` file called `cobertura.frontend.unit.xml`. 
-The html report has to be stored in the directory `./s4hana_pipeline/reports/coverage-reports/backend-integration/report-html/ut/` as an `index.html` file.
+The cobertura report as html report has to be stored in the directory `./s4hana_pipeline/reports/coverage-reports/frontend-unit/report-html/ut/` as an `index.html` file.
 These coverage reports will then be published in Jenkins.
 Furthermore, if configured in the `pipeline_config.yml`, the pipeline ensures the configured level of code coverage. 
+
+#### Frontend Integration Tests
+
+The command `npm run ci-it-frontend` will be executed in this stage and has to be defined in the `package.json`in the root.
+In this stage, the frontend should be tested end-to-end without the backend. Therefore, even a browser is started to simulate user interactions.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/frontend-integration` in the root directory of the project.
+The required format of the test result report is the JUnit format as an `.xml` file.
+The user is responsible to use a proper reporters for generating the results.
+It is recommended to use the same tools as in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
 
 #### End-to-End Tests
 
@@ -149,7 +158,7 @@ This directory has to be defined as path in the `manifest.yml`.
 
 #### Backend Integration Tests
 
-The command `npm run ci-integration-test` will be executed in this stage.
+The command `npm run ci-it-backend` will be executed in this stage.
 Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-integration` in the root directory of the project.
 The required format of the test result report is the JUnit format as an `.xml` file.
 For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-integration/` in the cobertura format as an `xml` file.
@@ -158,7 +167,7 @@ We recommend the tools used in the `package.json` of this [example project](http
 
 #### Backend Unit Tests
 
-The command `npm run ci-backend-unit` will be executed in this stage.
+The command `npm run ci-backend-unit-test` will be executed in this stage.
 Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory of the project.
 The required format of the test result report is the JUnit format as an `.xml` file.
 For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-unit/` in the cobertura format as an `xml` file.

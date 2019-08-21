@@ -27,7 +27,7 @@ Archetypes for generating valid projects are provided.
 
 Projects built by SAP S/4HANA Cloud SDK Pipeline need to be Maven multi-module projects.
 Required modules are `application`, `integration-tests` and `unit-tests`.
-Additional modules are allowed.
+Additional modules are **not** allowed.
 
 ## Consequences
 
@@ -45,3 +45,5 @@ Additional modules are allowed.
 * Existing projects that want to adopt the Continuous Delivery Toolkit need to adapt to this structure
 * Tests that are in the `application` module are ignored by the Pipeline
     * The developer has to take care of putting tests into the correct module
+* The pipeline can assume which Maven module exist and thus scan them easily
+   * If this was not the case, the pipeline would have to rely on some method of module discovery which might be fragile

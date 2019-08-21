@@ -10,7 +10,8 @@
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
-    * [integrationTests](#integrationtests)
+    * [backendIntegrationTests](#backendintegrationtests)
+    * [frontendIntegrationTests](#frontendintegrationtests)
     * [frontendUnitTests](#frontendunittests)
     * [endToEndTests](#endtoendtests)
     * [npmAudit](#npmaudit)
@@ -119,7 +120,7 @@ general:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `pmdExcludes` | | | A comma-separated list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. Example: `src/main/java/generated/**` |
+| `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the sources root folder, i.e. `application/src/main/java` for maven projects and `srv/src/main/java` for MTA projects.<br/>Example: `generated/**/*.java`. Please find more details in the [maven plugin documentation for pmd](https://maven.apache.org/plugins/maven-pmd-plugin/pmd-mojo.html#excludes). |
 | `findbugsExcludesFile` | | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
 
 #### unitTests
@@ -128,7 +129,7 @@ general:
 | --- | --- | --- | --- |
 | `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
-#### integrationTests
+#### backendIntegrationTests
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -142,7 +143,7 @@ general:
 
 Example:
 ```yaml
-integrationTests:
+backendIntegrationTests:
   retry: 2
   credentials:
     - alias: 'ERP'
@@ -176,7 +177,7 @@ The parameter `cloudFoundry` has to contain the following configuration values:
 
 Example:
 ```yaml
-integrationTests:
+backendIntegrationTests:
   retry: 2
   credentials:
     - alias: 'ERP'
@@ -190,11 +191,17 @@ integrationTests:
     PORT: 8234
 ```
 
+#### frontendIntegrationTests
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `dockerImage` | | | The docker image to be used for running frontend integration tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
+
 #### frontendUnitTests
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-node-chromium` | The docker image to be used for running frontend unit tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
+| `dockerImage` | | | The docker image to be used for running frontend unit tests. **Note:** This will only change the docker image used for unit testing in the frontend. For switching all npm based steps to a different npm or chromium version, you should configure the dockerImage via the executeNpm step. |
 
 #### endToEndTests
 
@@ -213,7 +220,7 @@ By default this feature is turned off.
 Additional parameters can be passed for each end-to-end test deployment by specifying _optional_ `parameters` for an application URL.
 These parameters are appended to the npm command during execution.
 This could be used for example to split the entire end-to-end test scenario into multiple sub-scenarios and running these sub-scenarios on different deployments.
-For example, when using nightwatch, these scenarios can be defined via annotations in the test descriptions and can be called with the `--tag` parameter as shown in the example below.
+For example, when using nightwatch-api, these scenarios can be defined via annotations in the test descriptions and can be called with the `--tag` parameter as shown in the example below. Another option is to execute the end to end tests with various web browsers, e.g. chrome or firefox.
 
 Example:
 ```yaml
@@ -223,10 +230,10 @@ endToEndTests:
   appUrls:
    - url: <application url>
      credentialId: e2e-test-user-cf
-     parameters: '--tag scenario1'
+     parameters: '--tag scenario1 --NIGHTWATCH_ENV=chrome'
    - url: <application url 2>
      credentialId: e2e-test-user-cf
-     parameters: '--tag scenario2 --tag scenario3'
+     parameters: '--tag scenario2 --tag scenario3 --NIGHTWATCH_ENV=firefox'
 ```
 
 #### npmAudit
@@ -295,7 +302,7 @@ s4SdkQualityChecks:
 | --- | --- | --- | --- |
 | `groupId` | X | | Checkmarx Group ID|
 | `checkMarxProjectName` | | projectName defined in general | Name of the project on Checkmarx server.|
-| `filterPattern` | |`!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, **/*.js, **/*.java, **/*.ts`| Files which needs to be skipped during scanning.|
+| `filterPattern` | |`'!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, !**/test/**, !s4hana_pipeline/**, !**/unit-tests/**, !**/integration-tests/**, !**/frontend-unit-tests/**, !**/e2e-tests/**, !**/performance-tests/**, **/*.js, **/*.java, **/*.ts`| Files which needs to be skipped during scanning.|
 | `fullScansScheduled` | | `false`| Toggle to enable or disable full scan on a certain schedule.|
 | `incremental` | | `true`| Perform incremental scan with every run. If turned `false`, complete project is scanned on every submission.|
 | `vulnerabilityThresholdMedium` | |`0`| The threshold for medium level threats. If the findings are greater than this value, pipeline execution will result in failure.|
@@ -343,6 +350,7 @@ For `cfTargets` the following properties can be defined:
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 | `mtaExtensionDescriptor` |  |  | (**Only for MTA-projects**) Path to the mta extension description file. For more information on how to use those extension files please visit the [SAP HANA Developer Guide](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.02/en-US/51ac525c78244282919029d8f5e2e35d.html). |
+| `mtaExtensionCredentials` |  |  | (**Only for MTA-projects**) Map of credentials that need to be replaced in the `mtaExtensionDescriptor`. This map needs to be created as `value-to-be-replaced`:`id-of-a-credential-in-jenkins` |
 
 ** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
 
@@ -359,10 +367,43 @@ productionDeployment:
      appName: 'exampleapp'
      manifest: 'manifest.yml'
      credentialsId: 'CF-DEPLOY'
-     apiEndpoint: '<Cloud Foundry API endpoint>'
-     mtaExtensionDescriptor: 'path to mta extension description file'
+     apiEndpoint: '<Cloud Foundry API endpoint>'       
 ```
 
+The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
+In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `pipeline_config.yml` as shown below.
+
+Please note currently only the Jenkins [Sercret text](https://jenkins.io/doc/book/using/using-credentials/) is the supported format for runtime credential substitution. 
+
+```yaml
+#pipeline_config.yml
+productionDeployment:
+  appUrls:
+   - url: <application url>
+     credentialId: e2e-test-user-cf
+  cfTargets:
+   - space: 'Prod'
+     org: 'myorg'
+     appName: 'exampleapp'
+     manifest: 'manifest.yml'
+     credentialsId: 'CF-DEPLOY'
+     apiEndpoint: '<Cloud Foundry API endpoint>'
+     mtaExtensionDescriptor: 'path to mta extension description file'
+     mtaExtensionCredentials:
+       brokerCredential: sercretText-id-in-jenkins
+```
+
+```yaml
+#extension_file.mtaext
+_schema-version: "3.1"
+version: 0.0.1
+extends: myApplication
+ID: my-application
+parameters:
+  broker-credentials: <%= brokerCredential %>
+```
+
+ 
 For `neoTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
@@ -562,6 +603,8 @@ The following parameters can be configured for the Cloud Foundry environment.
 | `manifest` | X** (not for MTA) |  | Manifest file that needs to be used. |
 | `credentialsId` | X** |  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | | `https://api.cf.eu10.hana.ondemand.com` | URL to the Cloud Foundry endpoint. |
+| `mtaDeployParameters` | | | (**Only for MTA-projects**) Parameters which will be passed to the mta deployment |
+| `mtaExtensionDescriptor` | | | (**Only for MTA-projects**) Path to the mta extension description file. For more information on how to use those extension files please visit the [SAP HANA Developer Guide](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.02/en-US/51ac525c78244282919029d8f5e2e35d.html). |
 
 ** Mandatory only if not defined within stage property cfTargets individually for the corresponding stages.
 
