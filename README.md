@@ -12,7 +12,7 @@ The pipeline supports the following types of projects:
 * Java projects based on the [SAP Cloud SDK Archetypes](https://mvnrepository.com/artifact/com.sap.cloud.s4hana.archetypes).
 * JavaScript projects based on the [SAP Cloud SDK JavaScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-js).
 * TypeScript projects based on the [SAP Cloud SDK TypeScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-ts).
-* SAP Cloud Application Programming Model (CAP) projects based on the WebIDE Template. 
+* SAP Cloud Application Programming Model (CAP) projects based on the _SAP Cloud Platform Business Application_ WebIDE Template. 
 
 You can find more details about the supported project types and build tools in our [documentation](doc/pipeline/build-tools.md).
 
