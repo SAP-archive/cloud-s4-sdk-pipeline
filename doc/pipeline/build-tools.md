@@ -181,7 +181,7 @@ Please leave the basic structure of the generated project intact.
 
 Make sure to check the _Include support for continuous delivery pipeline of SAP Cloud SDK_ checkbox, which will automatically add the required files for continous delivery in your project.
 
-If you alread created your project without this option, you'll need to copy and paste two files into the root directory of your project, and commit them to your git repository:
+If you already created your project without this option, you'll need to copy and paste two files into the root directory of your project, and commit them to your git repository:
 
 * [`Jenkinsfile`](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/Jenkinsfile)
 * [`pipeline_config.yml`](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/cf-pipeline_config.yml)
