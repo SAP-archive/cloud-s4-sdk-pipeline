@@ -9,9 +9,7 @@ This document summarizes the qualities that are checked by the SAP Cloud SDK Pip
 ### Required Dependencies
 
 For the SAP Cloud SDK specific checks to work, a few dependencies are required in unit and integration tests.
-Those dependencies are already fulfilled if your project was created using one of the [Maven archetypes](https://github.com/sap/cloud-s4-sdk-pipeline#download-and-installation).
-
-The pipeline will check if the odata-querylistener, rfc-querylistener, and the httpclient-listener dependencies are in the unit- and integration tests maven modules. If one of those dependencies is missing the pipeline will add the `listeners-all`dependency to the pom before executing the respective tests.
+The Cloud SDK pipeline will check if the odata-querylistener, rfc-querylistener, and the httpclient-listener dependencies are in the unit- and integration tests maven modules. If one of those dependencies is missing the pipeline will add the `listeners-all`dependency to the pom on the fly before executing the respective tests. That means for a user of the SDK it is not necessary to add those dependencies manually, but it can be beneficial to speed up the runtime of the pipeline since the pom.xml won't be changed if the dependencies are available.
 
 ### Only Depend on Official API
 
