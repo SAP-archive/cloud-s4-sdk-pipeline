@@ -90,7 +90,6 @@ The SAP Cloud SDK Pipeline includes commonly used static checks using both [PMD]
 
 In addition to the default checks of those tools, it adds the following SAP Cloud SDK specific checks:
 
-* When instantiating a logger, always use `CloudLoggerFactory` to use the logger provided by the SDK
 * To make post-mortem debugging possible
     * Log the exception in the catch block or in a called handling method or reference it in a new thrown exception
     * Reference the exception when logging inside a catch block
