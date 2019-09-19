@@ -9,23 +9,7 @@ This document summarizes the qualities that are checked by the SAP Cloud SDK Pip
 ### Required Dependencies
 
 For the SAP Cloud SDK specific checks to work, a few dependencies are required in unit and integration tests.
-Those dependencies are already fulfilled if your project was created using one of the [Maven archetypes](https://github.com/sap/cloud-s4-sdk-pipeline#download-and-installation).
-
-If one of the following dependencies is missing in either the unit tests or integration tests module, the build fails:
-
-* `com.sap.cloud.s4hana.quality:odata-querylistener`
-* `com.sap.cloud.s4hana.quality:rfc-querylistener`
-* `com.sap.cloud.s4hana.quality:httpclient-listener`
-
-To add them all to the respective unit- and integration-test pom file, dependency `listeners-all` may be used as in this example:
-
-```
-<dependency>
-   <groupId>com.sap.cloud.s4hana.quality</groupId>
-   <artifactId>listeners-all</artifactId>
-   <scope>test</scope>
-</dependency>
-```
+The Cloud SDK pipeline will check if the odata-querylistener, rfc-querylistener, and the httpclient-listener dependencies are in the unit- and integration tests maven modules. If one of those dependencies is missing the pipeline will add the `listeners-all`dependency to the pom on the fly before executing the respective tests. That means for a user of the SDK it is not necessary to add those dependencies manually, but it can be beneficial to speed up the runtime of the pipeline since the pom.xml won't be changed if the dependencies are available.
 
 ### Only Depend on Official API
 
@@ -44,7 +28,10 @@ The fallback might use cached data, or default values, depending on what works b
 
 To implement this pattern, the SAP Cloud SDK integrates with the [Hystrix](https://github.com/Netflix/Hystrix) library.
 
-This quality check tests, that your remote calls are wrapped in a Hystrix command.
+The version 3 of the SAP Cloud SDK integrates with the [resilience4j](https://github.com/resilience4j/resilience4j) library.
+
+This quality check tests, that your remote calls are wrapped in a Hystrix command (v2) or in a ResilienceDecorator (v3).
+
 The build will fail with a error message like `Your project accesses downstream systems in a non-resilient manner` if this is not the case.
 
 More information on building resilient applications is available in [this blog post](https://blogs.sap.com/2017/06/23/step-5-resilience-with-hystrix/).
@@ -103,7 +90,6 @@ The SAP Cloud SDK Pipeline includes commonly used static checks using both [PMD]
 
 In addition to the default checks of those tools, it adds the following SAP Cloud SDK specific checks:
 
-* When instantiating a logger, always use `CloudLoggerFactory` to use the logger provided by the SDK
 * To make post-mortem debugging possible
     * Log the exception in the catch block or in a called handling method or reference it in a new thrown exception
     * Reference the exception when logging inside a catch block

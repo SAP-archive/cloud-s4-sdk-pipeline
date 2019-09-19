@@ -53,6 +53,14 @@ Please provide the steps to reproduce the issue locally, for example like this:
 * Step 3: ...
 -->
 
+## Search for existing solution beforehand (Mandatory)
+
+* [ ] I searched for an existing solution on [StackOverflow](https://stackoverflow.com/questions/tagged/sap-cloud-sdk) and my question was not answered there
+* [ ] I searched for a similar GitHub issue before and found none
+* [ ] I checked the [pipeline configuration docs](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/configuration.md) and [the general pipeline docs](https://github.com/SAP/cloud-s4-sdk-pipeline/tree/master/doc/pipeline) for an answer of my issue
+
+***Please try the GitHub search, it works really well***
+
 ## Project Details (Mandatory)
 
 <!--
