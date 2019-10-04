@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v24'
+final def pipelineSdkVersion = 'v25'
 
 pipeline {
     agent any
@@ -125,6 +125,7 @@ pipeline {
     post {
         always {
             script {
+                postActionArchiveDebugLog script: this
                 if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
