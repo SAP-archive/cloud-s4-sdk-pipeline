@@ -125,6 +125,7 @@ pipeline {
     post {
         always {
             script {
+                postActionArchiveDebugLog script: this
                 if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }

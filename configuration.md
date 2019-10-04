@@ -39,6 +39,7 @@
     * [createHdiContainer](#createhdicontainer)
   * [Post action configuration](#post-action-configuration)
     * [sendNotification](#sendnotification)
+    * [archiveDebugLog](#archiveDebugLog)
 
 ## Pipeline configuration
 
@@ -765,4 +766,20 @@ postActions:
     recipients:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
+```
+
+#### archiveDebugLog
+The `archiveDebugLog` post-build action can be used to create confidential (instead of redacted) debug logs.
+The difference between the redacted and the confidential debug log is, that potentially confidential information, such as the GitHub repository and branch, global extension repository and shared libraries, are included in the confidential debug log. It is the user's responsibility to make sure that the debug log does not contain any confidential information.
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+|`shareConfidentialInformation`| |`false`| If set to `true`, a confidential debug log is being generated with each build.
+
+Example:
+
+```yaml
+postActions:
+  archiveDebugLog:
+    shareConfidentialInformation: true
 ```
