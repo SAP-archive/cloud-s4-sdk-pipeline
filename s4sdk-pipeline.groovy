@@ -129,6 +129,7 @@ pipeline {
                 if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
+                postActionCleanupStashesLocks script:this
                 sendAnalytics script:this
             }
         }
