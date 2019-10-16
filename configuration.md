@@ -101,18 +101,18 @@ If the Jenkins is running on a kubernetes cluster as a pod, we can use the dynam
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `jnlpAgent` | | `s4sdk/jenkins-agent-k8s:latest` | Docker image for `jnlp` agent to be used |
+| `jnlpAgent` | | `jenkins/jnlp-slave:latest` | Docker image for `jnlp` agent to be used |
 
 In the Jenkins configuration section under `Manage Jenkins` menu, set the value for your environment variable under `Global properties` section.
 
 ![Environment variable configuration](images/k8s-environment-config.jpg)
 
-The Jenkins spins up `jnlp` agent nodes on demand. By default, the `s4sdk/jnlp-agent-k8s` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `jenkins/jnlp-slave` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
 
 ```yaml
 general:
   jenkinsKubernetes:
-    jnlpAgent: s4sdk/jenkins-agent-k8s:latest
+    jnlpAgent: jenkins/jnlp-slave:latest
 ```
 
 ### Stage configuration
@@ -128,7 +128,7 @@ general:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
+| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
 #### backendIntegrationTests
 
@@ -565,7 +565,7 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The image to be used for executing maven commands. |
+| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. |
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
 #### executeNpm
@@ -573,7 +573,7 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-node-chromium` | The image to be used for executing npm commands. |
+| `dockerImage` | | `ppiper/node-browsers` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
 
 
@@ -581,14 +581,14 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-maven-npm` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
+| `dockerImage` | | `ppiper/mta-archive-builder` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
 #### cloudFoundryDeploy
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
+| `dockerImage` | | `ppiper/cf-cli` | A docker image that contains the Cloud Foundry CLI |
 | `smokeTestStatusCode` | | `200` | Expected return code for smoke test success. |
 |`keepOldInstance`| | true | In case of a `blue-green` deployment the old instance will be stopped and will remain in the Cloud Foundry space by default. If this option is set to false, the old instance will be deleted. |
 |`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
@@ -613,7 +613,7 @@ Example:
 
 ```yaml
 cloudFoundryDeploy:
-  dockerImage: 's4sdk/docker-cf-cli'
+  dockerImage: 'ppiper/cf-cli'
   smokeTestStatusCode: '200'
   cloudFoundry:
     org: 'orgname'
@@ -628,7 +628,7 @@ cloudFoundryDeploy:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-neo-cli` | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
+| `dockerImage` | | `ppiper/neo-cli` | A docker image that contains the Neo CLI. Example value: `ppiper/neo-cli` |
 | `neo` | X | | A map containing the configuration relevant for the deployment to Neo as listed below |
 
 Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt).
@@ -742,7 +742,7 @@ executeFortifyScan:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` |  | `s4sdk/docker-cf-cli` | Docker image including the Cloud Foundry cli |
+| `dockerImage` |  | `ppiper/cf-cli` | Docker image including the Cloud Foundry cli |
 
 ### Post action configuration
 

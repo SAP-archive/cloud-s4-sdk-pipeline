@@ -35,7 +35,7 @@ The `cx-server` can be customized to fit your use case. The `server.cfg` file co
 
   | Property | Mandatory | Default Value | Description |
   | --- | --- | --- | --- |
-  |`docker_image` | X | `s4sdk/jenkins-master:latest`|  Jenkins docker image name with the version to be used|
+  |`docker_image` | X | `ppiper/jenkins-master`|  Jenkins docker image name with the version to be used|
   |`docker_registry` |  | Default docker registry used by the docker demon on the host machine |  Docker registry to be used to pull docker images from|
   |`jenkins_home`| X|`jenkins_home_volume`| The volume to be used as a `jenkins_home`. Please ensure, this volume is accessible by the user with id `1000` |
   |`http_port`| X (If `tls_enabled` is `false`) |`80`| The HTTP port on which the server listens for incoming connections.|
@@ -115,10 +115,10 @@ The `cx-server` script can be updated via the `update script` command, if a new 
 ##### update image
 By default, the Cx Server image defined by `docker_image` in `server.cfg` always points to the newest released version.
 In productive environments, you will however likely want to fix the Cx Server image to a specific version.
-By defining `docker_image` with a version tag (e.g. `docker_image=s4sdk/jenkins-master:v3`), you avoid unintended updates as a side-effect of restarting the Continuous Delivery server.
+By defining `docker_image` with a version tag (e.g. `docker_image=ppiper/jenkins-master:v3`), you avoid unintended updates as a side-effect of restarting the Continuous Delivery server.
 However, this introduces the risk of getting stuck on an outdated version. Therefore, if you are using an outdated Cx Server version, the `cx-server` script will warn you and recommend to run the `cx-server update image` command.
 The `cx-server update image` command updates the Cx Server to the newest available version.
-If `v6` is the newest released version, running an update with `docker_image=s4sdk/jenkins-master:v3` will update the configuration to `docker_image=s4sdk/jenkins-master:v6`.
+If `v6` is the newest released version, running an update with `docker_image=ppiper/jenkins-master:v3` will update the configuration to `docker_image=ppiper/jenkins-master:v6`.
 For this, it executes the following sequence of steps:
 * Stop potentially running Cx Server instance
 * Perform full backup of home directory
