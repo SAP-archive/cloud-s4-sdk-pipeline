@@ -336,7 +336,7 @@ checkmarxScan:
 | `cfTargets` | | | The list of productive Cloud Foundry deployment targets to be deployed when a build of your productive branch succeeds. |
 | `neoTargets`| | | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
 | `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
-
+| `tmsUpload` | | | The paramaters which are needed to enable step 'tmsUpload'. |
 
 You can either specify the property `cfTargets` or `neoTargets`.
 
@@ -434,6 +434,25 @@ productionDeployment:
     vmArguments: '-Dargument1=value1 -Dargument2=value2'
     runtime: 'neo-javaee6-wp'
     runtimeVersion: '2'
+```
+
+
+For `tmsUpload` the following properties can be defined:
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `nodeName` | X | | Defines the name of the node to which the *.mtar file should be uploaded.|
+| `credentialsId` | X | | ID of the credentials stored in Jenkins and used to authenticate against SAP Cloud Platform Transport Management. |
+| `customDescription` | | Corresponding Git Commit-ID | Custom Description of a transport request. |
+
+Example:
+
+```yaml
+productionDeployment:
+  tmsUpload:
+      nodeName: 'TEST'
+      credentialsId: 'TMS-UPLOAD'
+      customDescription: 'A custom description for the node upload'
 ```
 #### artifactDeployment
 
