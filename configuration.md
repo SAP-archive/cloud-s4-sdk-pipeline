@@ -738,6 +738,8 @@ executeFortifyScan:
 | --- | --- | --- | --- |
 | `dockerImage` | | `ppiper/mta-archive-builder` | Docker image including Multi-target Application Archive Builder. Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up. |
 
+Besides `dockerImage` all configuration parameters as stated in [jenkins-library documentation](https://sap.github.io/jenkins-library/steps/mtaBuild/) are available.
+
 #### createHdiContainer
 
 | Property | Mandatory | Default Value | Description |
