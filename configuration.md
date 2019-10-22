@@ -278,6 +278,7 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
+| `threshold` | | | This setting allows the code coverage to be stricter compared to the default values. By default, the pipeline will fail if the coverage is below 65% line coverage (`unstableCoverage`), and will be unstable if it is less than 70% (`successCoverage`). If lower numbers are configured, or this configuration is left out, the default values are applied. |
 | `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
 | `nonErpDestinations` | | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
 | `codeCoverageFrontend` | | | A map containing the thresholds unstable and failing. If the code coverage is lower than what is configured in unstable, the pipeline result is unstable. If it is lower than what is configured in failing, the pipeline will fail. |
@@ -289,6 +290,9 @@ s4SdkQualityChecks:
   jacocoExcludes:
     - '**/HelloWorld.class'
     - '**/generated/**'
+  threshold:
+    successCoverage: 85
+    unstableCoverage: 70
   customODataServices:
     - 'API_myCustomODataService'
   codeCoverageFrontend:
