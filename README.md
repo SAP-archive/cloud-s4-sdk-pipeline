@@ -29,7 +29,7 @@ The pipeline will refuse to run with less than one gigabyte available disk space
 For instantiating the SAP Cloud SDK Cx Server, you need to provide a suitable host with a Linux operating system and Docker installed.
 Please also ensure that the user with whom you start the Cx Server belongs to the `docker` group.
 
-Please refer to the [operations guide](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/operations/operations-guide.md#system-requirement) for more details on hardware and software requirements.
+Please refer to the [operations guide](https://github.com/SAP/devops-docker-cx-server/blob/master/docs/operations/cx-server-operations-guide.md#system-requirement) for more details on hardware and software requirements.
 
 Your project source files need to be available on a git or GitHub server, which is accessible from the Cx Server host.
 
