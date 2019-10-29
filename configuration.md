@@ -599,7 +599,7 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | --- | --- | --- | --- |
 | `dockerImage` | | `ppiper/node-browsers` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
-
+| `sapNpmRegistry` | | | The default npm registry url to be used as the remote mirror for the SAP npm packages. Bypasses the local download cache if specified.  |
 
 #### executeSourceClearScan
 
