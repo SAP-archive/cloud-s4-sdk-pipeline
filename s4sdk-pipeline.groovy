@@ -104,6 +104,10 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.runStage.ADDITIONAL_TOOLS } }
                     steps { stageAdditionalTools script: this }
                 }
+                stage('SonarQube Scan'){
+                    when { expression { commonPipelineEnvironment.configuration.runStage.SONARQUBE_SCAN } }
+                    steps { stageSonarQubeScan script: this }
+                }
             }
         }
 

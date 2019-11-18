@@ -25,6 +25,7 @@
     * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
     * [lint](#lint)
+    * [sonarQubeScan](#sonarqubescan)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
@@ -581,6 +582,32 @@ To enable ES6 language features, set the flag `enableES6` to `true` as in the ex
 
 Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
 For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
+
+
+#### sonarQubeScan
+
+Configure [SonarQube](https://www.sonarqube.org/) scans.
+
+This is an optional feature for teams who prefer to use SonarQube. Note that it does some scans that are already done by the pipeline by default.
+It will only run on the productive branch because SonarQube supports only a single branch in the free "community" version.
+If you require it on multiple branches, please open an [GitHub issue](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `projectKey` | X | | The project is used to refer your project. |
+| `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
+| `sonarProperties` | | | The properties are used to configure sonar. Please refer to the example below. |
+
+Example:
+
+```yaml
+sonarQubeScan:
+    projectKey: "my-project"
+    instance: "MySonar"
+    sonarProperties:
+        - 'sonar.jacoco.reportPaths=s4hana_pipeline/reports/coverage-reports/unit-tests.exec,s4hana_pipeline/reports/coverage-reports/integration-tests.exec'
+        - 'sonar.sources=./application'
+```
 
 ### Step configuration
 
