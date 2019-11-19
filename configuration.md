@@ -7,6 +7,7 @@
     * [automaticVersioning](#automaticversioning)
     * [features](#features)
     * [jenkinsKubernetes](#jenkinskubernetes)
+    * [sharedConfiguration](#sharedconfiguration)
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
@@ -61,6 +62,7 @@ To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customiz
 | `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
+| `sharedConfiguration` | | | Path to a shared configuration file which is merged with the project's configuration file. |
 
 #### automaticVersioning
 The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
@@ -115,6 +117,12 @@ general:
   jenkinsKubernetes:
     jnlpAgent: jenkins/jnlp-slave:latest
 ```
+
+#### sharedConfiguration
+
+URL of a shared configuration file.
+Useful if many projects require similar or identical confiugration in large parts.
+See [`shared-config-between-projects.md`](doc/pipeline/shared-config-between-projects.md) for more details.
 
 ### Stage configuration
 
