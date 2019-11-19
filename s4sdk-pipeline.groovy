@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v25'
+final def pipelineSdkVersion = 'v26'
 
 pipeline {
     agent any
@@ -34,6 +34,7 @@ pipeline {
                     steps { stageStaticCodeChecks script: this }
                 }
                 stage("Lint") {
+                    when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
                     steps { stageLint script: this }
                 }
                 stage("Backend Unit Tests") {
@@ -104,6 +105,10 @@ pipeline {
                     when { expression { commonPipelineEnvironment.configuration.runStage.ADDITIONAL_TOOLS } }
                     steps { stageAdditionalTools script: this }
                 }
+                stage('SonarQube Scan'){
+                    when { expression { commonPipelineEnvironment.configuration.runStage.SONARQUBE_SCAN } }
+                    steps { stageSonarQubeScan script: this }
+                }
             }
         }
 
@@ -129,6 +134,7 @@ pipeline {
                 if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
+                postActionCleanupStashesLocks script:this
                 sendAnalytics script:this
             }
         }

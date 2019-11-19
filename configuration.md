@@ -7,6 +7,7 @@
     * [automaticVersioning](#automaticversioning)
     * [features](#features)
     * [jenkinsKubernetes](#jenkinskubernetes)
+    * [sharedConfiguration](#sharedconfiguration)
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
     * [unitTests](#unittests)
@@ -25,6 +26,7 @@
     * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
     * [lint](#lint)
+    * [sonarQubeScan](#sonarqubescan)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
@@ -60,6 +62,7 @@ To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customiz
 | `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
+| `sharedConfiguration` | | | Path to a shared configuration file which is merged with the project's configuration file. |
 
 #### automaticVersioning
 The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
@@ -101,19 +104,25 @@ If the Jenkins is running on a kubernetes cluster as a pod, we can use the dynam
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `jnlpAgent` | | `s4sdk/jenkins-agent-k8s:latest` | Docker image for `jnlp` agent to be used |
+| `jnlpAgent` | | `jenkins/jnlp-slave:latest` | Docker image for `jnlp` agent to be used |
 
 In the Jenkins configuration section under `Manage Jenkins` menu, set the value for your environment variable under `Global properties` section.
 
 ![Environment variable configuration](images/k8s-environment-config.jpg)
 
-The Jenkins spins up `jnlp` agent nodes on demand. By default, the `s4sdk/jnlp-agent-k8s` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `jenkins/jnlp-slave` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
 
 ```yaml
 general:
   jenkinsKubernetes:
-    jnlpAgent: s4sdk/jenkins-agent-k8s:latest
+    jnlpAgent: jenkins/jnlp-slave:latest
 ```
+
+#### sharedConfiguration
+
+URL of a shared configuration file.
+Useful if many projects require similar or identical confiugration in large parts.
+See [`shared-config-between-projects.md`](doc/pipeline/shared-config-between-projects.md) for more details.
 
 ### Stage configuration
 
@@ -128,7 +137,7 @@ general:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
+| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
 #### backendIntegrationTests
 
@@ -278,8 +287,10 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
+| `threshold` | | | This setting allows the code coverage to be stricter compared to the default values. By default, the pipeline will fail if the coverage is below 65% line coverage (`unstableCoverage`), and will be unstable if it is less than 70% (`successCoverage`). If lower numbers are configured, or this configuration is left out, the default values are applied. |
 | `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
 | `nonErpDestinations` | | | List of destination names that do not refer to ERP systems. Use this parameter to exclude specific destinations from being checked in context of ERP API whitelists. |
+| `nonErpUrls` | | | List of URLs that are not defined as destinations. Use this parameter to exclude specific URLs from being checked in context of ERP API whitelists. |
 | `codeCoverageFrontend` | | | A map containing the thresholds unstable and failing. If the code coverage is lower than what is configured in unstable, the pipeline result is unstable. If it is lower than what is configured in failing, the pipeline will fail. |
 
 Example:
@@ -289,6 +300,9 @@ s4SdkQualityChecks:
   jacocoExcludes:
     - '**/HelloWorld.class'
     - '**/generated/**'
+  threshold:
+    successCoverage: 85
+    unstableCoverage: 70
   customODataServices:
     - 'API_myCustomODataService'
   codeCoverageFrontend:
@@ -336,7 +350,7 @@ checkmarxScan:
 | `cfTargets` | | | The list of productive Cloud Foundry deployment targets to be deployed when a build of your productive branch succeeds. |
 | `neoTargets`| | | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
 | `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
-
+| `tmsUpload` | | | The paramaters which are needed to enable step 'tmsUpload'. |
 
 You can either specify the property `cfTargets` or `neoTargets`.
 
@@ -434,6 +448,25 @@ productionDeployment:
     vmArguments: '-Dargument1=value1 -Dargument2=value2'
     runtime: 'neo-javaee6-wp'
     runtimeVersion: '2'
+```
+
+
+For `tmsUpload` the following properties can be defined:
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `nodeName` | X | | Defines the name of the node to which the *.mtar file should be uploaded.|
+| `credentialsId` | X | | ID of the credentials stored in Jenkins and used to authenticate against SAP Cloud Platform Transport Management. |
+| `customDescription` | | Corresponding Git Commit-ID | Custom Description of a transport request. |
+
+Example:
+
+```yaml
+productionDeployment:
+  tmsUpload:
+      nodeName: 'TEST'
+      credentialsId: 'TMS-UPLOAD'
+      customDescription: 'A custom description for the node upload'
 ```
 #### artifactDeployment
 
@@ -558,6 +591,32 @@ To enable ES6 language features, set the flag `enableES6` to `true` as in the ex
 Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
 For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
 
+
+#### sonarQubeScan
+
+Configure [SonarQube](https://www.sonarqube.org/) scans.
+
+This is an optional feature for teams who prefer to use SonarQube. Note that it does some scans that are already done by the pipeline by default.
+It will only run on the productive branch because SonarQube supports only a single branch in the free "community" version.
+If you require it on multiple branches, please open an [GitHub issue](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `projectKey` | X | | The project is used to refer your project. |
+| `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
+| `sonarProperties` | | | The properties are used to configure sonar. Please refer to the example below. |
+
+Example:
+
+```yaml
+sonarQubeScan:
+    projectKey: "my-project"
+    instance: "MySonar"
+    sonarProperties:
+        - 'sonar.jacoco.reportPaths=s4hana_pipeline/reports/coverage-reports/unit-tests.exec,s4hana_pipeline/reports/coverage-reports/integration-tests.exec'
+        - 'sonar.sources=./application'
+```
+
 ### Step configuration
 
 #### mavenExecute
@@ -565,7 +624,7 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.5-jdk-8-alpine` | The image to be used for executing maven commands. |
+| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. |
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
 #### executeNpm
@@ -573,22 +632,22 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-node-chromium` | The image to be used for executing npm commands. |
+| `dockerImage` | | `ppiper/node-browsers:v2` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
-
+| `sapNpmRegistry` | | | The default npm registry url to be used as the remote mirror for the SAP npm packages. Bypasses the local download cache if specified.  |
 
 #### executeSourceClearScan
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-maven-npm` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
+| `dockerImage` | | `ppiper/mta-archive-builder` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
 #### cloudFoundryDeploy
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-cf-cli` | A docker image that contains the Cloud Foundry CLI |
+| `dockerImage` | | `ppiper/cf-cli` | A docker image that contains the Cloud Foundry CLI |
 | `smokeTestStatusCode` | | `200` | Expected return code for smoke test success. |
 |`keepOldInstance`| | true | In case of a `blue-green` deployment the old instance will be stopped and will remain in the Cloud Foundry space by default. If this option is set to false, the old instance will be deleted. |
 |`cloudFoundry`| | | A map specifying the Cloud Foundry specific parameters. |
@@ -613,7 +672,7 @@ Example:
 
 ```yaml
 cloudFoundryDeploy:
-  dockerImage: 's4sdk/docker-cf-cli'
+  dockerImage: 'ppiper/cf-cli'
   smokeTestStatusCode: '200'
   cloudFoundry:
     org: 'orgname'
@@ -628,7 +687,7 @@ cloudFoundryDeploy:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `s4sdk/docker-neo-cli` | A docker image that contains the Neo CLI. Example value: `s4sdk/docker-neo-cli` |
+| `dockerImage` | | `ppiper/neo-cli` | A docker image that contains the Neo CLI. Example value: `ppiper/neo-cli` |
 | `neo` | X | | A map containing the configuration relevant for the deployment to Neo as listed below |
 
 Please note that the neo tools are distributed under the [SAP DEVELOPER LICENSE](https://tools.hana.ondemand.com/developer-license-3_1.txt).
@@ -738,11 +797,13 @@ executeFortifyScan:
 | --- | --- | --- | --- |
 | `dockerImage` | | `ppiper/mta-archive-builder` | Docker image including Multi-target Application Archive Builder. Refer to [SAP Help Portal](https://help.sap.com/viewer/58746c584026430a890170ac4d87d03b/Cloud/en-US/ba7dd5a47b7a4858a652d15f9673c28d.html) for information on how to set it up. |
 
+Besides `dockerImage` all configuration parameters as stated in [jenkins-library documentation](https://sap.github.io/jenkins-library/steps/mtaBuild/) are available.
+
 #### createHdiContainer
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` |  | `s4sdk/docker-cf-cli` | Docker image including the Cloud Foundry cli |
+| `dockerImage` |  | `ppiper/cf-cli` | Docker image including the Cloud Foundry cli |
 
 ### Post action configuration
 

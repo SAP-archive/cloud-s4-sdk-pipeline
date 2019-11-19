@@ -11,10 +11,10 @@
 #    https://blogs.sap.com/2017/09/20/continuous-integration-and-delivery
 #
 # We aim to keep the pipeline configuration as stable as possible. However, major changes might also imply breaking
-# changes in the configuration. Before doing an update, please check the the release notes of all intermediate releases
+# changes in the configuration. Before doing an update, please check the release notes of all intermediate releases
 # and adapt this file if necessary.
 #
-# This is a YAML-file. YAML is a indentation-sensitive file format. Please make sure to properly indent changes to it.
+# This is a YAML-file. YAML is an indentation-sensitive file format. Please make sure to properly indent changes to it.
 ###
 
 
