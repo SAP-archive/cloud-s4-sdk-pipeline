@@ -12,7 +12,7 @@ The pipeline supports the following types of projects:
 * Java projects based on the [SAP Cloud SDK Archetypes](https://mvnrepository.com/artifact/com.sap.cloud.sdk.archetypes).
 * JavaScript projects based on the [SAP Cloud SDK JavaScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-js).
 * TypeScript projects based on the [SAP Cloud SDK TypeScript Scaffolding](https://github.com/SAP/cloud-s4-sdk-examples/tree/scaffolding-ts).
-* SAP Cloud Application Programming Model (CAP) projects based on the _SAP Cloud Platform Business Application_ SAP Web IDE Template. 
+* SAP Cloud Application Programming Model (CAP) projects based on the _SAP Cloud Platform Business Application_ SAP Web IDE Template.
 
 You can find more details about the supported project types and build tools in our [documentation](doc/pipeline/build-tools.md).
 
@@ -63,7 +63,7 @@ After that you can start the Jenkins server with following command:
 ./cx-server start
 ```
 
-In Jenkins, click on "New Item" and create a new "Multi-branch Pipeline" for your repository.  
+In Jenkins, click on "New Item" and create a new "Multi-branch Pipeline" for your repository.
 
 ### Versioning
 
@@ -100,7 +100,7 @@ Be sure to remove any confidential information before.
 If you need any support, have any question or have found a bug, please report it as an issue in the repository.
 
 ## License
-Copyright (c) 2017-2019 SAP SE or an SAP affiliate company. All rights reserved.
+Copyright (c) 2017-2020 SAP SE or an SAP affiliate company. All rights reserved.
 This file is licensed under the Apache Software License, v. 2 except as noted otherwise in the [LICENSE file](LICENSE).
 
 Note: This license does not apply to the SAP Cloud SDK for Continuous Delivery Logo referenced in this README.
