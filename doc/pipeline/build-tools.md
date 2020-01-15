@@ -1,46 +1,51 @@
 # Build Tools
 
 The SAP Cloud SDK supports multiple programming languages (Java and JavaScript) and can be used in the SAP Cloud Application Programming Model.
-For each of these variants project templates exists.
+For each of these variants project templates exists (as referenced in the project's main [Readme](../../README.md) file).
 These templates introduce standard tooling, such as build tools, and a standard structure.
 
 The SAP Cloud SDK Continuous Delivery Toolkit expects that the project follows this structure and depends on the build tools introduced by these templates.
 
-The supported build tools are: [Maven](https://maven.apache.org/) for Java projects, [NPM](https://www.npmjs.com/) for JavaScript projects, and [MTA](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.03/en-US/4486ada1af824aadaf56baebc93d0256.html) for SAP Cloud Application Programming Model.
+The supported build tools are:
 
-*Note: The JavaScript/NPM pipeline variant is in an early state. Some interfaces might change. We recommend to consume a fixed released version as described in the project [Readme](../../README.md#versioning).*
+* [Maven](https://maven.apache.org/) for Java projects
+* [npm](https://www.npmjs.com/) for JavaScript projects
+* [MTA](https://sap.github.io/cloud-mta-build-tool) for Multi-Target Application Model projects
+
+MTA itself makes use of other build tools, such as Maven and npm depending on what types of modules your application has.
+
+*Note: The npm pipeline variant is in an early state. Some interfaces might change. We recommend to consume a fixed released version as described in the project [Readme](../../README.md#versioning).*
 
 ## Feature Matrix
 
-Support for the different features of the pipeline may vary in each variant of the SDK pipeline build tool. The following table gives an overview over the features available per build tool.
+Support for the different features of the pipeline may vary in each variant of the SDK pipeline build tool.
+The following table gives an overview over the features available per build tool.
 
-| Feature                    | Maven | NPM | MTA |
-| -------------------------- |------ | --- | --- |
-| Automatic Versioning       |   x   |     |  x  |
-| Build                      |   x   |  x  |  x  |
-| Backend Integration Tests  |   x   |  x  |  x  |
-| Frontend Integration Tests |       |  x  |     |
-| Backend Unit Tests         |   x   |  x  |  x  |
-| Frontend Unit Tests        |   x   |  x  |  x  |
-| NPM Dependency Audit       |   x   |  x  |  x  |
-| Linting                    |   x   |     |  x  |
-| Static Code Checks         |   x   |     |  x  |
-| End-To-End Tests           |   x   |     |  x  |
-| Performance Tests          |   x   |     |  x  |
-| Resilience Checks          |   x   |     |  x  |
-| S4HANA Public APIs         |   x   |     |  x  |
-| CodeCoverage Checks        |   x   |  x  |  x  |
-| Checkmarx Integration      |   x   |     |  x  |
-| Fortify Integration        |   x   |     |  x  |
-| SourceClear Integration    |   x   |     |     |
-| Whitesource Integration    |   x   |  x  |  x  |
-| Deployment to Nexus        |   x   |     |  x  |
-| Zero Downtime Deployment   |   x   |  x  |  x* |
-| Download Cache             |   x   |  x  |  x  |
+| Feature                    | Maven | npm | MTA Maven | MTA npm |
+|----------------------------|-------|-----|-----------|---------|
+| Automatic Versioning       | x     |     | x         | x       |
+| Build                      | x     | x   | x         | x       |
+| Backend Integration Tests  | x     | x   | x         | x       |
+| Frontend Integration Tests |       | x   |           | x       |
+| Backend Unit Tests         | x     | x   | x         | x       |
+| Frontend Unit Tests        | x     | x   | x         | x       |
+| NPM Dependency Audit       | x     | x   | x         | x       |
+| Linting                    | x     |     | x         | x       |
+| Static Code Checks         | x     |     | x         |         |
+| End-To-End Tests           | x     |     | x         | x       |
+| Performance Tests          | x     |     | x         |         |
+| Resilience Checks          | x     |     | x         |         |
+| S4HANA Public APIs         | x     |     | x         |         |
+| Code Coverage Checks       | x     | x   | x         | x       |
+| Checkmarx Integration      | x     |     | x         |         |
+| Fortify Integration        | x     |     | x         |         |
+| SourceClear Integration    | x     |     |           |         |
+| Whitesource Integration    | x     | x   | x         | x       |
+| Deployment to Nexus        | x     |     | x         | x       |
+| Zero Downtime Deployment   | x     | x   | x¹        | x¹      |
+| Download Cache             | x     | x   | x         | x       |
 
-*Note: The MTA version of the pipeline currently supports only Java based backend services.*
-
-*MTA projects can only be deployed to the Cloud Foundry Environment
+¹ MTA projects can only be deployed to the Cloud Foundry Environment
 
 ## Projects Requirements
 
@@ -51,10 +56,10 @@ In any case, please also consult the [documentation of the pipeline configuratio
 
 ### Build Tool Independent Requirements
 
-In order to run in the pipeline your project has to include the following two files in the root folder: `Jenkinsfile` and `pipeline_config.yml`. 
+In order to run in the pipeline your project has to include the following two files in the root folder: `Jenkinsfile` and `pipeline_config.yml`.
 You can copy both files from this [github repository](../../archetype-resources).
-There are two variants of the configuration file. 
-Please pick the corresponding version for your deployment target and rename it properly.  
+There are two variants of the configuration file.
+Please pick the corresponding version for your deployment target and rename it properly.
 
 #### Frontend Unit Tests
 
@@ -64,16 +69,55 @@ The required format of the test result report is the JUnit format as an `.xml` f
 The code coverage report can be published as html report and in the cobertura format.
 The cobertura report as html report has to be stored in the directory `./s4hana_pipeline/reports/coverage-reports/frontend-unit/report-html/ut/` as an `index.html` file.
 These coverage reports will then be published in Jenkins.
-Furthermore, if configured in the `pipeline_config.yml`, the pipeline ensures the configured level of code coverage. 
+Furthermore, if configured in the `pipeline_config.yml`, the pipeline ensures the configured level of code coverage.
+
+In MTA projects Frontend Unit Tests are executed for every module of type `html5`.
 
 #### Frontend Integration Tests
 
-The command `npm run ci-it-frontend` will be executed in this stage and has to be defined in the `package.json`in the root.
-In this stage, the frontend should be tested end-to-end without the backend. Therefore, even a browser is started to simulate user interactions.
+The command `npm run ci-it-frontend` will be executed in this stage and has to be defined in the `package.json` in the root.
+In this stage, the frontend should be tested end-to-end without the backend.
+Therefore, even a browser is started to simulate user interactions.
 Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/frontend-integration` in the root directory of the project.
 The required format of the test result report is the JUnit format as an `.xml` file.
 The user is responsible to use a proper reporters for generating the results.
 It is recommended to use the same tools as in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
+
+#### Backend Unit Tests
+
+##### Maven
+
+In the maven module called `unit-tests` we run the command `mvn test`.
+
+##### Java MTA modules
+
+We run the command `mvn test` in each Java MTA module.
+
+##### Npm and Nodejs MTA modules
+
+For each `package.json` where the script `ci-backend-unit-test` is defined the command `npm run ci-backend-unit-test` will be executed in this stage.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory of the project.
+The required format of the test result report is the JUnit format as an `.xml` file.
+For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-unit/` in the cobertura format as an `xml` file.
+The user is responsible to use a proper reporters for generating the results.
+We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
+If you have multiple npm packages with unit tests the names of the report files must have unique names.
+
+#### Backend Integration Tests
+
+##### Maven and Java MTA modules
+
+If there is a maven module called `integration-tests` we run `maven test` in this module.
+
+##### Npm and Nodejs MTA modules
+
+For each `package.json` where the script `ci-it-backend` is defined the command `npm run ci-it-backend` will be executed in this stage.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-integration` in the root directory of the project.
+The required format of the test result report is the JUnit format as an `.xml` file.
+For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-integration/` in the cobertura format as an `xml` file.
+The user is responsible to use a proper reporters for generating the results.
+We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
+If you have multiple npm packages with unit tests the names of the report files must have unique names.
 
 #### End-to-End Tests
 
@@ -135,10 +179,10 @@ Furthermore, the test modules have to include the following dependency:
 </dependency>
 ```
 
-### JavaScript / NPM
+### JavaScript / npm
 
-The project has to use NPM and include a package.json in the root directory.
-In the pipeline stages, specific scripts in the package.json are called to build the project or run tests.
+The project has to use npm and include a `package.json` in the root directory.
+In the pipeline stages, specific scripts in the `package.json` are called to build the project or run tests.
 Furthermore, the pipeline expects reports, such as test results, to be written into certain folders.
 These stage specific requirements are documented below.
 
@@ -155,24 +199,6 @@ This folder should not contain any non-production-related resources, such as tes
 This directory has to be defined as path in the `manifest.yml`.
 
 *Note: This steps runs isolated from the steps before. Thus, e.g. modifying node_modules with `npm prune --production` will not have an effect for later stages, such as the test execution.*
-
-#### Backend Integration Tests
-
-The command `npm run ci-it-backend` will be executed in this stage.
-Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-integration` in the root directory of the project.
-The required format of the test result report is the JUnit format as an `.xml` file.
-For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-integration/` in the cobertura format as an `xml` file.
-The user is responsible to use a proper reporters for generating the results.
-We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
-
-#### Backend Unit Tests
-
-The command `npm run ci-backend-unit-test` will be executed in this stage.
-Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory of the project.
-The required format of the test result report is the JUnit format as an `.xml` file.
-For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-unit/` in the cobertura format as an `xml` file.
-The user is responsible to use a proper reporters for generating the results.
-We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
 
 ### SAP Cloud Application Programming Model / MTA
 
@@ -217,4 +243,4 @@ In summary, the project structure should look like this:
     └── src
         ├── main
         └── test  // Unit-Tests for this service
-``` 
+```
