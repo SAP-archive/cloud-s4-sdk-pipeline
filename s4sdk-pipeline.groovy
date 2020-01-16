@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v27'
+final def pipelineSdkVersion = 'v28'
 
 pipeline {
     agent any

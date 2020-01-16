@@ -388,7 +388,7 @@ productionDeployment:
 The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
 In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `pipeline_config.yml` as shown below.
 
-Please note currently only the Jenkins [Sercret text](https://jenkins.io/doc/book/using/using-credentials/) is the supported format for runtime credential substitution. 
+Please note currently only the Jenkins [Sercret text](https://jenkins.io/doc/book/using/using-credentials/) is the supported format for runtime credential substitution.
 
 ```yaml
 #pipeline_config.yml
@@ -418,7 +418,7 @@ parameters:
   broker-credentials: <%= brokerCredential %>
 ```
 
- 
+
 For `neoTargets` the following properties can be defined:
 
 | Property | Mandatory | Default Value | Description |
@@ -797,7 +797,7 @@ executeFortifyScan:
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` | | `ppiper/mta-archive-builder` | Docker image including Multi-target Application Archive Builder. The default image is `ppiper/mta-archive-builder` for mtaBuildTool `classic`. And it takes `devxci/mbtci:1.0.4` as a default image for mtaBuildTool `cloudMbt`. |
-| `mtaBuildTool` | | `classic` | Choose which tool is used to build your mta project. The default option is `classic` uses the java based mta builder, which is deprecated. The newer version `cloudMbt` is written in go. For more information refer to https://sap.github.io/cloud-mta-build-tool. |
+| `mtaBuildTool` | | `cloudMbt` | Choose which tool is used to build your mta project. The default option is `cloudMbt` which is not backwards compatible with the `classic` tool. For more information on migrating from `classic` to `cloudMbt`, please refer to https://sap.github.io/cloud-mta-build-tool/migration/. |
 
 All configuration parameters as stated in [jenkins-library documentation](https://sap.github.io/jenkins-library/steps/mtaBuild/) are available.
 
