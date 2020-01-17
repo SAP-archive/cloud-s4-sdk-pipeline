@@ -26,7 +26,7 @@ The following table gives an overview over the features available per build tool
 | Automatic Versioning       | x     |     | x         | x       |
 | Build                      | x     | x   | x         | x       |
 | Backend Integration Tests  | x     | x   | x         | x       |
-| Frontend Integration Tests |       | x   |           | x       |
+| Frontend Integration Tests | x     | x   | x         | x       |
 | Backend Unit Tests         | x     | x   | x         | x       |
 | Frontend Unit Tests        | x     | x   | x         | x       |
 | NPM Dependency Audit       | x     | x   | x         | x       |
