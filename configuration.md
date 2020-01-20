@@ -286,6 +286,7 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
+| `disabledChecks` | | [] | A list of checks which should not be executed. Possible values are: `checkDeploymentDescriptors` (Check for insecure options, such as `ALLOW_MOCKED_AUTH_HEADER` in deployment descriptors), `checkResilience`(Check that application is resilient to faults in the network), `checkServices` (Check that only official APIs are used), `checkFrontendCodeCoverage` (Ensures high frontend code coverage), `checkBackendCodeCoverage` (Ensures high backend code coverage) |
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
 | `threshold` | | | This setting allows the code coverage to be stricter compared to the default values. By default, the pipeline will fail if the coverage is below 65% line coverage (`unstableCoverage`), and will be unstable if it is less than 70% (`successCoverage`). If lower numbers are configured, or this configuration is left out, the default values are applied. |
 | `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
@@ -297,6 +298,7 @@ Example:
 
 ```yaml
 s4SdkQualityChecks:
+  disabledChecks: []
   jacocoExcludes:
     - '**/HelloWorld.class'
     - '**/generated/**'
