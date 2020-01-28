@@ -577,7 +577,7 @@ It supports the SAPUI5 best practices linter which operates on SAPUI5 components
 A component is identified by a `Component.js` file in the directory.
 
 By default, the pipeline does not fail based on lint findings.
-If you'd like to enable thresholds for lint, you can it like in this example:
+The following example shows how to enable thresholds for linting:
 
 ```yaml
 lint:
@@ -591,8 +591,8 @@ lint:
 
 To enable ES6 language features, set the flag `enableES6` to `true` as in the example above.
 
-Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
-For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
+Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
+For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to integrate your own linters.
 
 
 #### sonarQubeScan
