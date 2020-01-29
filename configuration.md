@@ -27,6 +27,7 @@
     * [fortifyScan](#fortifyscan)
     * [lint](#lint)
     * [sonarQubeScan](#sonarqubescan)
+    * [postPipelineHook](#postpipelinehook)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
@@ -384,7 +385,7 @@ productionDeployment:
      appName: 'exampleapp'
      manifest: 'manifest.yml'
      credentialsId: 'CF-DEPLOY'
-     apiEndpoint: '<Cloud Foundry API endpoint>'       
+     apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
 The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
@@ -618,6 +619,20 @@ sonarQubeScan:
     sonarProperties:
         - 'sonar.jacoco.reportPaths=s4hana_pipeline/reports/coverage-reports/unit-tests.exec,s4hana_pipeline/reports/coverage-reports/integration-tests.exec'
         - 'sonar.sources=./application'
+```
+
+#### postPipelineHook
+
+This stage does nothing.
+Its purpose is to be overridden if required.
+
+See the documentation for [pipeline extensibility](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/pipeline/extensibility.md) for details on how to extend a stage.
+The name of an extension file must be `postPipelineHook.groovy`.
+Also, the stage (and thus an extension) is only executed if a stage configuration exists, like in this example:
+
+```yaml
+  postPipelineHook:
+    enabled: true
 ```
 
 ### Step configuration

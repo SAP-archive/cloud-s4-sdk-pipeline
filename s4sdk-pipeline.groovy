@@ -136,6 +136,12 @@ pipeline {
                 }
                 postActionCleanupStashesLocks script:this
                 sendAnalytics script:this
+
+                if (commonPipelineEnvironment?.configuration?.runStage?.POST_PIPELINE_HOOK) {
+                    stage('Post Pipeline Hook') {
+                        stagePostPipelineHook script: this
+                    }
+                }
             }
         }
         success {
