@@ -20,7 +20,7 @@ def call(Map parameters) {
 return this
 ```
 
-This needs to be saved to a file in your project's git repository with the name `pipeline/extensions/[Name of the Stage].groovy`.
+This needs to be saved to a file in your project's git repository with the name `.pipeline/extensions/[Name of the Stage].groovy`.
 
 The map named `parameters` has the properties `script`, `originalStage`, `stageName`, and `config`.
 
@@ -40,7 +40,7 @@ This stage does nothing in the Pipeline, its sole purpose is to be overwritten i
 Another good use-case for extensibility is to use custom linters.
 A linter is a tool that can check the source code for certain stylistic criteria, and many teams chose to use a linter to ensure a common programming style.
 
-As an example, if you want to use Checkstyle in your codebase, you might use an extension similar to this one in a file called `pipeline/extensions/lint.groovy` in your project:
+As an example, if you want to use Checkstyle in your codebase, you might use an extension similar to this one in a file called `.pipeline/extensions/lint.groovy` in your project:
 
 ```groovy
 def call(Map parameters) {
