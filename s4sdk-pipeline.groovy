@@ -130,12 +130,12 @@ pipeline {
     post {
         always {
             script {
-                postActionArchiveDebugLog script: this
+                debugReportArchive script: this
                 if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
-                postActionCleanupStashesLocks script:this
-                sendAnalytics script:this
+                postActionCleanupStashesLocks script: this
+                sendAnalytics script: this
 
                 if (commonPipelineEnvironment?.configuration?.runStage?.POST_PIPELINE_HOOK) {
                     stage('Post Pipeline Hook') {
@@ -151,6 +151,8 @@ pipeline {
                 }
             }
         }
-        failure { deleteDir() }
+        failure {
+            deleteDir()
+        }
     }
 }
