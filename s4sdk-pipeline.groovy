@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
                 milestone 20
                 stageBuild script: this
@@ -36,10 +36,6 @@ pipeline {
                 stage("Lint") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
                     steps { stageLint script: this }
-                }
-                stage("Backend Unit Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.runStage.BACKEND_UNIT_TESTS } }
-                    steps { stageUnitTests script: this }
                 }
                 stage("Backend Integration Tests") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.BACKEND_INTEGRATION_TESTS } }

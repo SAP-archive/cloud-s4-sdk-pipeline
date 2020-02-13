@@ -8,13 +8,13 @@ The SAP Cloud SDK Continuous Delivery Toolkit expects that the project follows t
 
 The supported build tools are:
 
-* [Maven](https://maven.apache.org/) for Java projects
-* [npm](https://www.npmjs.com/) for JavaScript projects
-* [MTA](https://sap.github.io/cloud-mta-build-tool) for Multi-Target Application Model projects
+- [Maven](https://maven.apache.org/) for Java projects
+- [npm](https://www.npmjs.com/) for JavaScript projects
+- [MTA](https://sap.github.io/cloud-mta-build-tool) for Multi-Target Application Model projects
 
 MTA itself makes use of other build tools, such as Maven and npm depending on what types of modules your application has.
 
-*Note: The npm pipeline variant is in an early state. Some interfaces might change. We recommend to consume a fixed released version as described in the project [Readme](../../README.md#versioning).*
+_Note: The npm pipeline variant is in an early state. Some interfaces might change. We recommend to consume a fixed released version as described in the project [Readme](../../README.md#versioning)._
 
 ## Feature Matrix
 
@@ -22,7 +22,7 @@ Support for the different features of the pipeline may vary in each variant of t
 The following table gives an overview over the features available per build tool.
 
 | Feature                    | Maven | npm | MTA Maven | MTA npm |
-|----------------------------|-------|-----|-----------|---------|
+| -------------------------- | ----- | --- | --------- | ------- |
 | Automatic Versioning       | x     |     | x         | x       |
 | Build                      | x     | x   | x         | x       |
 | Backend Integration Tests  | x     | x   | x         | x       |
@@ -83,15 +83,11 @@ The required format of the test result report is the JUnit format as an `.xml` f
 The user is responsible to use a proper reporters for generating the results.
 It is recommended to use the same tools as in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
 
-#### Backend Unit Tests
+#### Build-and-Test
 
-##### Maven
+##### Maven and Java MTA modules
 
-In the maven module called `unit-tests` we run the command `mvn test`.
-
-##### Java MTA modules
-
-We run the command `mvn test` in each Java MTA module.
+In the build stage the pipeline executes `mvn clean install` in the root of the project, therefore all modules configured in the root pom.xml will be built and tested. The `integration-tests` module will be excluded by default with the flag `-pl !integration-tests`.
 
 ##### Npm and Nodejs MTA modules
 
@@ -136,7 +132,7 @@ The credentials also defined in the file `pipeline_config.yml` will be available
 The test results have to be stored in the folder `./s4hana_pipeline/reports/e2e` in the root directory.
 The required format of the test result report is the Cucumber format as an `.json` file or the JUnit format as an xml file.
 Also screenshots can be stored in this folder
-The screenshots and reports  will then be published in Jenkins.
+The screenshots and reports will then be published in Jenkins.
 The user is responsible to use a proper reporter for generating the results.
 
 #### Performance Tests
@@ -154,7 +150,7 @@ Afterwards, Gatling has to be enable in the configuration.
 
 For all deployments to Cloud Foundry (excluding MTA) there has to be a file called `manifest.yml`.
 This file may only contain exactly one application.
-*Note: For JavaScript projects the path of the application should point to the folder `deployment`.*
+_Note: For JavaScript projects the path of the application should point to the folder `deployment`._
 
 ### Java / Maven
 
@@ -186,21 +182,29 @@ In the pipeline stages, specific scripts in the `package.json` are called to bui
 Furthermore, the pipeline expects reports, such as test results, to be written into certain folders.
 These stage specific requirements are documented below.
 
-#### Build
+#### Build-and-Test
 
-By default `npm ci` will be executed.
-After `npm ci` the command  `npm  run ci-build` will be executed.
+By default `npm ci` will be executed in the root of the project.
+After `npm ci` the command `npm run ci-build` will be executed.
 This script can be used to, for example, compile Typescript resources or webpack the frontend.
 In the build stage, also development dependencies are installed and tests should also be compiled.
+
+For each `package.json` where the script `ci-backend-unit-test` is defined the command `npm run ci-backend-unit-test` will be executed in this stage.
+Furthermore, the test results have to be stored in the folder `./s4hana_pipeline/reports/backend-unit/` in the root directory of the project.
+The required format of the test result report is the JUnit format as an `.xml` file.
+For the code coverage the results have to be stored in the folder `./s4hana_pipeline/reports/coverage-reports/backend-unit/` in the cobertura format as an `xml` file.
+The user is responsible to use a proper reporters for generating the results.
+We recommend the tools used in the `package.json` of this [example project](https://github.com/SAP/cloud-s4-sdk-examples/blob/scaffolding-js/package.json).
+If you have multiple npm packages with unit tests the names of the report files must have unique names.
 
 Afterwards the command `npm run ci-package` will be executed.
 This step should prepare the deployment by copying all deployment relevant files into the folder `deployment` located in the root of the project.
 This folder should not contain any non-production-related resources, such as tests or development dependencies.
 This directory has to be defined as path in the `manifest.yml`.
 
-*Note: This steps runs isolated from the steps before. Thus, e.g. modifying node_modules with `npm prune --production` will not have an effect for later stages, such as the test execution.*
+_Note: This steps runs isolated from the steps before. Thus, e.g. modifying node_modules with `npm prune --production` will not have an effect for later stages, such as the test execution._
 
-### SAP Cloud Application Programming Model / MTA
+### SAP Cloud Application Programming Model & MTA
 
 The project structure follows the standard structure for projects created via the _SAP Cloud Platform Business Application_ SAP Web IDE Template with some constraints.
 Please leave the basic structure of the generated project intact.
@@ -209,9 +213,9 @@ Make sure to check the _Include support for continuous delivery pipeline of SAP 
 
 If you already created your project without this option, you'll need to copy and paste two files into the root directory of your project, and commit them to your git repository:
 
-* [`Jenkinsfile`](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/Jenkinsfile)
-* [`pipeline_config.yml`](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/cf-pipeline_config.yml)
-    * Note: The file must be named `pipeline_config.yml`, despite the different name of the file template
+- [`Jenkinsfile`](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/Jenkinsfile)
+- [`pipeline_config.yml`](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/cf-pipeline_config.yml)
+  - Note: The file must be named `pipeline_config.yml`, despite the different name of the file template
 
 Further constrains on the project structure (this is all correct in projects generated from the _SAP Cloud Platform Business Application_ SAP Web IDE Template):
 
