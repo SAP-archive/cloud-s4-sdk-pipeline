@@ -601,6 +601,7 @@ If you require it on multiple branches, please open an [GitHub issue](https://gi
 | --- | --- | --- | --- |
 | `projectKey` | X | | The project is used to refer your project. |
 | `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
+| `dockerImage` | | ppiper/node-browsers:v3 | This property refers to a docker image which will be used for triggering the sonar scan. In case your sonar instance uses a self signed certificate, a docker image with that certificate installed can be used. |
 | `sonarProperties` | | | The properties are used to configure sonar. Please refer to the example below. |
 
 Example:
@@ -609,6 +610,7 @@ Example:
 sonarQubeScan:
     projectKey: "my-project"
     instance: "MySonar"
+    dockerImage: 'myDockerImage'
     sonarProperties:
         - 'sonar.jacoco.reportPaths=s4hana_pipeline/reports/coverage-reports/unit-tests.exec,s4hana_pipeline/reports/coverage-reports/integration-tests.exec'
         - 'sonar.sources=./application'
