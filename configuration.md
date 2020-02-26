@@ -45,7 +45,7 @@
 
 ## Pipeline configuration
 
-The SAP Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
+The SAP Cloud SDK Pipeline can be configured via the `.pipeline/config.yml` file, which needs to reside in the root of a project.
 To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. This comprises:
  * the general configuration on the project level,
  * the stage level configurations to set configuration values for specific stages,
@@ -110,7 +110,7 @@ In the Jenkins configuration section under `Manage Jenkins` menu, set the value 
 
 ![Environment variable configuration](images/k8s-environment-config.jpg)
 
-The Jenkins spins up `jnlp` agent nodes on demand. By default, the `jenkins/jnlp-slave` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `jenkins/jnlp-slave` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `.pipeline/config.yml` file as shown below.
 
 ```yaml
 general:
@@ -382,12 +382,12 @@ productionDeployment:
 ```
 
 The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
-In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `pipeline_config.yml` as shown below.
+In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `.pipeline/config.yml` as shown below.
 
 Please note currently only the Jenkins [Sercret text](https://jenkins.io/doc/book/using/using-credentials/) is the supported format for runtime credential substitution.
 
 ```yaml
-#pipeline_config.yml
+#.pipeline/config.yml
 productionDeployment:
   appUrls:
    - url: <application url>

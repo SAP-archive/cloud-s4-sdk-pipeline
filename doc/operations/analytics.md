@@ -114,7 +114,7 @@ Collection of usage data is enabled by default.
 
 If you wish to disable it, please perform the following steps:
 
-For both the SAP Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `pipeline_config.yml` in the general section as in this example:
+For both the SAP Cloud SDK Pipeline and SAP/jenkins-library, set `collectTelemetryData` to `false` in your `.pipeline/config.yml` in the general section as in this example:
 
 ```
 general:
