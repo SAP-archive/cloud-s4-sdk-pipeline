@@ -10,7 +10,6 @@
     * [sharedConfiguration](#sharedconfiguration)
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
-    * [unitTests](#unittests)
     * [backendIntegrationTests](#backendintegrationtests)
     * [frontendIntegrationTests](#frontendintegrationtests)
     * [frontendUnitTests](#frontendunittests)
@@ -27,6 +26,7 @@
     * [fortifyScan](#fortifyscan)
     * [lint](#lint)
     * [sonarQubeScan](#sonarqubescan)
+    * [postPipelineHook](#postpipelinehook)
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
@@ -39,13 +39,13 @@
     * [executeFortifyScan](#executefortifyscan)
     * [mtaBuild](#mtabuild)
     * [createHdiContainer](#createhdicontainer)
+    * [debugReportArchive](#debugreportarchive)
   * [Post action configuration](#post-action-configuration)
     * [sendNotification](#sendnotification)
-    * [archiveDebugLog](#archiveDebugLog)
 
 ## Pipeline configuration
 
-The SAP Cloud SDK Pipeline can be configured via the `pipeline_config.yml` file, which needs to reside in the root of a project.
+The SAP Cloud SDK Pipeline can be configured via the `.pipeline/config.yml` file, which needs to reside in the root of a project.
 To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customized on multiple levels. This comprises:
  * the general configuration on the project level,
  * the stage level configurations to set configuration values for specific stages,
@@ -110,7 +110,7 @@ In the Jenkins configuration section under `Manage Jenkins` menu, set the value 
 
 ![Environment variable configuration](images/k8s-environment-config.jpg)
 
-The Jenkins spins up `jnlp` agent nodes on demand. By default, the `jenkins/jnlp-slave` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `pipeline_config.yml` file as shown below.
+The Jenkins spins up `jnlp` agent nodes on demand. By default, the `jenkins/jnlp-slave` docker image is used. We can also use the custom `jnlp` agent by configuring the same in the `.pipeline/config.yml` file as shown below.
 
 ```yaml
 general:
@@ -132,12 +132,6 @@ See [`shared-config-between-projects.md`](doc/pipeline/shared-config-between-pro
 | --- | --- | --- | --- |
 | `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the sources root folder, i.e. `application/src/main/java` for maven projects and `srv/src/main/java` for MTA projects.<br/>Example: `generated/**/*.java`. Please find more details in the [maven plugin documentation for pmd](https://maven.apache.org/plugins/maven-pmd-plugin/pmd-mojo.html#excludes). |
 | `findbugsExcludesFile` | | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
-
-#### unitTests
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The docker image to be used for running unit tests. **Note:** This will only change the docker image used for executing the unit tests. For switching all maven based steps to a different maven or JDK version, you should configure the dockerImage via the mavenExecute step. |
 
 #### backendIntegrationTests
 
@@ -286,6 +280,7 @@ For details on the properties `cfTargets` and `neoTargets` see the stage `produc
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
+| `disabledChecks` | | [] | A list of checks which should not be executed. Possible values are: `checkDeploymentDescriptors` (Check for insecure options, such as `ALLOW_MOCKED_AUTH_HEADER` in deployment descriptors), `checkResilience`(Check that application is resilient to faults in the network), `checkServices` (Check that only official APIs are used), `checkFrontendCodeCoverage` (Ensures high frontend code coverage), `checkBackendCodeCoverage` (Ensures high backend code coverage) |
 | `jacocoExcludes` | | | A list of exclusions expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the application folder. An example can be found below.|
 | `threshold` | | | This setting allows the code coverage to be stricter compared to the default values. By default, the pipeline will fail if the coverage is below 65% line coverage (`unstableCoverage`), and will be unstable if it is less than 70% (`successCoverage`). If lower numbers are configured, or this configuration is left out, the default values are applied. |
 | `customODataServices` | | | We recommend only using OData services listed in the in [SAP API Business Hub](https://api.sap.com/). Despite that for using custom business objects you can add those APIs here. |
@@ -297,6 +292,7 @@ Example:
 
 ```yaml
 s4SdkQualityChecks:
+  disabledChecks: []
   jacocoExcludes:
     - '**/HelloWorld.class'
     - '**/generated/**'
@@ -382,16 +378,16 @@ productionDeployment:
      appName: 'exampleapp'
      manifest: 'manifest.yml'
      credentialsId: 'CF-DEPLOY'
-     apiEndpoint: '<Cloud Foundry API endpoint>'       
+     apiEndpoint: '<Cloud Foundry API endpoint>'
 ```
 
 The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
-In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `pipeline_config.yml` as shown below.
+In order to use this feature, use a [JSP style or GString style](http://docs.groovy-lang.org/latest/html/api/groovy/text/GStringTemplateEngine.html) place holder in the extension file and provide the respective credential id in the `.pipeline/config.yml` as shown below.
 
 Please note currently only the Jenkins [Sercret text](https://jenkins.io/doc/book/using/using-credentials/) is the supported format for runtime credential substitution.
 
 ```yaml
-#pipeline_config.yml
+#.pipeline/config.yml
 productionDeployment:
   appUrls:
    - url: <application url>
@@ -575,7 +571,7 @@ It supports the SAPUI5 best practices linter which operates on SAPUI5 components
 A component is identified by a `Component.js` file in the directory.
 
 By default, the pipeline does not fail based on lint findings.
-If you'd like to enable thresholds for lint, you can it like in this example:
+The following example shows how to enable thresholds for linting:
 
 ```yaml
 lint:
@@ -589,8 +585,8 @@ lint:
 
 To enable ES6 language features, set the flag `enableES6` to `true` as in the example above.
 
-Since linting is a highly subjective topic, a general purpose pipeline cannot implement all linting tools a development team might want to use as part of the pipeline.
-For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to implement your own linters as part of the pipeline.
+Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
+For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to integrate your own linters.
 
 
 #### sonarQubeScan
@@ -605,6 +601,7 @@ If you require it on multiple branches, please open an [GitHub issue](https://gi
 | --- | --- | --- | --- |
 | `projectKey` | X | | The project is used to refer your project. |
 | `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
+| `dockerImage` | | ppiper/node-browsers:v3 | This property refers to a docker image which will be used for triggering the sonar scan. In case your sonar instance uses a self signed certificate, a docker image with that certificate installed can be used. |
 | `sonarProperties` | | | The properties are used to configure sonar. Please refer to the example below. |
 
 Example:
@@ -613,9 +610,24 @@ Example:
 sonarQubeScan:
     projectKey: "my-project"
     instance: "MySonar"
+    dockerImage: 'myDockerImage'
     sonarProperties:
         - 'sonar.jacoco.reportPaths=s4hana_pipeline/reports/coverage-reports/unit-tests.exec,s4hana_pipeline/reports/coverage-reports/integration-tests.exec'
         - 'sonar.sources=./application'
+```
+
+#### postPipelineHook
+
+This stage does nothing.
+Its purpose is to be overridden if required.
+
+See the documentation for [pipeline extensibility](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/pipeline/extensibility.md) for details on how to extend a stage.
+The name of an extension file must be `postPipelineHook.groovy`.
+Also, the stage (and thus an extension) is only executed if a stage configuration exists, like in this example:
+
+```yaml
+  postPipelineHook:
+    enabled: true
 ```
 
 ### Step configuration
@@ -635,7 +647,7 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | --- | --- | --- | --- |
 | `dockerImage` | | `ppiper/node-browsers:v2` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
-| `sapNpmRegistry` | | | The default npm registry url to be used as the remote mirror for the SAP npm packages. Bypasses the local download cache if specified.  |
+| `sapNpmRegistry` | | `https://npm.sap.com` | The default npm registry url to be used as the remote mirror for the SAP npm packages. Bypasses the local download cache if specified.  |
 
 #### executeSourceClearScan
 
@@ -807,6 +819,20 @@ All configuration parameters as stated in [jenkins-library documentation](https:
 | --- | --- | --- | --- |
 | `dockerImage` |  | `ppiper/cf-cli` | Docker image including the Cloud Foundry cli |
 
+#### debugReportArchive
+The `debugReportArchive` step can be used to create confidential (instead of redacted) debug reports.
+The difference between the redacted and the confidential debug report is, that potentially confidential information, such as the GitHub repository and branch, global extension repository and shared libraries, are included in the confidential debug report. It is the user's responsibility to make sure that the debug report does not contain any confidential information.
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+|`shareConfidentialInformation`| |`false`| If set to `true`, a confidential debug report is being generated with each build.
+
+Example:
+
+```yaml
+debugReportArchive:
+  shareConfidentialInformation: true
+```
 ### Post action configuration
 
 #### sendNotification
@@ -829,20 +855,4 @@ postActions:
     recipients:
     - ryan.architect@foobar.com
     - john.doe@foobar.com
-```
-
-#### archiveDebugLog
-The `archiveDebugLog` post-build action can be used to create confidential (instead of redacted) debug logs.
-The difference between the redacted and the confidential debug log is, that potentially confidential information, such as the GitHub repository and branch, global extension repository and shared libraries, are included in the confidential debug log. It is the user's responsibility to make sure that the debug log does not contain any confidential information.
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-|`shareConfidentialInformation`| |`false`| If set to `true`, a confidential debug log is being generated with each build.
-
-Example:
-
-```yaml
-postActions:
-  archiveDebugLog:
-    shareConfidentialInformation: true
 ```

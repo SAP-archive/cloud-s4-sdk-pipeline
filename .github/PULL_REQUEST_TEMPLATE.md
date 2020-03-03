@@ -7,6 +7,7 @@ Please consider all items and remove only if not applicable.
 
 - [ ] I carefully reviewed my own pull request before assigning someone.
 - [ ] Changes to the configuration are also documented in the [configuration.md](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/configuration.md)	
+- [ ] Pipeline config schema is updated [in schema store](https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/cloud-sdk-pipeline-config-schema.json)
 - [ ] Important design decisions are documented as an [ADR](https://github.com/SAP/cloud-s4-sdk-pipeline/tree/master/doc/architecture/decisions)
 - [ ] There are tests covering this change
 - [ ] This change is operations-relevant and I have updated the operations guide correspondingly

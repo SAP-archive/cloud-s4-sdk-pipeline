@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v28'
+final def pipelineSdkVersion = 'v29'
 
 pipeline {
     agent any
@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
                 milestone 20
                 stageBuild script: this
@@ -36,10 +36,6 @@ pipeline {
                 stage("Lint") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
                     steps { stageLint script: this }
-                }
-                stage("Backend Unit Tests") {
-                    when { expression { commonPipelineEnvironment.configuration.runStage.BACKEND_UNIT_TESTS } }
-                    steps { stageUnitTests script: this }
                 }
                 stage("Backend Integration Tests") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.BACKEND_INTEGRATION_TESTS } }
@@ -130,12 +126,18 @@ pipeline {
     post {
         always {
             script {
-                postActionArchiveDebugLog script: this
+                debugReportArchive script: this
                 if (commonPipelineEnvironment?.configuration?.runStage?.SEND_NOTIFICATION) {
                     postActionSendNotification script: this
                 }
-                postActionCleanupStashesLocks script:this
-                sendAnalytics script:this
+                postActionCleanupStashesLocks script: this
+                sendAnalytics script: this
+
+                if (commonPipelineEnvironment?.configuration?.runStage?.POST_PIPELINE_HOOK) {
+                    stage('Post Pipeline Hook') {
+                        stagePostPipelineHook script: this
+                    }
+                }
             }
         }
         success {
@@ -145,6 +147,8 @@ pipeline {
                 }
             }
         }
-        failure { deleteDir() }
+        failure {
+            deleteDir()
+        }
     }
 }

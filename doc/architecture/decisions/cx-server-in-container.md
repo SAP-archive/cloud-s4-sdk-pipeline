@@ -8,8 +8,8 @@ Accepted
 
 We have a bash script (`cx-server`), which orchestrates the Docker containers used by our Cx Server.
 Using bash is inconvenient for Windows users, as Windows does not include bash by default.
-There is options for running bash on Windows, such as the Windows Subsystem for Linux, but this is not trivial to setup and requires switching Windows to Developer Mode.
-Other options include running a virtual machine locally, or connecting to a remove Linux system, but both are not always possible and have too much overhead.
+There are options for running bash on Windows, such as the Windows Subsystem for Linux, but this is not trivial to setup and requires switching Windows to Developer Mode.
+Other options include running a virtual machine locally, or connecting to a remote Linux system, but both are not always possible and have too much overhead.
 
 Recently, we added a "companion" Docker image which is used by `cx-server` to run scripts.
 Unrelated, the idea was born to move `cx-server` into this image, so the remaining `cx-server` is a very thin wrapper which can also be added as a Windows compatible script file.
