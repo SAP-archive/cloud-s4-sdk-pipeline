@@ -343,11 +343,30 @@ checkmarxScan:
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
+|`cfCreateServices`| | | The list of services which should be created before deploying the application as defined below.  |
 | `cfTargets` | | | The list of productive Cloud Foundry deployment targets to be deployed when a build of your productive branch succeeds. |
 | `neoTargets`| | | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
 | `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
 | `tmsUpload` | | | The paramaters which are needed to enable step 'tmsUpload'. |
 
+#### cfCreateServices
+
+The option `cfCreateServices` is especially useful if you don't use MTA and need a way to declaratively define which services should be created in Cloud Foundry.
+The following properties can be defined for each element in the list. 
+For a detailed documentation of the indivitual properties please consult the [step documentation](https://sap.github.io/jenkins-library/steps/cloudFoundryCreateService/).
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `org` | X** | | The organization where you want to deploy your app. |
+| `space` | X** | | The space where you want to deploy your app. |
+| `serviceManifest`| X** |  | Manifest file that needs to be used defining the services. |
+| `manifestVariablesFiles`| X** |  | Variables that should be replaced in the service manifest file. | 
+| `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
+| `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
+
+** The parameters can either be specified here or for the step `cloudFoundryDeploy` or globally in the general section under the key `cloudFoundry`.
+
+#### cfTargets and neoTargets
 You can either specify the property `cfTargets` or `neoTargets`.
 
 For `cfTargets` the following properties can be defined:
@@ -363,22 +382,36 @@ For `cfTargets` the following properties can be defined:
 | `mtaExtensionDescriptor` |  |  | (**Only for MTA-projects**) Path to the mta extension description file. For more information on how to use those extension files please visit the [SAP HANA Developer Guide](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.02/en-US/51ac525c78244282919029d8f5e2e35d.html). |
 | `mtaExtensionCredentials` |  |  | (**Only for MTA-projects**) Map of credentials that need to be replaced in the `mtaExtensionDescriptor`. This map needs to be created as `value-to-be-replaced`:`id-of-a-credential-in-jenkins` |
 
-** The parameters can either be specified here or globally for the step `cloudFoundryDeploy`.
+** The parameters can either be specified here or for the step `cloudFoundryDeploy` or globally in the general section under the key `cloudFoundry`.
 
-Example:
+#### Examples
 
 ```yaml
-productionDeployment:
-  appUrls:
-   - url: <application url>
-     credentialId: e2e-test-user-cf
-  cfTargets:
-   - space: 'Prod'
-     org: 'myorg'
-     appName: 'exampleapp'
-     manifest: 'manifest.yml'
-     credentialsId: 'CF-DEPLOY'
-     apiEndpoint: '<Cloud Foundry API endpoint>'
+general:
+  cloudFoundry:
+    org: 'myorg'
+    space: 'Prod'
+    apiEndpoint: 'https://api.cf.sap.hana.ondemand.com'
+    credentialsId: 'CF-DEPLOY-DEFAULT'
+    manifestVariablesFiles: ['manifest-variables.yml']
+stages:
+  productionDeployment:
+    appUrls:
+      - url: <application url>
+        credentialId: e2e-test-user-cf
+    cfCreateServices:
+      - serviceManifest: 'services-manifest.yml'
+      - serviceManifest: 'services-manifest.yml'
+        space: 'Prod2'
+        org: 'myorg2'
+    cfTargets:
+      - appName: 'exampleapp'
+        manifest: 'manifest.yml'
+      - space: 'Prod2'
+        org: 'myorg2'
+        appName: 'exampleapp'
+        manifest: 'manifest.yml'
+        credentialsId: 'CF-DEPLOY-PROD1'
 ```
 
 The MTA projects can make use of the extension files and one can use a Jenkins credential store to inject the credentials during runtime instead of storing them as a plain text in the extension file.
