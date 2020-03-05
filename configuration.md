@@ -851,6 +851,7 @@ All configuration parameters as stated in [jenkins-library documentation](https:
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
 | `dockerImage` |  | `ppiper/cf-cli` | Docker image including the Cloud Foundry cli |
+| `broker` |  |  | You can specify the broker which should be used to create the service. This might be required if the service is provided by multiple brokers. |
 
 #### debugReportArchive
 The `debugReportArchive` step can be used to create confidential (instead of redacted) debug reports.
