@@ -609,14 +609,20 @@ The following example shows how to enable thresholds for linting:
 ```yaml
 lint:
   ui5BestPractices:
-    enableES6: true
+    esLanguageLevel: es2020
     failThreshold:
       error: 3
       warning: 5
       info: 7
 ```
 
-To enable ES6 language features, set the flag `enableES6` to `true` as in the example above.
+Modern JavaScript language features are not supported by default in the linter.
+To set a specific level, set `esLanguageLevel` to `es6`, `es2017` (equal to ES8) or `es2020` (equal to ES11).
+See ["Specifying Environments" in the ESLint docs](https://eslint.org/docs/user-guide/configuring#specifying-environments) for background on the related ESLint settings.
+
+Note: In former versions a flag `enableES6` was provided.
+This is is deprecated in favor of `esLanguageLevel` which is more flexible.
+To get the same, please configure `esLanguageLevel: es6`.
 
 Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
 For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to integrate your own linters.
