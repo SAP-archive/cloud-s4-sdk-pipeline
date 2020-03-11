@@ -1,7 +1,5 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'master'
-
 pipeline {
     agent any
     options {
@@ -14,7 +12,7 @@ pipeline {
         stage('Init') {
             steps {
                 milestone 10
-                library "s4sdk-pipeline-library@${pipelineSdkVersion}"
+                library "s4sdk-pipeline-library"
                 stageInitS4sdkPipeline script: this
                 abortOldBuilds script: this
             }
