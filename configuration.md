@@ -507,6 +507,7 @@ productionDeployment:
 | `version` | | `nexus3` | Version of nexus. Can be `nexus2` or `nexus3`. |
 | `url` | X | | URL of the nexus. The scheme part of the URL will not be considered, because only `http` is supported. |
 | `repository` | X | | Name of the nexus repository. |
+| `groupId` | | | Common group ID for MTA build artifacts, ignored for Maven projects. |
 | `additionalClassifiers` | | | List of additional classifiers that should be deployed to nexus. Each item is a map of a type and a classifier name.|
 | `credentialsId` | | | ID to the credentials which is used to connect to Nexus. Anonymous deployments do not require a `credentialsId`.|
 
