@@ -31,7 +31,7 @@ pipeline {
             parallel {
                 stage("Static Code Checks") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.STATIC_CODE_CHECKS } }
-                    steps { stageStaticCodeChecks script: this }
+                    steps { piperPipelineStageMavenStaticCodeChecks script: this }
                 }
                 stage("Lint") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }

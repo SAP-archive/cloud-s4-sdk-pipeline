@@ -128,10 +128,7 @@ See [`shared-config-between-projects.md`](doc/pipeline/shared-config-between-pro
 
 #### staticCodeChecks
 
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the sources root folder, i.e. `application/src/main/java` for maven projects and `srv/src/main/java` for MTA projects.<br/>Example: `generated/**/*.java`. Please find more details in the [maven plugin documentation for pmd](https://maven.apache.org/plugins/maven-pmd-plugin/pmd-mojo.html#excludes). |
-| `findbugsExcludesFile` | | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
+The configuration of the stage has been moved to the step [mavenExecuteStaticCodeChecks](#mavenExecuteStaticCodeChecks). For more information on how to configure this step please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
 
 #### backendIntegrationTests
 
@@ -679,6 +676,9 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 | --- | --- | --- | --- |
 | `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. |
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
+
+#### mavenExecuteStaticCodeChecks
+The mavenExecuteStaticCodeChecks step executes static code checks for maven based projects. The tools SpotBugs and PMD are used. For more information on how to configure this step please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
 
 #### executeNpm
 The executeNpm step is used for all invocations of the npm build tool. It is, for example, used for building the frontend and for executing end to end tests.
