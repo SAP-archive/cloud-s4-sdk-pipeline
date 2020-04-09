@@ -122,7 +122,7 @@ general:
 
 URL of a shared configuration file.
 Useful if many projects require similar or identical confiugration in large parts.
-See [`shared-config-between-projects.md`](doc/pipeline/shared-config-between-projects.md) for more details.
+See [`shared-config-between-projects.md`](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/shared-config-between-projects/) for more details.
 
 ### Stage configuration
 
@@ -594,11 +594,12 @@ fortifyScan:
 
 The lint stage can enforce common coding guidelines within a team.
 
-It supports the SAPUI5 best practices linter which operates on SAPUI5 components.
+It provides several options for the use of linting tools.
+It supports the SAPUI5 best practices linter which operates on SAPUI5 components, if present in the project.
 A component is identified by a `Component.js` file in the directory.
 
 By default, the pipeline does not fail based on lint findings.
-The following example shows how to enable thresholds for linting:
+The following example shows how to enable thresholds for linting, which are only applied in case of using the built-in SAPUI5 best practices linter:
 
 ```yaml
 lint:
@@ -610,7 +611,7 @@ lint:
       info: 7
 ```
 
-Modern JavaScript language features are not supported by default in the linter.
+Modern JavaScript language features are not supported by default in the SAPUI5 best practices linter.
 To set a specific level, set `esLanguageLevel` to `es6`, `es2017` (equal to ES8) or `es2020` (equal to ES11).
 See ["Specifying Environments" in the ESLint docs](https://eslint.org/docs/user-guide/configuring#specifying-environments) for background on the related ESLint settings.
 
@@ -619,7 +620,8 @@ This is is deprecated in favor of `esLanguageLevel` which is more flexible.
 To get the same, please configure `esLanguageLevel: es6`.
 
 Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
-For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to integrate your own linters.
+For this reason, the pipeline offers two possibilities to integrate your own linters. The user can add a custom linting script by adding a script `ci-lint` to the projects `package.json` file. 
+More details can be found [here](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/). In addition, the [pipeline extensibility](https://sap.github.io/jenkins-library/extensibility/) feature can be used to integrate other linters.
 
 
 #### sonarQubeScan
@@ -654,7 +656,7 @@ sonarQubeScan:
 This stage does nothing.
 Its purpose is to be overridden if required.
 
-See the documentation for [pipeline extensibility](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/pipeline/extensibility.md) for details on how to extend a stage.
+See the documentation for [pipeline extensibility](https://sap.github.io/jenkins-library/extensibility/) for details on how to extend a stage.
 The name of an extension file must be `postPipelineHook.groovy`.
 Also, the stage (and thus an extension) is only executed if a stage configuration exists, like in this example:
 
