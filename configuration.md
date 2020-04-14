@@ -503,9 +503,20 @@ productionDeployment:
 | --- | --- | --- | --- |
 | `version` | | `nexus3` | Version of nexus. Can be `nexus2` or `nexus3`. |
 | `url` | X | | URL of the nexus. The scheme part of the URL will not be considered, because only `http` is supported. |
-| `repository` | X | | Name of the nexus repository. |
+| `mavenRepository` | | | Name of the nexus repository for Maven and MTA artifacts. Ignored if the project does not contain `pom.xml` or `mta.yml` in the project root. |
+| `npmRepository` | | | Name of the nexus repository for NPM artifacts. Ignored if the project does not contain a `package.json` in the project root directory. |
 | `groupId` | | | Common group ID for MTA build artifacts, ignored for Maven projects. |
 | `credentialsId` | | | ID to the credentials which is used to connect to Nexus. Anonymous deployments do not require a `credentialsId`.|
+
+
+###### Chosing what to deploy into the npm repository
+
+The Pipeline performs an [npm publish](https://docs.npmjs.com/cli/publish) command to deploy npm modules.
+This deployment might include files that you don't want to deploy.
+See [here](https://docs.npmjs.com/misc/developers#keeping-files-out-of-your-package) for npm documentation.
+
+**WARNING:** The `.gitignore` file is not available in the pipeline during the artifact deployment.
+To exclude files from that, please create a `.npmignore` file, copy the contents of your `.gitignore` file and add specific ignores for example for `*.java` files.
 
 Example:
 
@@ -514,8 +525,9 @@ artifactDeployment:
   nexus:
     version: nexus2
     url: nexus.mycorp:8080/nexus
-    repository: snapshots
-    credentialsId: 'CF-DEPLOY'
+    mavenRepository: snapshots
+    npmRepository: npm-repo
+    credentialsId: 'NEXUS-DEPLOY'
 ```
 
 #### whitesourceScan
