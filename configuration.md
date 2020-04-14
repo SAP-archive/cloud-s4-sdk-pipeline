@@ -122,16 +122,13 @@ general:
 
 URL of a shared configuration file.
 Useful if many projects require similar or identical confiugration in large parts.
-See [`shared-config-between-projects.md`](doc/pipeline/shared-config-between-projects.md) for more details.
+See [`shared-config-between-projects.md`](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/shared-config-between-projects/) for more details.
 
 ### Stage configuration
 
 #### staticCodeChecks
 
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `pmdExcludes` | | | A comma-separated list of exclusions (`.java` source files) expressed as an [Ant-style pattern](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the sources root folder, i.e. `application/src/main/java` for maven projects and `srv/src/main/java` for MTA projects.<br/>Example: `generated/**/*.java`. Please find more details in the [maven plugin documentation for pmd](https://maven.apache.org/plugins/maven-pmd-plugin/pmd-mojo.html#excludes). |
-| `findbugsExcludesFile` | | | Path to a [FindBugs XML exclusion file](http://findbugs.sourceforge.net/manual/filter.html) relative to the application folder. |
+The configuration of the stage has been moved to the step [mavenExecuteStaticCodeChecks](#mavenExecuteStaticCodeChecks). For more information on how to configure this step please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
 
 #### backendIntegrationTests
 
@@ -507,7 +504,7 @@ productionDeployment:
 | `version` | | `nexus3` | Version of nexus. Can be `nexus2` or `nexus3`. |
 | `url` | X | | URL of the nexus. The scheme part of the URL will not be considered, because only `http` is supported. |
 | `repository` | X | | Name of the nexus repository. |
-| `additionalClassifiers` | | | List of additional classifiers that should be deployed to nexus. Each item is a map of a type and a classifier name.|
+| `groupId` | | | Common group ID for MTA build artifacts, ignored for Maven projects. |
 | `credentialsId` | | | ID to the credentials which is used to connect to Nexus. Anonymous deployments do not require a `credentialsId`.|
 
 Example:
@@ -519,9 +516,6 @@ artifactDeployment:
     url: nexus.mycorp:8080/nexus
     repository: snapshots
     credentialsId: 'CF-DEPLOY'
-    additionalClassifiers:
-      - type: jar
-        classifier: classes
 ```
 
 #### whitesourceScan
@@ -600,11 +594,12 @@ fortifyScan:
 
 The lint stage can enforce common coding guidelines within a team.
 
-It supports the SAPUI5 best practices linter which operates on SAPUI5 components.
+It provides several options for the use of linting tools.
+It supports the SAPUI5 best practices linter which operates on SAPUI5 components, if present in the project.
 A component is identified by a `Component.js` file in the directory.
 
 By default, the pipeline does not fail based on lint findings.
-The following example shows how to enable thresholds for linting:
+The following example shows how to enable thresholds for linting, which are only applied in case of using the built-in SAPUI5 best practices linter:
 
 ```yaml
 lint:
@@ -616,7 +611,7 @@ lint:
       info: 7
 ```
 
-Modern JavaScript language features are not supported by default in the linter.
+Modern JavaScript language features are not supported by default in the SAPUI5 best practices linter.
 To set a specific level, set `esLanguageLevel` to `es6`, `es2017` (equal to ES8) or `es2020` (equal to ES11).
 See ["Specifying Environments" in the ESLint docs](https://eslint.org/docs/user-guide/configuring#specifying-environments) for background on the related ESLint settings.
 
@@ -625,7 +620,8 @@ This is is deprecated in favor of `esLanguageLevel` which is more flexible.
 To get the same, please configure `esLanguageLevel: es6`.
 
 Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
-For this reason, the [pipeline extensibility](doc/pipeline/extensibility.md) feature can be used to integrate your own linters.
+For this reason, the pipeline offers two possibilities to integrate your own linters. The user can add a custom linting script by adding a script `ci-lint` to the projects `package.json` file. 
+More details can be found [here](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/). In addition, the [pipeline extensibility](https://sap.github.io/jenkins-library/extensibility/) feature can be used to integrate other linters.
 
 
 #### sonarQubeScan
@@ -660,7 +656,7 @@ sonarQubeScan:
 This stage does nothing.
 Its purpose is to be overridden if required.
 
-See the documentation for [pipeline extensibility](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/doc/pipeline/extensibility.md) for details on how to extend a stage.
+See the documentation for [pipeline extensibility](https://sap.github.io/jenkins-library/extensibility/) for details on how to extend a stage.
 The name of an extension file must be `postPipelineHook.groovy`.
 Also, the stage (and thus an extension) is only executed if a stage configuration exists, like in this example:
 
@@ -678,6 +674,9 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 | --- | --- | --- | --- |
 | `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. |
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
+
+#### mavenExecuteStaticCodeChecks
+The mavenExecuteStaticCodeChecks step executes static code checks for maven based projects. The tools SpotBugs and PMD are used. For more information on how to configure this step please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
 
 #### executeNpm
 The executeNpm step is used for all invocations of the npm build tool. It is, for example, used for building the frontend and for executing end to end tests.

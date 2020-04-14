@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-final def pipelineSdkVersion = 'v30'
+final def pipelineSdkVersion = 'v31'
 
 pipeline {
     agent any
@@ -31,7 +31,7 @@ pipeline {
             parallel {
                 stage("Static Code Checks") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.STATIC_CODE_CHECKS } }
-                    steps { stageStaticCodeChecks script: this }
+                    steps { piperPipelineStageMavenStaticCodeChecks script: this }
                 }
                 stage("Lint") {
                     when { expression { commonPipelineEnvironment.configuration.runStage.LINT } }
@@ -112,7 +112,7 @@ pipeline {
             when { expression { commonPipelineEnvironment.configuration.runStage.ARTIFACT_DEPLOYMENT } }
             steps {
                 milestone 70
-                stageArtifactDeployment script: this
+                piperPipelineStageArtifactDeployment script: this
             }
         }
 
