@@ -646,6 +646,7 @@ If you require it on multiple branches, please open an [GitHub issue](https://gi
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
+| `runInAllBranches` |  |  false | Define whether the scan should also happen in non productive branches, i.e. if your SonarQube instance supports that. |
 | `projectKey` | X | | The project is used to refer your project. |
 | `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
 | `dockerImage` | | ppiper/node-browsers:v3 | This property refers to a docker image which will be used for triggering the sonar scan. In case your sonar instance uses a self signed certificate, a docker image with that certificate installed can be used. |
