@@ -685,7 +685,7 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. |
+| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. Please note that at least maven 3.6.0 is required. |
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
 #### mavenExecuteStaticCodeChecks
