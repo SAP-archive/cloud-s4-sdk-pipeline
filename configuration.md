@@ -349,7 +349,7 @@ checkmarxScan:
 #### cfCreateServices
 
 The option `cfCreateServices` is especially useful if you don't use MTA and need a way to declaratively define which services should be created in Cloud Foundry.
-The following properties can be defined for each element in the list. 
+The following properties can be defined for each element in the list.
 For a detailed documentation of the indivitual properties please consult the [step documentation](https://sap.github.io/jenkins-library/steps/cloudFoundryCreateService/).
 
 | Property | Mandatory | Default Value | Description |
@@ -357,7 +357,7 @@ For a detailed documentation of the indivitual properties please consult the [st
 | `org` | X** | | The organization where you want to deploy your app. |
 | `space` | X** | | The space where you want to deploy your app. |
 | `serviceManifest`| X** |  | Manifest file that needs to be used defining the services. |
-| `manifestVariablesFiles`| X** |  | Variables that should be replaced in the service manifest file. | 
+| `manifestVariablesFiles`| X** |  | Variables that should be replaced in the service manifest file. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 
@@ -607,11 +607,20 @@ fortifyScan:
 The lint stage can enforce common coding guidelines within a team.
 
 It provides several options for the use of linting tools.
-It supports the SAPUI5 best practices linter which operates on SAPUI5 components, if present in the project.
+The user can define a custom linting script by providing a script called `ci-lint` in any `package.json` file of the project.
+
+If no custom linter is configured, and the project has SAPUI5 components, it makes use of the SAPUI5 best practices linter.
 A component is identified by a `Component.js` file in the directory.
 
+If no custom linter is configured, and the project has no SAPUI5 components, the pipeline uses a general purpose configuration to lint Javascript and/or Typescript files in the project.
 By default, the pipeline does not fail based on lint findings.
-The following example shows how to enable thresholds for linting, which are only applied in case of using the built-in SAPUI5 best practices linter:
+The goal of this lint is to warn of potential errors without insisting on any programming style.
+If you're not satisfied by the default configuration, you can opt-out using that by providing your [own configuration file](https://eslint.org/docs/user-guide/configuring) in your project.
+More details can be found in the [pipeline documentation](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/#lint).
+
+Note, the configuration specified for the Lint stage in `.pipeline/config.yml` is only applied in case SAPUI5 components are checked by the pipeline and is ignored otherwise.
+
+The following example shows how to enable thresholds for linting, in case the built-in SAPUI5 best practices linter is used:
 
 ```yaml
 lint:
@@ -630,11 +639,6 @@ See ["Specifying Environments" in the ESLint docs](https://eslint.org/docs/user-
 Note: In former versions a flag `enableES6` was provided.
 This is is deprecated in favor of `esLanguageLevel` which is more flexible.
 To get the same, please configure `esLanguageLevel: es6`.
-
-Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
-For this reason, the pipeline offers two possibilities to integrate your own linters. The user can add a custom linting script by adding a script `ci-lint` to the projects `package.json` file. 
-More details can be found [here](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/). In addition, the [pipeline extensibility](https://sap.github.io/jenkins-library/extensibility/) feature can be used to integrate other linters.
-
 
 #### sonarQubeScan
 
