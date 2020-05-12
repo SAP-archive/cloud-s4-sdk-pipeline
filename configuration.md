@@ -54,6 +54,10 @@ To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customiz
 
  If a property is configured in a step as well as the stage level, the stage level value takes precedence.
 
+### customDefaults
+Custom default configurations are user defined default pipeline configurations and can be used to share common configuration among different projects.
+For more information on how to configure custom default configurations, please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/configuration/#custom-default-configuration).
+
 ### General configuration
 
 | Property | Mandatory | Default Value | Description |
@@ -117,12 +121,6 @@ general:
   jenkinsKubernetes:
     jnlpAgent: jenkins/jnlp-slave:latest
 ```
-
-#### sharedConfiguration
-
-URL of a shared configuration file.
-Useful if many projects require similar or identical confiugration in large parts.
-See [`shared-config-between-projects.md`](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/shared-config-between-projects/) for more details.
 
 ### Stage configuration
 
@@ -349,7 +347,7 @@ checkmarxScan:
 #### cfCreateServices
 
 The option `cfCreateServices` is especially useful if you don't use MTA and need a way to declaratively define which services should be created in Cloud Foundry.
-The following properties can be defined for each element in the list. 
+The following properties can be defined for each element in the list.
 For a detailed documentation of the indivitual properties please consult the [step documentation](https://sap.github.io/jenkins-library/steps/cloudFoundryCreateService/).
 
 | Property | Mandatory | Default Value | Description |
@@ -357,7 +355,7 @@ For a detailed documentation of the indivitual properties please consult the [st
 | `org` | X** | | The organization where you want to deploy your app. |
 | `space` | X** | | The space where you want to deploy your app. |
 | `serviceManifest`| X** |  | Manifest file that needs to be used defining the services. |
-| `manifestVariablesFiles`| X** |  | Variables that should be replaced in the service manifest file. | 
+| `manifestVariablesFiles`| X** |  | Variables that should be replaced in the service manifest file. |
 | `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
 | `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
 
@@ -503,9 +501,20 @@ productionDeployment:
 | --- | --- | --- | --- |
 | `version` | | `nexus3` | Version of nexus. Can be `nexus2` or `nexus3`. |
 | `url` | X | | URL of the nexus. The scheme part of the URL will not be considered, because only `http` is supported. |
-| `repository` | X | | Name of the nexus repository. |
+| `mavenRepository` | | | Name of the nexus repository for Maven and MTA artifacts. Ignored if the project does not contain `pom.xml` or `mta.yml` in the project root. |
+| `npmRepository` | | | Name of the nexus repository for NPM artifacts. Ignored if the project does not contain a `package.json` in the project root directory. |
 | `groupId` | | | Common group ID for MTA build artifacts, ignored for Maven projects. |
 | `credentialsId` | | | ID to the credentials which is used to connect to Nexus. Anonymous deployments do not require a `credentialsId`.|
+
+
+###### Chosing what to deploy into the npm repository
+
+The Pipeline performs an [npm publish](https://docs.npmjs.com/cli/publish) command to deploy npm modules.
+This deployment might include files that you don't want to deploy.
+See [here](https://docs.npmjs.com/misc/developers#keeping-files-out-of-your-package) for npm documentation.
+
+**WARNING:** The `.gitignore` file is not available in the pipeline during the artifact deployment.
+To exclude files from that, please create a `.npmignore` file, copy the contents of your `.gitignore` file and add specific ignores for example for `*.java` files.
 
 Example:
 
@@ -514,8 +523,9 @@ artifactDeployment:
   nexus:
     version: nexus2
     url: nexus.mycorp:8080/nexus
-    repository: snapshots
-    credentialsId: 'CF-DEPLOY'
+    mavenRepository: snapshots
+    npmRepository: npm-repo
+    credentialsId: 'NEXUS-DEPLOY'
 ```
 
 #### whitesourceScan
@@ -595,11 +605,20 @@ fortifyScan:
 The lint stage can enforce common coding guidelines within a team.
 
 It provides several options for the use of linting tools.
-It supports the SAPUI5 best practices linter which operates on SAPUI5 components, if present in the project.
+The user can define a custom linting script by providing a script called `ci-lint` in any `package.json` file of the project.
+
+If no custom linter is configured, and the project has SAPUI5 components, it makes use of the SAPUI5 best practices linter.
 A component is identified by a `Component.js` file in the directory.
 
+If no custom linter is configured, and the project has no SAPUI5 components, the pipeline uses a general purpose configuration to lint Javascript and/or Typescript files in the project.
 By default, the pipeline does not fail based on lint findings.
-The following example shows how to enable thresholds for linting, which are only applied in case of using the built-in SAPUI5 best practices linter:
+The goal of this lint is to warn of potential errors without insisting on any programming style.
+If you're not satisfied by the default configuration, you can opt-out using that by providing your [own configuration file](https://eslint.org/docs/user-guide/configuring) in your project.
+More details can be found in the [pipeline documentation](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/#lint).
+
+Note, the configuration specified for the Lint stage in `.pipeline/config.yml` is only applied in case SAPUI5 components are checked by the pipeline and is ignored otherwise.
+
+The following example shows how to enable thresholds for linting, in case the built-in SAPUI5 best practices linter is used:
 
 ```yaml
 lint:
@@ -619,11 +638,6 @@ Note: In former versions a flag `enableES6` was provided.
 This is is deprecated in favor of `esLanguageLevel` which is more flexible.
 To get the same, please configure `esLanguageLevel: es6`.
 
-Since linting is a highly subjective topic, a general purpose pipeline cannot include all linting tools a development team might want to use as part of their pipeline.
-For this reason, the pipeline offers two possibilities to integrate your own linters. The user can add a custom linting script by adding a script `ci-lint` to the projects `package.json` file. 
-More details can be found [here](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/). In addition, the [pipeline extensibility](https://sap.github.io/jenkins-library/extensibility/) feature can be used to integrate other linters.
-
-
 #### sonarQubeScan
 
 Configure [SonarQube](https://www.sonarqube.org/) scans.
@@ -634,6 +648,7 @@ If you require it on multiple branches, please open an [GitHub issue](https://gi
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
+| `runInAllBranches` |  |  false | Define whether the scan should also happen in non productive branches, i.e. if your SonarQube instance supports that. |
 | `projectKey` | X | | The project is used to refer your project. |
 | `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
 | `dockerImage` | | ppiper/node-browsers:v3 | This property refers to a docker image which will be used for triggering the sonar scan. In case your sonar instance uses a self signed certificate, a docker image with that certificate installed can be used. |
@@ -672,7 +687,7 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
-| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. |
+| `dockerImage` | | `maven:3.6.1-jdk-8-alpine` | The image to be used for executing maven commands. Please note that at least maven 3.6.0 is required. |
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
 #### mavenExecuteStaticCodeChecks
