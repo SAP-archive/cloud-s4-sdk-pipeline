@@ -54,6 +54,10 @@ To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customiz
 
  If a property is configured in a step as well as the stage level, the stage level value takes precedence.
 
+### customDefaults
+Custom default configurations are user defined default pipeline configurations and can be used to share common configuration among different projects.
+For more information on how to configure custom default configurations, please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/configuration/#custom-default-configuration).
+
 ### General configuration
 
 | Property | Mandatory | Default Value | Description |
@@ -117,12 +121,6 @@ general:
   jenkinsKubernetes:
     jnlpAgent: jenkins/jnlp-slave:latest
 ```
-
-#### sharedConfiguration
-
-URL of a shared configuration file.
-Useful if many projects require similar or identical confiugration in large parts.
-See [`shared-config-between-projects.md`](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/shared-config-between-projects/) for more details.
 
 ### Stage configuration
 
