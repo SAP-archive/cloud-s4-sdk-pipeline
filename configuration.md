@@ -3,11 +3,11 @@
 ## Table of Contents
 
 * [Pipeline configuration](#pipeline-configuration)
+  * [customDefaults](#customDefaults)
   * [General configuration](#general-configuration)
     * [automaticVersioning](#automaticversioning)
     * [features](#features)
     * [jenkinsKubernetes](#jenkinskubernetes)
-    * [sharedConfiguration](#sharedconfiguration)
   * [Stage configuration](#stage-configuration)
     * [staticCodeChecks](#staticcodechecks)
     * [backendIntegrationTests](#backendintegrationtests)
@@ -56,7 +56,7 @@ To adjust the SAP Cloud SDK Pipeline to your project's needs, it can be customiz
 
 ### customDefaults
 Custom default configurations are user defined default pipeline configurations and can be used to share common configuration among different projects.
-For more information on how to configure custom default configurations, please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/configuration/#custom-default-configuration).
+For more information on how to configure custom default configurations, please refer to the documentation in [project "Piper"](https://sap.github.io/jenkins-library/configuration/#custom-default-configuration).
 
 ### General configuration
 
@@ -66,7 +66,6 @@ For more information on how to configure custom default configurations, please r
 | `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
-| `sharedConfiguration` | | | Path to a shared configuration file which is merged with the project's configuration file. |
 
 #### automaticVersioning
 The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
@@ -126,7 +125,7 @@ general:
 
 #### staticCodeChecks
 
-The configuration of the stage has been moved to the step [mavenExecuteStaticCodeChecks](#mavenExecuteStaticCodeChecks). For more information on how to configure this step please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
+The configuration of the stage has been moved to the step [mavenExecuteStaticCodeChecks](#mavenExecuteStaticCodeChecks). For more information on how to configure this step please refer to the documentation in [project "Piper"](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
 
 #### backendIntegrationTests
 
@@ -691,7 +690,7 @@ The mavenExecute step is used for all invocations of the mvn build tool. It is e
 | `projectSettingsFile` | | | The project settings.xml to be used for maven builds. You can specify a relative path to your project root or a URL starting with http or https. |
 
 #### mavenExecuteStaticCodeChecks
-The mavenExecuteStaticCodeChecks step executes static code checks for maven based projects. The tools SpotBugs and PMD are used. For more information on how to configure this step please refer to the documentation in [project-piper](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
+The mavenExecuteStaticCodeChecks step executes static code checks for maven based projects. The tools SpotBugs and PMD are used. For more information on how to configure this step please refer to the documentation in [project "Piper"](https://sap.github.io/jenkins-library/steps/mavenExecuteStaticCodeChecks/).
 
 #### executeNpm
 The executeNpm step is used for all invocations of the npm build tool. It is, for example, used for building the frontend and for executing end to end tests.
