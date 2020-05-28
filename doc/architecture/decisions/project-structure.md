@@ -1,4 +1,4 @@
-# Structure of SAP S/4HANA Cloud SDK Maven Projects
+# Structure of SAP Cloud SDK Maven Projects
 
 ## Status
 
@@ -6,8 +6,8 @@ Accepted
 
 ## Context
 
-SAP S/4HANA Cloud SDK encompasses components such as Java libraries, Maven archetypes, a Virtual Data Model and a Continuous Delivery Toolkit.
-The Continuous Delivery Toolkit must be able to build, test and deploy arbitrary SAP S/4HANA Cloud SDK Maven projects developed by teams within and outside of SAP.
+SAP Cloud SDK encompasses components such as Java libraries, Maven archetypes, a Virtual Data Model and a Continuous Delivery Toolkit.
+The Continuous Delivery Toolkit must be able to build, test and deploy arbitrary SAP Cloud SDK Maven projects developed by teams within and outside of SAP.
 
 Based on best practices gained when developing cloud-native applications, we learned that it should be possible to separate unit- and integration tests to run them in isolation. 
 Unit test should be close to the application code. 
@@ -27,7 +27,7 @@ Archetypes for generating valid projects are provided.
 
 ## Decision
 
-Projects built by SAP S/4HANA Cloud SDK Pipeline need to be Maven multi-module projects.
+Projects built by SAP Cloud SDK Pipeline need to be Maven multi-module projects.
 Besides one or more maven modules containing the application code there can be an optional one named `integration-tests` containing the integration tests.
 Unit test can be placed in `src/test/java` either in the corresponding application code module or in a separate module called `unit-tests`.
 The default of the archetypes and recommended approach is to place them into the corresponding application code module. 
@@ -41,7 +41,7 @@ The root pom must reference each module.
 * Users don't need to select Maven profiles for running tests
     * For inexperienced Maven users, selecting profiles for running tests might be more confusing compared to choosing the right module
     * Furthermore, there would need to be a common convention which profiles need to exist with fixed names
-* The project can be built including all unit tests by running `mvn install -!pl integration-tests`
+* The project can be built including all unit tests by running `mvn install -pl !integration-tests`
 * Integration tests can be executed separately by running `mvn verify -f integration-tests/pom.xml`
 * Fine grained dependency selection for each module is possible
     * In rare cases, it might be required to use different versions of a dependency in productive and test code, which is easily possible in separate modules
