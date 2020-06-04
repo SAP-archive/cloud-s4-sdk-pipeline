@@ -623,8 +623,6 @@ To get the same, please configure `esLanguageLevel: es6`.
 Configure [SonarQube](https://www.sonarqube.org/) scans.
 
 This is an optional feature for teams who prefer to use SonarQube. Note that it does some scans that are already done by the pipeline by default.
-It will only run on the productive branch because SonarQube supports only a single branch in the free "community" version.
-If you require it on multiple branches, please open an [GitHub issue](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
