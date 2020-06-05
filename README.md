@@ -82,6 +82,10 @@ By doing so, you will be notified on GitHub when a new version of the pipeline i
 It is recommended to always update to the latest version, for example by creating a pull request for the Jenkinsfile in your project.
 By doing so, you will notice potential upgrade issues in the pull request.
 
+For testing purposes, or because you want to use unreleased features early, you might want to consume the master branch of the pipeline.
+Work in progress release notes which might describe a sub-set of what a new release containes are documented [here](https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/release-notes-draft.md).
+Please be aware that your pipeline might break without prior notice if you chose this option.
+
 ## Blog Posts
 In order to learn more about the SAP Cloud SDK Continuous Delivery pipeline, feel free to read our [blog post](https://blogs.sap.com/2017/09/20/continuous-integration-and-delivery).
 

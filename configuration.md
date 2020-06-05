@@ -576,28 +576,9 @@ sourceClearScan:
 ```
 
 #### fortifyScan
-Configure Fortify scans.
 
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `sscUrl` | X | | URL how your Fortify Software Security Center client can be reached. |
-| `fortifyCredentialId` | X | | ID of the credentials (username, password) you want to use for the Fortify Software Security Center. Can be configured in `executeFortifyScan` or here. |
-| `fortifyProjectName` | X | | Name of your project in Fortify. |
-| `projectVersionId` | X | | ID of your project in Fortify. |
-
-
-If you wish to configure Fortify, add your config entries as in the example.
-For the fine tuning of fortify scan, please refer `executeFortifyScan` configuration.
-
-Example:
-
-```yaml
-fortifyScan:
-  sscUrl: 'https://fortify.dummy.corp.domain/ssc'
-  fortifyCredentialId: 'fortifyCredentialId'
-  fortifyProjectName: 'mySampleProject'
-  projectVersionId: '12345'
-```
+The Fortify scan is configured using the step fortifyExecuteScan. 
+The stage is executed in the productive branch when the parameter `fortifyCredentialsId` in the step config of fortifyExecuteScan is defined.
 
 #### lint
 
@@ -642,8 +623,6 @@ To get the same, please configure `esLanguageLevel: es6`.
 Configure [SonarQube](https://www.sonarqube.org/) scans.
 
 This is an optional feature for teams who prefer to use SonarQube. Note that it does some scans that are already done by the pipeline by default.
-It will only run on the productive branch because SonarQube supports only a single branch in the free "community" version.
-If you require it on multiple branches, please open an [GitHub issue](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -832,29 +811,9 @@ checkJMeter:
   unstableThreshold: 70
 ```
 
-#### executeFortifyScan
+#### fortifyExecuteScan
 
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | X | | Docker image with your Fortify agent. No public default image is provided, thus a custom image is required. |
-| `verbose` | | `false` | Sends the verbose out put to the Jenkins log |
-| `sourceVersion` | | `1.8` | Java version of the source code that needs to be scanned |
-| `buildId` | | `pom.artifactId-pom.version` | The build ID for the Fortify scan |
-| `use64BitVersion` | | `true` |  Runs Fortify SCA inside the 64-bit JRE |
-| `maximumMemoryUsage` | | `3000M` | Maximum heap size of the JVM which runs Fortify SCA |
-| `exclude` | | `**/resources/**/*,**/target/**/*,**/unit-tests/**/*,**/integration-tests/**/*` | File and directories that needs to excluded from the scanning |
-| `skipNgComponents` | | `true` | Skip the `node` modules from the scanning  |
-| `additionalScanOptions` | |  | Additional Fortify options such as thread count, alias usage etc.  |
-
-
-Example:
-
-```yaml
-executeFortifyScan:
-  dockerImage: 'docker.dummy.corp.domain/jenkins-agent-fortify:latest',
-  fortifyCredentialId: 'fortifyCredentialId',
-  additionalScanOptions: '-quick -Dfortify.sca.Xss=8M -Dfortify.sca.numOfWorkerThreads=8'
-```
+The configuration of the step fortifyExecuteScan is explained in the project "Piper" [documentation](https://sap.github.io/jenkins-library/steps/fortifyExecuteScan/).
 
 #### mtaBuild
 
