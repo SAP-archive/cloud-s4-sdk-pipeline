@@ -38,7 +38,6 @@ steps:
 +  artifactPrepareVersion:
 +    versioningType: 'cloud'
 +    gitHttpsCredentialsId: 'Jenkins secret'
-+    gitUserName: 'username'
 ```
 
 The repository URL for the project in Jenkins needs to be configured with `https://` scheme.   
