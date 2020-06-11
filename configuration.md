@@ -5,6 +5,7 @@
 * [Pipeline configuration](#pipeline-configuration)
   * [customDefaults](#customDefaults)
   * [General configuration](#general-configuration)
+    * [automaticVersioning](#automaticversioning)
     * [features](#features)
     * [jenkinsKubernetes](#jenkinskubernetes)
   * [Stage configuration](#stage-configuration)
@@ -27,7 +28,6 @@
     * [sonarQubeScan](#sonarqubescan)
     * [postPipelineHook](#postpipelinehook)
   * [Step configuration](#step-configuration)
-    * [artifactPrepareVersion](#artifactprepareversion)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
     * [executeSourceClearScan](#executesourceclearscan)
@@ -66,6 +66,22 @@ For more information on how to configure custom default configurations, please r
 | `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
+
+#### automaticVersioning
+The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
+Architectural details of this step can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
+
+| Property | Mandatory | Default Value | Description |
+| --- | --- | --- | --- |
+| `automaticVersioning` | | `true` | Apply automated versioning scheme. To disable this feature, set the value to `false` |
+
+Example:
+
+```yaml
+general:
+  productiveBranch: 'master'
+  automaticVersioning: true
+```
 
 #### features
 This section allows to enable or disable certain optional features.
@@ -643,25 +659,6 @@ Also, the stage (and thus an extension) is only executed if a stage configuratio
 ```
 
 ### Step configuration
-
-#### artifactPrepareVersion
-
-The pipeline can be configured to store release candidates in a Nexus repository after they passed all stages successfully.
-By default, the pipeline will perform automatic versioning of artifacts via the step `artifactPrepareVersion`.
-This ensures that multiple builds of a continuously delivered application do not lead to version collisions in Nexus.
-If you are not building a continuously delivered application, you will typically disable automatic versioning.
-To do this, set the value of the parameter `versioningType` to the value `library`.
-Architectural details can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
-
-Example:
-
-```yaml
-steps:
-  artifactPrepareVersion:
-    versioningType: library
-```
-
-For more information on how to configure this step, please refer to the documentation in [project "Piper"](https://sap.github.io/jenkins-library/steps/artifactPrepareVersion/).
 
 #### mavenExecute
 The mavenExecute step is used for all invocations of the mvn build tool. It is either used directly for executing specific maven phases such as `test`, or indirectly for steps that execute maven plugins such as `checkPmd`.
