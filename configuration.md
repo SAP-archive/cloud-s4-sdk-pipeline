@@ -622,7 +622,8 @@ To get the same, please configure `esLanguageLevel: es6`.
 
 Configure [SonarQube](https://www.sonarqube.org/) scans.
 
-This is an optional feature for teams who prefer to use SonarQube. Note that it does some scans that are already done by the pipeline by default.
+This is an optional feature for teams who prefer to use SonarQube.
+Note that it does some scans that are already done by the pipeline by default.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -631,6 +632,9 @@ This is an optional feature for teams who prefer to use SonarQube. Note that it 
 | `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
 | `dockerImage` | | ppiper/node-browsers:v3 | This property refers to a docker image which will be used for triggering the sonar scan. In case your sonar instance uses a self signed certificate, a docker image with that certificate installed can be used. |
 | `sonarProperties` | | | The properties are used to configure sonar. Please refer to the example below. |
+
+**Note:** The stage is skipped by default if you're not on a productive branch (`master` by default).
+You can change this by setting `runInAllBranches` to `true`, which requires the commercial version of SonarQube.
 
 Example:
 
