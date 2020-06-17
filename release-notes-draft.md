@@ -49,6 +49,22 @@ steps:
 The repository URL for the project in Jenkins needs to be configured with `https://` scheme.   
 It will be used also for pushing the tag.
 
+For Maven projects, the step `mavenExecute` is not used anymore to set the version.
+Instead, it is directly done by `artifactPrepareVersion`, which avoids starting new Docker containers and will improve the performance.
+
+If you have defined a project settings file for `mavenExecute` before, you must move this configuration into the general sections as follows:
+
+```diff
+general:
++  maven:
++    projectSettingsFile: 'settings.xml'
+steps:
+-  mavenExecute:
+-    projectSettingsFile: 'settings.xml'
+```
+
+The same applies to other options defined for `mavenExecute`.
+
 ## Fixes
 
 ## Improvements
