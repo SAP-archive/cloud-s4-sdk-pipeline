@@ -6,7 +6,7 @@ This document describes the changes which will be part of the next release and a
 
 ## :warning: Breaking changes
 
-* Support for SourceClear scans was removed from the pipeline. Please use other 3rd party security scanning tools, such as Fortify, Checkmarx, etc., instead.
+* Support for SourceClear scans was removed from the pipeline. Please use other 3rd party security scanning tools, such as Fortify, Checkmarx, WhiteSource or SonarQube instead.
 
 ## Fixes
 
@@ -14,12 +14,13 @@ This document describes the changes which will be part of the next release and a
 
 ### Jenkinsfile
 
-We updated our bootstrapping Jenkinsfile so that it loads the pipeline directly from the library and not from this repository anymore.
-With this change we decrease the number of repositories checked out and the number of executors during the pipeline run.
+We updated our bootstrapping Jenkinsfile so that it loads the pipeline directly from the library and not from the `cloud-s4-sdk-pipeline` repository anymore.
+This change improves efficiency of the pipeline because it decreases the number of repositories checked out and the number of executors during the pipeline run.
 
 The new version can be found here: https://github.com/SAP/cloud-s4-sdk-pipeline/blob/master/archetype-resources/Jenkinsfile
 
-You have to adopt the Jenkinsfile accordingly to the following change:
+To benefit from the improved efficiency, please update your Jenkinsfile like this:
+
 ```diff
 -node {
 -    deleteDir()
