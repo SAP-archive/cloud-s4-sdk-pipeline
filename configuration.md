@@ -22,7 +22,6 @@
     * [artifactDeployment](#artifactdeployment)
       * [nexus](#nexus)
     * [whitesourceScan](#whitesourcescan)
-    * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
     * [lint](#lint)
     * [sonarQubeScan](#sonarqubescan)
@@ -30,7 +29,6 @@
   * [Step configuration](#step-configuration)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
-    * [executeSourceClearScan](#executesourceclearscan)
     * [cloudFoundryDeploy](#cloudfoundrydeploy)
     * [neoDeploy](#neodeploy)
     * [checkFindbugs](#checkfindbugs)
@@ -551,30 +549,6 @@ Please ensure that all `package.json` files have a `name` and `version` configur
 
 Please note that you can not have a `whitesource.config.json` in your project, since the Pipeline generates one from this configuration.
 
-#### sourceClearScan
-Configure [SourceClear](https://www.sourceclear.com/) scans.
-
-**Note:** Please note that the SourceClear stage of this pipeline is not actively maintained anymore. In case of issues, feel free to contribute to this project by opening a pull request.
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `credentialsId` | X | | Jenkins credentials id for the SourceClear API token. See [SourceClear docs for details](https://www.sourceclear.com/docs/jenkins-script/). |
-| `config` | | | Additional configuration for the SourceClear agent. The key-value pairs will be added to `srcclr.yml`. |
-
-Please note that your project can't have a `srcclr.yml` file.
-The pipeline creates a config file with optimized settings.
-If you wish to configure SourceClear, add your config entries as in the example.
-
-Example:
-
-```yaml
-sourceClearScan:
-  credentialsId: 'SRCCLR_API_TOKEN'
-  config:
-    vuln_methods_extra_ignored_directories: docs, integration-tests
-    scope: compile
-```
-
 #### fortifyScan
 
 The Fortify scan is configured using the step fortifyExecuteScan. 
@@ -683,12 +657,6 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | `dockerImage` | | `ppiper/node-browsers:v2` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
 | `sapNpmRegistry` | | `https://npm.sap.com` | The default npm registry url to be used as the remote mirror for the SAP npm packages. Bypasses the local download cache if specified.  |
-
-#### executeSourceClearScan
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `ppiper/mta-archive-builder` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
 #### cloudFoundryDeploy
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.

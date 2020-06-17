@@ -2,11 +2,17 @@
 
 This document describes the changes which will be part of the next release and are already available in the latest version (master branch) of the pipeline.
 
-## v36
+# v37
 
-### Improvements
+## :warning: Breaking changes
 
-#### Jenkinsfile
+* Support for SourceClear scans was removed from the pipeline. Please use other 3rd party security scanning tools, such as Fortify, Checkmarx, etc., instead.
+
+## Fixes
+
+## Improvements
+
+### Jenkinsfile
 
 We updated our bootstrapping Jenkinsfile so that it loads the pipeline directly from the library and not from this repository anymore.
 With this change we decrease the number of repositories checked out and the number of executors during the pipeline run.
