@@ -549,12 +549,16 @@ If no custom linter is configured, and the project has SAPUI5 components, it mak
 A component is identified by a `Component.js` file in the directory.
 
 If no custom linter is configured, and the project has no SAPUI5 components, the pipeline uses a general purpose configuration to lint Javascript and/or Typescript files in the project.
-By default, the pipeline does not fail based on lint findings.
+By default, the pipeline does not fail based on lint findings. 
+If it is required, the pipeline can be configured to fail based on lint findings, using the `failOnError` configuration option. 
 The goal of this lint is to warn of potential errors without insisting on any programming style.
 If you're not satisfied by the default configuration, you can opt-out using that by providing your [own configuration file](https://eslint.org/docs/user-guide/configuring) in your project.
 More details can be found in the [pipeline documentation](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/#lint).
 
-Note, the configuration specified for the Lint stage in `.pipeline/config.yml` is only applied in case SAPUI5 components are checked by the pipeline and is ignored otherwise.
+Note, the available configuration options when using a custom linting script or when relying on the default linting of the pipeline can be found in the [pipeline documentation](https://sap.github.io/jenkins-library/steps/npmExecuteLint/#parameters).
+These options should be provided as step configuration for the `npmExecuteLint` step. 
+
+The configuration for the SAPUI5 best practices linter needs to be placed under `ui5BestPractices` in the Lint stage configuration in `.pipeline/config.yml`.
 
 The following example shows how to enable thresholds for linting, in case the built-in SAPUI5 best practices linter is used:
 

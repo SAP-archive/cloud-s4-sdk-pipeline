@@ -69,6 +69,19 @@ The same applies to other options defined for `mavenExecute`.
 
 ## Improvements
 
+### Lint Stage
+
+The pipeline can be configured to fail based on linting findings using the `failOnError` configuration option. 
+By default, the pipeline does not fail based on lint findings.
+This option is available when providing a custom linting script or when relying on the default linting of the pipeline.
+It is not available when using the SAPUI5 best practices linter.
+
+```diff
+steps:
++  npmExecuteLint:
++    failOnError: true
+```
+
 ### Jenkinsfile
 
 We updated our bootstrapping Jenkinsfile so that it loads the pipeline directly from the library and not from the `cloud-s4-sdk-pipeline` repository anymore.
