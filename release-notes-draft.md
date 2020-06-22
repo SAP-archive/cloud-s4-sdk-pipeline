@@ -10,9 +10,9 @@ This document describes the changes which will be part of the next release and a
 
 * The configuration for Automatic Versioning has changed, see below.
 
-#### Automatic versioning
+### Automatic versioning
 
-Automatic versioning is solely configured via the new step `artifactPrepareVersion` as documented [here](https://sap.github.io/jenkins-library/steps/artifactPrepareVersion/) 
+Automatic versioning is solely configured via the new step `artifactPrepareVersion` as documented [here](https://sap.github.io/jenkins-library/steps/artifactPrepareVersion/)
 
 For internal use-cases, the pipeline is configuring this step to also push a tag for each generated version.
 This makes it necessary to provide the two parameters `gitHttpsCredentialsId` and `gitUserName`.
@@ -46,7 +46,7 @@ steps:
 +    gitHttpsCredentialsId: 'Jenkins secret'
 ```
 
-The repository URL for the project in Jenkins needs to be configured with `https://` scheme.   
+The repository URL for the project in Jenkins needs to be configured with `https://` scheme.
 It will be used also for pushing the tag.
 
 For Maven projects, the step `mavenExecute` is not used anymore to set the version.
@@ -94,9 +94,15 @@ To benefit from the improved efficiency, please update your Jenkinsfile like thi
 ```diff
 -node {
 -    deleteDir()
--    sh "git clone --depth 1 https://github.com/SAP/cloud-s4-sdk-pipeline.git -b ${pipelineVersion} pipelines"	
--    load './pipelines/s4sdk-pipeline.groovy'	
--}	
+-    sh "git clone --depth 1 https://github.com/SAP/cloud-s4-sdk-pipeline.git -b ${pipelineVersion} pipelines"
+-    load './pipelines/s4sdk-pipeline.groovy'
+-}
 +library "s4sdk-pipeline-library@${pipelineVersion}"
 +cloudSdkPipeline(script: this)
 ```
+
+### Merged "build" stage with Project "Piper" general purpose pipeline
+
+In an effort to reduce differences between _project "Piper" general purpose pipeline_ and _SAP Cloud SDK pipeline_, both use the same stage for "Build and Unit Test" now.
+This is a change under the hood and it should not require any changes in your project.
+If you notice any regressions, please let us know by opening an [issue](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
