@@ -132,5 +132,39 @@ To benefit from the improved efficiency, please update your Jenkinsfile like thi
 ### Merged "build" stage with Project "Piper" general purpose pipeline
 
 In an effort to reduce differences between _project "Piper" general purpose pipeline_ and _SAP Cloud SDK pipeline_, both use the same stage for "Build and Unit Test" now.
-This is a change under the hood and it should not require any changes in your project.
+This is a change under the hood and it should not require any changes in your project in most cases.
+
+A notable exception is the JavaScript pipeline.
+
+First, the new pipeline does not only run ci scripts in the top-level `package.json` file, but also in sub-directories.
+This only applies if the `package.json` file implements the respective scripts.
+Older pipeline versions required you to orchestrate the build inside nested `package.json` files.
+If your project has a build setup where the top level `package.json` file takes care of building sub-modules, please take care that this should not be done anymore.
+
+This is the list of scripts that are automatically executed by the pipeline, if they are implemented:
+
+- `ci-build`
+- `ci-backend-unit-test`
+- `ci-package`
+
+This might in particular be an issue if any of the mentioned scripts uses [lerna](https://lerna.js.org/).
+If you still want lerna to orchestrate the execution, make sure to use the mentioned names in the `package.json` files in the root of your project, and to use different names in sub-modules.
+
+You can try this out locally by running `piper npmExecuteScripts --install --runScripts=ci-build,ci-backend-unit-test,ci-package` in the [project "Piper" cli](https://sap.github.io/jenkins-library/cli/).
+
+Second, the new pipeline does not run `ci-package` in an isolated file system anymore.
+Therefore, make sure that `ci-package` only changes the deployment directory.
+
+If your JavaScript/TypeScript project was generated from an older template project, you might have to adjust the `ci-package` command like so:
+
+```diff
+"scripts": {
+-     "ci-package": "mkdir -p deployment/ && npm prune --production && cp -r node_modules dist package.json package-lock.json frontend index.html deployment/",	
++     "ci-package": "sap-cloud-sdk package --include=dist/**/*,package.json,package-lock.json,frontend/**/*,index.html",
+},
+  "devDependencies": {
++    "@sap-cloud-sdk/cli": "^0.1.9",
+}
+```
+
 If you notice any regressions, please let us know by opening an [issue](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
