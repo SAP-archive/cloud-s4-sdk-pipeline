@@ -6,9 +6,24 @@ This document describes the changes which will be part of the next release and a
 
 ## :warning: Breaking changes
 
-* Support for SourceClear scans was removed from the pipeline. Please use other 3rd party security scanning tools, such as Fortify, Checkmarx, WhiteSource or SonarQube instead.
+- Support for SourceClear scans was removed from the pipeline.
+  Please use other 3rd party security scanning tools, such as Fortify, Checkmarx, WhiteSource or SonarQube instead.
+- We reimplemented the mechanism how custom defaults are retrieved while implementing some improvements as explained below.
+  Please note that the old parameter `extensionRepository` cannot be used anymore.
+  Instead, please use the option `globalExtensionsRepository`.
+  The option `globalExtensionsRepository` does not allow to specify a version with the option `-b` anymore.
+  Instead, please use the parameter `globalExtensionsVersion` to configure a version.
+  Please note that you can also configure these values as part of your custom defaults / shared configuration.
+  The precedence has not changed.
 
-* The configuration for Automatic Versioning has changed, see below.
+Example:
+
+```diff
+general:
+-  extensionRepository: 'https://my.git.example/extensions.git -b v35'
++  globalExtensionsRepository: 'https://my.git.example/extensions.git'
++  globalExtensionsVersion: 'v35'
+```
 
 ### Automatic versioning
 
@@ -68,6 +83,19 @@ The same applies to other options defined for `mavenExecute`.
 ## Fixes
 
 ## Improvements
+
+### Authenticated Access for Custom Defaults and Global Pipeline Extensions
+
+We updated the download mechanism for custom defaults and global pipeline extensions so that both can also be stored on
+locations which are secured by basic authentication.
+
+If you specify the option for `customDefaultsCredentialsId` in the section general of the configuration, the username and password will be used for accessing all custom defaults urls defined in the section customDefaults.
+Please find further details here: https://sap.github.io/jenkins-library/steps/setupCommonPipelineEnvironment/
+If you specify the option for `globalExtensionsRepositoryCredentialsId` in the section general of the configuration, the username and password will be used for cloning the extension repository.
+
+### Specify Global Pipeline Extensions in Shared Config
+
+Now it is possible to configure all configuration options regarding the global extensions as part of your custom defaults / shared configuration.
 
 ### Lint Stage
 

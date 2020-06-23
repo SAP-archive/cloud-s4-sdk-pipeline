@@ -64,6 +64,8 @@ For more information on how to configure custom default configurations, please r
 | `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
+| `customDefaultsCredentialsId` | |  | Credentials (username / password) used to download [custom defaults](#customDefaults). |
+
 
 #### features
 This section allows to enable or disable certain optional features.
