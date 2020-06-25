@@ -24,7 +24,7 @@ The new behavior of the lint stage of the SAP Cloud SDK Pipeline is as follows.
 In addition to the new behavior, we decided to not let the execution of the pipeline fail when linting errors or warnings are discovered.
 The thresholds defined in the pipeline configuration only apply for the built-in check of SAPUI5 components.
 
-ESLint is used as linting tool for the default linting, since it is the most-widely used and feature rich linting tool, at of the time of this writing.  
+ESLint is used as linting tool for the default linting, since it is the most-widely used and feature rich linting tool, at the time of this writing.  
 
 ## Consequences
 

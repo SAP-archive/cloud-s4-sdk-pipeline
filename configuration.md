@@ -5,7 +5,6 @@
 * [Pipeline configuration](#pipeline-configuration)
   * [customDefaults](#customDefaults)
   * [General configuration](#general-configuration)
-    * [automaticVersioning](#automaticversioning)
     * [features](#features)
     * [jenkinsKubernetes](#jenkinskubernetes)
   * [Stage configuration](#stage-configuration)
@@ -22,15 +21,14 @@
     * [artifactDeployment](#artifactdeployment)
       * [nexus](#nexus)
     * [whitesourceScan](#whitesourcescan)
-    * [sourceClearScan](#sourceclearscan)
     * [fortifyScan](#fortifyscan)
     * [lint](#lint)
     * [sonarQubeScan](#sonarqubescan)
     * [postPipelineHook](#postpipelinehook)
   * [Step configuration](#step-configuration)
+    * [artifactPrepareVersion](#artifactprepareversion)
     * [mavenExecute](#mavenexecute)
     * [executeNpm](#executenpm)
-    * [executeSourceClearScan](#executesourceclearscan)
     * [cloudFoundryDeploy](#cloudfoundrydeploy)
     * [neoDeploy](#neodeploy)
     * [checkFindbugs](#checkfindbugs)
@@ -66,22 +64,8 @@ For more information on how to configure custom default configurations, please r
 | `projectName` | | `artifactId` from pom | Name of the project |
 | `collectTelemetryData` | | `true` | No personal data is collected. For details, consult the [analytics documentation](doc/operations/analytics.md). |
 | `unsafeMode` | | `false` | Enable unsafe mode to skip checking environment variables for insecure elements. Only use this for demo purposes, **never for productive usage**. |
+| `customDefaultsCredentialsId` | |  | Credentials (username / password) used to download [custom defaults](#customDefaults). |
 
-#### automaticVersioning
-The pipeline can be configured to store release candidates in a nexus repository after they passed all stages successfully. By turning on automatic versioning, one can avoid that multiple builds of a continuously delivered application lead to version collisions in nexus. When activated, the pipeline will assign unique maven versions for each release candidate. If you are not building a continuously delivered application, you will typically disable automatic versioning.
-Architectural details of this step can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `automaticVersioning` | | `true` | Apply automated versioning scheme. To disable this feature, set the value to `false` |
-
-Example:
-
-```yaml
-general:
-  productiveBranch: 'master'
-  automaticVersioning: true
-```
 
 #### features
 This section allows to enable or disable certain optional features.
@@ -551,30 +535,6 @@ Please ensure that all `package.json` files have a `name` and `version` configur
 
 Please note that you can not have a `whitesource.config.json` in your project, since the Pipeline generates one from this configuration.
 
-#### sourceClearScan
-Configure [SourceClear](https://www.sourceclear.com/) scans.
-
-**Note:** Please note that the SourceClear stage of this pipeline is not actively maintained anymore. In case of issues, feel free to contribute to this project by opening a pull request.
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `credentialsId` | X | | Jenkins credentials id for the SourceClear API token. See [SourceClear docs for details](https://www.sourceclear.com/docs/jenkins-script/). |
-| `config` | | | Additional configuration for the SourceClear agent. The key-value pairs will be added to `srcclr.yml`. |
-
-Please note that your project can't have a `srcclr.yml` file.
-The pipeline creates a config file with optimized settings.
-If you wish to configure SourceClear, add your config entries as in the example.
-
-Example:
-
-```yaml
-sourceClearScan:
-  credentialsId: 'SRCCLR_API_TOKEN'
-  config:
-    vuln_methods_extra_ignored_directories: docs, integration-tests
-    scope: compile
-```
-
 #### fortifyScan
 
 The Fortify scan is configured using the step fortifyExecuteScan. 
@@ -591,12 +551,16 @@ If no custom linter is configured, and the project has SAPUI5 components, it mak
 A component is identified by a `Component.js` file in the directory.
 
 If no custom linter is configured, and the project has no SAPUI5 components, the pipeline uses a general purpose configuration to lint Javascript and/or Typescript files in the project.
-By default, the pipeline does not fail based on lint findings.
+By default, the pipeline does not fail based on lint findings. 
+If it is required, the pipeline can be configured to fail based on lint findings, using the `failOnError` configuration option. 
 The goal of this lint is to warn of potential errors without insisting on any programming style.
 If you're not satisfied by the default configuration, you can opt-out using that by providing your [own configuration file](https://eslint.org/docs/user-guide/configuring) in your project.
 More details can be found in the [pipeline documentation](https://sap.github.io/jenkins-library/pipelines/cloud-sdk/build-tools/#lint).
 
-Note, the configuration specified for the Lint stage in `.pipeline/config.yml` is only applied in case SAPUI5 components are checked by the pipeline and is ignored otherwise.
+Note, the available configuration options when using a custom linting script or when relying on the default linting of the pipeline can be found in the [pipeline documentation](https://sap.github.io/jenkins-library/steps/npmExecuteLint/#parameters).
+These options should be provided as step configuration for the `npmExecuteLint` step. 
+
+The configuration for the SAPUI5 best practices linter needs to be placed under `ui5BestPractices` in the Lint stage configuration in `.pipeline/config.yml`.
 
 The following example shows how to enable thresholds for linting, in case the built-in SAPUI5 best practices linter is used:
 
@@ -622,7 +586,8 @@ To get the same, please configure `esLanguageLevel: es6`.
 
 Configure [SonarQube](https://www.sonarqube.org/) scans.
 
-This is an optional feature for teams who prefer to use SonarQube. Note that it does some scans that are already done by the pipeline by default.
+This is an optional feature for teams who prefer to use SonarQube.
+Note that it does some scans that are already done by the pipeline by default.
 
 | Property | Mandatory | Default Value | Description |
 | --- | --- | --- | --- |
@@ -631,6 +596,9 @@ This is an optional feature for teams who prefer to use SonarQube. Note that it 
 | `instance` | X | | This property refers to a sonarqube instance, which needs to be defined in the Jenkins. |
 | `dockerImage` | | ppiper/node-browsers:v3 | This property refers to a docker image which will be used for triggering the sonar scan. In case your sonar instance uses a self signed certificate, a docker image with that certificate installed can be used. |
 | `sonarProperties` | | | The properties are used to configure sonar. Please refer to the example below. |
+
+**Note:** The stage is skipped by default if you're not on a productive branch (`master` by default).
+You can change this by setting `runInAllBranches` to `true`, which requires the commercial version of SonarQube.
 
 Example:
 
@@ -660,6 +628,25 @@ Also, the stage (and thus an extension) is only executed if a stage configuratio
 
 ### Step configuration
 
+#### artifactPrepareVersion
+
+The pipeline can be configured to store release candidates in a Nexus repository after they passed all stages successfully.
+By default, the pipeline will perform automatic versioning of artifacts via the step `artifactPrepareVersion`.
+This ensures that multiple builds of a continuously delivered application do not lead to version collisions in Nexus.
+If you are not building a continuously delivered application, you will typically disable automatic versioning.
+To do this, set the value of the parameter `versioningType` to the value `library`.
+Architectural details can be found in [automatic-release.md](doc/architecture/decisions/automatic-release.md).
+
+Example:
+
+```yaml
+steps:
+  artifactPrepareVersion:
+    versioningType: library
+```
+
+For more information on how to configure this step, please refer to the documentation in [project "Piper"](https://sap.github.io/jenkins-library/steps/artifactPrepareVersion/).
+
 #### mavenExecute
 The mavenExecute step is used for all invocations of the mvn build tool. It is either used directly for executing specific maven phases such as `test`, or indirectly for steps that execute maven plugins such as `checkPmd`.
 
@@ -679,12 +666,6 @@ The executeNpm step is used for all invocations of the npm build tool. It is, fo
 | `dockerImage` | | `ppiper/node-browsers:v2` | The image to be used for executing npm commands. |
 | `defaultNpmRegistry` | | | The default npm registry url to be used as the remote mirror. Bypasses the local download cache if specified.  |
 | `sapNpmRegistry` | | `https://npm.sap.com` | The default npm registry url to be used as the remote mirror for the SAP npm packages. Bypasses the local download cache if specified.  |
-
-#### executeSourceClearScan
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` | | `ppiper/mta-archive-builder` | The image to be used for running SourceClear scan. Must contain a version of Maven (and NPM if you have a frontend) which is capable of building your project. |
 
 #### cloudFoundryDeploy
 A step configuration regarding Cloud Foundry deployment. This is required by stages like end-to-end tests, performance tests, and production deployment.
