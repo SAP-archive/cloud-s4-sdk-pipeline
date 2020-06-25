@@ -102,7 +102,7 @@ Now it is possible to configure all configuration options regarding the global e
 The pipeline can be configured to fail based on linting findings using the `failOnError` configuration option. 
 By default, the pipeline does not fail based on lint findings.
 This option is available when providing a custom linting script or when relying on the default linting of the pipeline.
-It is not available when using the SAPUI5 best practices linter.
+It is not available when using the SAPUI5 best practices linter, which is using thresholds instead.
 
 ```diff
 steps:
