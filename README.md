@@ -1,8 +1,8 @@
-# SAP Cloud SDK Pipeline <a href="https://sap.com/s4sdk"><img src="https://help.sap.com/doc/6c02295dfa8f47cf9c08a19f2e172901/1.0/en-US/logo-for-cd.svg" alt="SAP Cloud SDK for Continuous Delivery Logo" height="122.92" width="226.773" align="right"/></a>
+# SAP Cloud SDK Pipeline <a href="https://developers.sap.com/topics/cloud-sdk.html"><img src="https://help.sap.com/doc/6c02295dfa8f47cf9c08a19f2e172901/1.0/en-US/logo-for-cd.svg" alt="SAP Cloud SDK for Continuous Delivery Logo" height="122.92" width="226.773" align="right"/></a>
 
 ## Description
 
-The [SAP Cloud SDK](https://sap.com/s4sdk) helps to efficiently build, test, and deliver extensions of SAP solutions such as SAP S/4HANA.
+The [SAP Cloud SDK](https://developers.sap.com/topics/cloud-sdk.html) helps to efficiently build, test, and deliver extensions of SAP solutions such as SAP S/4HANA.
 This repository contains a Jenkins Pipeline-as-Code that enables development teams to assure a high level of quality on process as well as code level. While the SAP Cloud SDK enables to build high-quality cloud applications, this pipeline helps to assure high quality on project level by a set of standard and SDK-specific quality checks.
 
 ![Visualisation of SAP Cloud SDK Pipeline](images/s4sdk-pipeline.gif)
