@@ -324,7 +324,7 @@ checkmarxScan:
 |`cfCreateServices`| | | The list of services which should be created before deploying the application as defined below.  |
 | `cfTargets` | | | The list of productive Cloud Foundry deployment targets to be deployed when a build of your productive branch succeeds. |
 | `neoTargets`| | | The list of productive Neo deployment targets to be deployed when a build of your productive branch succeeds. |
-| `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl can be a string with the URL or a map containing a property url and a property credentialId. An example is shown in the configuration for the stage endToEndTests. |
+| `appUrls` | | |  The URLs under which the app is available after deployment. Each appUrl must be a map containing a property url and _optional_ properties credentialId and parameters. An example is shown in the configuration for the stage endToEndTests. More information can be found in the [documentation](https://sap.github.io/jenkins-library/steps/npmExecuteEndToEndTests/#parameters). |
 | `tmsUpload` | | | The paramaters which are needed to enable step 'tmsUpload'. |
 
 #### cfCreateServices
