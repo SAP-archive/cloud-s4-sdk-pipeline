@@ -2,9 +2,25 @@
 
 This document describes the changes which will be part of the next release and are already available in the latest version (master branch) of the pipeline.
 
-# v38
+# v39
 
 ## :warning: Breaking changes
+
+In the process of aligning the pipeline configuration with the concepts of other project "Piper" pipelines to delivery a common user experience, the configuration of the SAP Cloud Platform Transport Management upload was moved from the stage `productionDeployment` to the `tmsUpload` step:
+
+```diff
+steps:
++  tmsUpload:
++    nodeName: 'TEST'
++    credentialsId: 'TMS-UPLOAD'
++    customDescription: 'A custom description for the node upload'
+stages:
+-  productionDeployment:
+-    tmsUpload:
+-      nodeName: 'TEST'
+-      credentialsId: 'TMS-UPLOAD'
+-      customDescription: 'A custom description for the node upload'
+```
 
 ### Stages endToEndTests and productionDeployment
 - The `appUrls` property of the stages `endToEndTests` and `productionDeployment` must not be a string anymore. 
@@ -30,8 +46,6 @@ Example:
 ```
 
 ## New Features
-
-Set branch property in non productive non PR branches in sonar. This allows usage of sonar in multi-branch setups, as sonar is made aware of which branch a check refers to. Please note that this is not available in all versions of sonar.
 
 ## Fixes
 
