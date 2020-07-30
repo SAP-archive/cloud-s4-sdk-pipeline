@@ -34,6 +34,7 @@
     * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
+    * [detectExecuteScan](#detectexecutescan)
     * [executeFortifyScan](#executefortifyscan)
     * [mtaBuild](#mtabuild)
     * [createHdiContainer](#createhdicontainer)
@@ -773,6 +774,11 @@ checkJMeter:
   failThreshold : 80
   unstableThreshold: 70
 ```
+
+#### detectExecuteScan
+
+To activate a Synopsys Detect Scan, the step `detectExecuteScan` has to be configured in the steps section.
+Please visit the project "Piper" [documentation](https://sap.github.io/jenkins-library/steps/detectExecuteScan/) for the configuration options of this step.
 
 #### fortifyExecuteScan
 
