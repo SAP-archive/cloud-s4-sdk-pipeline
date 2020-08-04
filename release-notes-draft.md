@@ -29,4 +29,14 @@ steps:
 
 ## Fixes
 
+Some stages such as `backendIntegrationTests` can be configured to run with an optional sidecar image.
+This was broken for a number of releases, if the Download Cache was enabled and any steps within the stage made use of it (such as `mavenExecute`).
+For the time being, docker containers can be connected to one network only, which means the Download Cache has to be disabled for stages with a sidecar image defined.
+
 ## Improvements
+
+For a step which anticipates to run with an optional sidecar image, the image may now also be defined in that step's configuration only.
+This improves performance versus configuring the sidecar image in the stage, since it avoids running other steps within the stage also with that sidecar.
+
+:warning: **If the Download Cache is enabled**, sidecar images have to be configured in the stage as before. 
+The Download Cache is enabled by default on CX-Server-based Jenkins instances, unless when running Jenkins in a Kubernetes environment.   
