@@ -37,7 +37,6 @@
     * [detectExecuteScan](#detectexecutescan)
     * [executeFortifyScan](#executefortifyscan)
     * [mtaBuild](#mtabuild)
-    * [createHdiContainer](#createhdicontainer)
     * [tmsUpload](#tmsupload)
     * [debugReportArchive](#debugreportarchive)
   * [Post action configuration](#post-action-configuration)
@@ -120,10 +119,6 @@ The configuration of the stage has been moved to the step [mavenExecuteStaticCod
 | `retry` | | `1` | The number of times that integration tests will retry before aborting the build. **Note:** This will consume more time for the jenkins build. |
 | `forkCount` | | `1C` | The number of JVM processes that are spawned to run the tests in parallel in case of using a maven based project structure. For more details visit the [surefire documentation](https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#forkCount). |
 | `credentials` | | | The list of system credentials to be injected during integration tests. The following example will provide the username and password for the systems with the aliases ERP and SFSF. For this, it will use the Jenkins credentials entries erp-credentials and successfactors-credentials. You have to ensure that corresponding credential entries exist in your Jenkins configuration |
-| `createHdiContainer` | | False | Activates the creation of a HDI containers in CAP projects. The name of the container will contain the project name and a random id. |
-| `cloudFoundry` | X** | | The Cloud Foundry target (landscape, org, space, credentials) where the HDI container will be created. Please find the details below.  |
-
-** The parameter `cloudFoundry` is only mandatory if `createHdiContainer` is `true`.
 
 Example:
 ```yaml
@@ -147,17 +142,6 @@ To use this optional feature the following configuration values have to be provi
 |`sidecarEnvVars` | | | Environment variables to set in the container. |
 
 *Note: To access the container from your tests use the `sidecarName` as hostname on Docker or `localhost:portOfProcess` on Kubernetes.*
-
-The parameter `cloudFoundry` has to contain the following configuration values:
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `org` | X** | | Cloud Foundry organization |
-| `space` | X** | | Cloud Foundry space |
-| `apiEndpoint` | X** |  | URL to the Cloud Foundry endpoint. |
-| `credentialsId` | X**|  | ID to the credentials that will be used to connect to the Cloud Foundry account. |
-
-** The parameters can either be specified here or globally in the general section.
 
 Example:
 ```yaml
@@ -791,13 +775,6 @@ The configuration of the step fortifyExecuteScan is explained in the project "Pi
 | `mtaBuildTool` | | `cloudMbt` | Choose which tool is used to build your mta project. The default option is `cloudMbt` which is not backwards compatible with the `classic` tool. For more information on migrating from `classic` to `cloudMbt`, please refer to https://sap.github.io/cloud-mta-build-tool/migration/. |
 
 All configuration parameters as stated in [jenkins-library documentation](https://sap.github.io/jenkins-library/steps/mtaBuild/) are available.
-
-#### createHdiContainer
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `dockerImage` |  | `ppiper/cf-cli` | Docker image including the Cloud Foundry cli |
-| `broker` |  |  | You can specify the broker which should be used to create the service. This might be required if the service is provided by multiple brokers. |
 
 #### tmsUpload
 The `tmsUpload` step can be used to upload your app during the production deployment stage using SAP Cloud Platform Transport Management.
