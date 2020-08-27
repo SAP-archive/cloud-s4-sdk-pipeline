@@ -31,7 +31,6 @@
     * [executeNpm](#executenpm)
     * [cloudFoundryDeploy](#cloudfoundrydeploy)
     * [neoDeploy](#neodeploy)
-    * [checkFindbugs](#checkfindbugs)
     * [checkGatling](#checkgatling)
     * [checkJMeter](#checkjmeter)
     * [detectExecuteScan](#detectexecutescan)
@@ -712,15 +711,6 @@ neoDeploy:
     runtime: 'neo-javaee6-wp'
     runtimeVersion: '2'
 ```
-
-#### checkFindbugs
-[SpotBugs](https://spotbugs.github.io/) static code analysis is executed as part of the static code checks.
-
-| Property | Mandatory | Default Value | Description |
-| --- | --- | --- | --- |
-| `includeFilterFile` | | `s4hana_findbugs_include_filter.xml` | Bug definition filter file. |
-
-Please note that the step is called `checkFindbugs` for backwards compatibility, but uses its successor SpotBugs.
 
 #### checkGatling
 [Gatling](https://gatling.io/) is used as one of the performance tests tool.
