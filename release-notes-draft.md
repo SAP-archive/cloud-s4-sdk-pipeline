@@ -20,4 +20,6 @@ From v42 onwards it is required to change the name of the script in your `packag
 
 ## Fixes
 
+* In versions v40 and v41 of the Cloud SDK Pipeline, the Lint stage could fail while trying to record issues, if the version of the Jenkins plugin `warnings-ng` was older than 8.4.0.
+
 ## Improvements
