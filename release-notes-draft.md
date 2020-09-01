@@ -16,6 +16,16 @@ The step `createHdiContainer` is still available for use in extensions, configur
 The name `ci-integration-test` for the npm script which is executed as part of the backend integration tests stage is deprecated.
 From v42 onwards it is required to change the name of the script in your `package.json` files to the new name `ci-it-backend`, since the script `ci-integration-test` will not be executed as part as the backend integration tests anymore.
 
+### Renaming of keys in runStage configuration map
+Due to further alignment efforts with project "Piper" the keys (identifiers for the different stages) used in the `runStage` map have changed.
+This is a breaking change for users that use a custom pipeline or overwrite the `runStage` map or its entries as part of an extension.
+In particular, the keys have been changed from the upper case notation used before, to their respective stage names in camel case.
+For example:
+```diff
+- script.commonPipelineEnvironment.configuration.runStage.BACKEND_INTEGRATION_TESTS = false
++ script.commonPipelineEnvironment.configuration.runStage.backendIntegrationTests = false
+```
+
 ## New Features
 
 ## Fixes
