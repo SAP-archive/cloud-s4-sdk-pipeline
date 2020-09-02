@@ -33,3 +33,6 @@ For example:
 * In versions v40 and v41 of the Cloud SDK Pipeline, the Lint stage could fail while trying to record issues, if the version of the Jenkins plugin `warnings-ng` was older than 8.4.0.
 
 ## Improvements
+
+* The results of tests when viewed via the Jenkins Blue Ocean interface are now separated by the stage where the tests have been performed.
+  In previous versions of the SAP Cloud SDK Pipeline, the same test results could be listed under multiple stages.
