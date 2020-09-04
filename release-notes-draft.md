@@ -36,6 +36,8 @@ For example:
 ## Fixes
 
 * In versions v40 and v41 of the Cloud SDK Pipeline, the Lint stage could fail while trying to record issues, if the version of the Jenkins plugin `warnings-ng` was older than 8.4.0.
+* In versions v39, v40 and v41 of the Cloud SDK Pipeline, the `productionDeployment` stage did **not** enable zero downtime deployments by default.
+For the affected versions it is possible to fix this problem by adding `enableZeroDowntimeDeployment: true` to the `productionDeployment` stage configuration or to update to v42 of the Cloud SDK Pipeline.
 
 ## Improvements
 
