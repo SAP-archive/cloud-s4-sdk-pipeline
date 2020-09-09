@@ -7,7 +7,7 @@ This document describes the changes which will be part of the next release and a
 ## :warning: Breaking changes
 
 ### createHdiContainer step removal
-The `backendIntegrationTests` stage has been aligned with Project 'Piper' in version v42 and activation of the `createHdiContainer` step was not migrated.
+The `backendIntegrationTests` stage has been aligned with project "Piper" in version v42 and activation of the `createHdiContainer` step was not migrated.
 If you still need the functionalities provided by the `createHdiContainer` step, please open an issue at our [pipeline repository](https://github.com/SAP/cloud-s4-sdk-pipeline/issues/new?template=pipeline-issue.md).
 In the meantime it is also possible to implement an extension for the `backendIntegrationTests` stage using the extensibility concept explained in the [documentation](https://sap.github.io/jenkins-library/extensibility/). 
 The step `createHdiContainer` is still available for use in extensions, configuration options must be passed via parameters only.
@@ -20,6 +20,29 @@ From v42 onwards it is required to change the name of the script in your `packag
 The name `ci-test` for the npm script which is executed as part of the frontend unit tests stage is deprecated.
 From v42 onwards it is required to change the name of the script in your `package.json` files to the new name `ci-frontend-unit-test`, since the script `ci-test` will not be executed as part of the frontend unit tests anymore.
 
+### Lint stage
+The `lint` stage has been aligned with project "Piper" in version v42 and the `checkUi5BestPractices` step was not migrated, since the used tool is deprecated.
+In addition, the linting will now be executed as part of the `build` stage instead of in the dedicated `lint` stage.
+Thus, the configuration for the `lint` stage has to be removed, as it will not have an effect anymore. 
+Instead, please configure the step `npmExecuteLint` in the steps section of your project configuration, as described in the [documentation](https://sap.github.io/jenkins-library/steps/npmExecuteLint/).
+For example:
+```diff
+stages:
+-  lint:
+-    ui5BestPractices:
+-      esLanguageLevel: es2020
+-      failThreshold:
+-        error: 3
+-        warning: 5
+-        info: 7
+steps:
++  npmExecuteLint:
++    failOnError: true
+```
+
+### Static code checks stage
+The `staticCodeChecks` stage has been aligned with project "Piper" in version v42. 
+The static code checks will now be executed as part of the `build` stage instead of in the dedicated `staticCodeChecks` stage.  
 
 ### Renaming of keys in runStage configuration map
 Due to further alignment efforts with project "Piper" the keys (identifiers for the different stages) used in the `runStage` map have changed.
