@@ -8,7 +8,7 @@ This document describes the changes which will be part of the next release and a
 
 
 ### Lint stage
-The `lint` stage has been aligned with project "Piper" in version v42 and the `checkUi5BestPractices` step was not migrated, since the used tool is deprecated.
+The `lint` stage has been aligned with project "Piper" in version v43 and the `checkUi5BestPractices` step was not migrated, since the used tool is deprecated.
 In addition, the linting will now be executed as part of the `build` stage instead of in the dedicated `lint` stage.
 Thus, the configuration for the `lint` stage has to be removed, as it will not have an effect anymore. 
 Instead, please configure the step `npmExecuteLint` in the steps section of your project configuration, as described in the [documentation](https://sap.github.io/jenkins-library/steps/npmExecuteLint/).
@@ -28,8 +28,20 @@ steps:
 ```
 
 ### Static code checks stage
-The `staticCodeChecks` stage has been aligned with project "Piper" in version v42. 
+The `staticCodeChecks` stage has been aligned with project "Piper" in version v43. 
 The static code checks will now be executed as part of the `build` stage instead of in the dedicated `staticCodeChecks` stage.  
+
+### Frontend unit tests stage
+The `frontendUnitTests` stage has been aligned with project "Piper" in version v43. 
+The stage has been renamed to `additionalUnitTests`. 
+Please move any existing stage configuration for the stage `frontendUnitTests` to the stage `additionalUnitTests`. 
+For Example:
+```diff
+stages:
+-  frontendUnitTests:
++  additionalUnitTests:
+    dockerImage: 'myDockerImage'
+```
 
 ## New Features
 
