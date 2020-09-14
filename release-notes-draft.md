@@ -43,6 +43,43 @@ stages:
     dockerImage: 'myDockerImage'
 ```
 
+### Renaming of sonarQubeScan stage
+Continuing with the alignment efforts, the execution of the step `sonarExecuteScan` has been integrated into the project "Piper" stage `Compliance`, and the Cloud SDK Pipeline executes that stage instead.
+To activate this stage, the step `sonarExecuteScan` needs to be configured in your `.pipeline/config.yml` as described in the [documentation](https://sap.github.io/jenkins-library/steps/sonarExecuteScan/).
+By default, the pipeline will run the stage only for the productive branch, as before, but you can run it in all branches by configuring the option `runInAllBranches: true` for the stage `compliance`.
+Also note that the parameter `sonarProperties` has been renamed to `options`.
+
+
+The following diff shows the necessary migration of the configuration:
+```diff
+steps:
+
++ sonarExecuteScan:
++   projectKey: "my-project"
++   instance: "MySonar"
++   dockerImage: "myDockerImage"
++   options:
++     - "sonar.sources=./application"
+
+stages:
+
+- sonarQubeScan:
++ compliance:                # The stage config is only necessary,
+    runInAllBranches: true   # if you need to activate 'runInAllBranches'.
+-   projectKey: "my-project"
+-   instance: "MySonar"
+-   dockerImage: "myDockerImage"
+-   sonarProperties:
+-     - "sonar.jacoco.reportPaths=s4hana_pipeline/reports/coverage-reports/unit-tests.exec,s4hana_pipeline/reports/coverage-reports/integration-tests.exec"
+-     - "sonar.sources=./application"
+```
+
+Specifying `sonar.jacoco.reportPaths` as previously documented is no longer necessary.
+
+Recent versions of the SonarQube plugin (8.x) no longer supports coverage reports in .exec binary format.
+It only supports .xml reports generated from the JaCoCo maven plugin.
+As of now, it is a known issue that importing code coverage into the SonarQube service does not work in the Cloud SDK Pipeline out of the box.
+If you need this, please open [an issue on GitHub](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
 ## New Features
 
 ## Fixes
