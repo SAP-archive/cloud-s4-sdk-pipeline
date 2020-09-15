@@ -49,6 +49,7 @@ To activate this stage, the step `sonarExecuteScan` needs to be configured in yo
 By default, the pipeline will run the stage only for the productive branch, as before, but you can run it in all branches by configuring the option `runInAllBranches: true` for the stage `compliance`.
 Also note that the parameter `sonarProperties` has been renamed to `options`.
 
+:warning: If you have created an extension for this stage, it needs to be renamed to `compliance.groovy`.
 
 The following diff shows the necessary migration of the configuration:
 ```diff
