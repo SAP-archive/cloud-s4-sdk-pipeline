@@ -6,8 +6,51 @@ This document describes the changes which will be part of the next release and a
 
 ## :warning: Breaking changes
 
+### Quality Checks stage
+
+Due to alignments with project "Piper" the `s4SdkQualityChecks` stage has been removed.
+Please remove any configuration for the stage `s4SdkQualityChecks` from your pipeline configuration or custom default configuration.
+
+### Additional tools stage
+
+The `Third-party Checks` stage has been aligned with project "Piper" and the `additionalTools` stage was not migrated.
+In case you have a custom extension for the `additionalTools` stage, please migrate it to be an extension of the stage `security` instead.
+The `security` stage is documented in [project "Piper"](https://sap.github.io/jenkins-library/stages/security/).
+
+In addition, this stage was used for running code analysis tools, e.g., Vulas, for internal projects, which has been removed as well.
+
+### Checkmarx Scan stage
+
+Similarly, the `checkmarxScan` stage has been merged into the project "Piper" stage `security`.
+The configuration of Checkmarx needs to be moved to the step configuration of the [checkmarxExecuteScan](https://sap.github.io/jenkins-library/steps/checkmarxExecuteScan/) step.
+
+For example:
+
+```diff
+- stages:
+-   checkmarxScan:
++ steps:
++   checkmarxExecuteScan:
+      groupId: <Checkmarx GroupID>
+      vulnerabilityThresholdMedium: 5
+      checkMarxProjectName: 'My_Application'
+      vulnerabilityThresholdLow: 999999
+      filterPattern: '!**/*.log, !**/*.lock, !**/*.json, !**/*.html, !**/Cx*, **/*.js, **/*.java, **/*.ts'
+      fullScansScheduled: false
+      generatePdfReport: true
+      incremental: true
+      preset: '36'
+      checkmarxCredentialsId: CHECKMARX-SCAN
+      checkmarxServerUrl: http://localhost:8089
+```
+
+### NPM dependency audit stage
+
+Due to alignments with project "Piper" the `npmAudit` stage has been removed.
+Please remove any configuration for the stage `npmAudit` from your pipeline configuration or custom default configuration.
 
 ### Lint stage
+
 The `lint` stage has been aligned with project "Piper" in version v43 and the `checkUi5BestPractices` step was not migrated, since the used tool is deprecated.
 In addition, the linting will now be executed as part of the `build` stage instead of in the dedicated `lint` stage.
 Thus, the configuration for the `lint` stage has to be removed, as it will not have an effect anymore. 
@@ -28,10 +71,12 @@ steps:
 ```
 
 ### Static code checks stage
+
 The `staticCodeChecks` stage has been aligned with project "Piper" in version v43. 
 The static code checks will now be executed as part of the `build` stage instead of in the dedicated `staticCodeChecks` stage.  
 
 ### Frontend unit tests stage
+
 The `frontendUnitTests` stage has been aligned with project "Piper" in version v43. 
 The stage has been renamed to `additionalUnitTests`. 
 Please move any existing stage configuration for the stage `frontendUnitTests` to the stage `additionalUnitTests`. 
@@ -44,6 +89,7 @@ stages:
 ```
 
 ### Renaming of sonarQubeScan stage
+
 Continuing with the alignment efforts, the execution of the step `sonarExecuteScan` has been integrated into the project "Piper" stage `Compliance`, and the Cloud SDK Pipeline executes that stage instead.
 To activate this stage, the step `sonarExecuteScan` needs to be configured in your `.pipeline/config.yml` as described in the [documentation](https://sap.github.io/jenkins-library/steps/sonarExecuteScan/).
 By default, the pipeline will run the stage only for the productive branch, as before, but you can run it in all branches by configuring the option `runInAllBranches: true` for the stage `compliance`.
@@ -81,6 +127,12 @@ Recent versions of the SonarQube plugin (8.x) no longer supports coverage report
 It only supports .xml reports generated from the JaCoCo maven plugin.
 As of now, it is a known issue that importing code coverage into the SonarQube service does not work in the Cloud SDK Pipeline out of the box.
 If you need this, please open [an issue on GitHub](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+
+### Send notification post action
+
+Due to alignments with project "Piper" the `sendNotification` post action has been removed.
+Please remove any configuration for the post action `sendNotification` from your pipeline configuration or custom default configuration.
+
 ## New Features
 
 ## Fixes
