@@ -55,7 +55,9 @@ The `lint` stage has been aligned with project "Piper" in version v43 and the `c
 In addition, the linting will now be executed as part of the `build` stage instead of in the dedicated `lint` stage.
 Thus, the configuration for the `lint` stage has to be removed, as it will not have an effect anymore. 
 Instead, please configure the step `npmExecuteLint` in the steps section of your project configuration, as described in the [documentation](https://sap.github.io/jenkins-library/steps/npmExecuteLint/).
+
 For example:
+
 ```diff
 stages:
 -  lint:
@@ -80,7 +82,9 @@ The static code checks will now be executed as part of the `build` stage instead
 The `frontendUnitTests` stage has been aligned with project "Piper" in version v43. 
 The stage has been renamed to `additionalUnitTests`. 
 Please move any existing stage configuration for the stage `frontendUnitTests` to the stage `additionalUnitTests`. 
+
 For Example:
+
 ```diff
 stages:
 -  frontendUnitTests:
@@ -98,6 +102,7 @@ Also note that the parameter `sonarProperties` has been renamed to `options`.
 :warning: If you have created an extension for this stage, it needs to be renamed to `compliance.groovy`.
 
 The following diff shows the necessary migration of the configuration:
+
 ```diff
 steps:
 
@@ -127,6 +132,39 @@ Recent versions of the SonarQube plugin (8.x) no longer supports coverage report
 It only supports .xml reports generated from the JaCoCo maven plugin.
 As of now, it is a known issue that importing code coverage into the SonarQube service does not work in the Cloud SDK Pipeline out of the box.
 If you need this, please open [an issue on GitHub](https://github.com/sap/cloud-s4-sdk-pipeline/issues).
+
+### Migration to whitesourceExecuteScan step
+
+The stage `whitesourceScan` now executes the project "Piper" step `whitesourceExecuteScan`, and running the stage is activated **if** this step is configured in your `.pipeline/config.yml` file.
+The existing configuration for the stage `whitesourceScan` has to be moved to the step `whitesourceExecuteScan` with some modifications:
+
+```diff
+steps:
++ whitesourceExecuteScan:
++   productName: 'THE PRODUCT NAME AS IN WHITESOURCE'
++   orgAdminUserTokenCredentialsId: 'Jenkins-credentials-id-org-token'
++   userTokenCredentialsId: 'Jenkins-credentials-id-user-token'
++   productVersion: 'current' # replaces staticVersion
++   cvssSeverityLimit: 5 # optional
+
+stages:
+- whitesourceScan:
+-   product: 'THE PRODUCT NAME AS IN WHITESOURCE'
+-   credentialsId: 'Jenkins-credentials-id-org-token'
+-   whitesourceUserTokenCredentialsId: 'Jenkins-credentials-id-user-token'
+-   staticVersion: true
+```
+
+Note that the step will now **fail the pipeline if the scan finds security vulnerabilities** in any module that exceed the defined severity limit.
+This can be controlled with the new parameter `cvssSeverityLimit`.
+For more information about the step `whitesourceExecuteScan`, please refer its projert "Piper" [documentation](https://sap.github.io/jenkins-library/steps/whitesourceExecuteScan/).
+
+With using the new step implementation, there is also a potential change in naming the WhiteSource projects with regard to the version.
+The naming scheme for each WhiteSource project that is part of a scan is "<module name> - <version>".
+The version part is now guaranteed to be consistent across a single scan.
+If the parameter `productVersion` is configured (formerly `staticVersion`), it is taken from there.
+Otherwise it is taken from the main build descriptor file (i.e. mta.yaml) in accordance to the step parameter `versioningModel`, which defaults to `major`.
+The version in the build descriptor files for each module is ignored.
 
 ### Send notification post action
 
