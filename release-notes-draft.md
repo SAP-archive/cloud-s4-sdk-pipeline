@@ -135,7 +135,8 @@ If you need this, please open [an issue on GitHub](https://github.com/sap/cloud-
 
 ### Migration to whitesourceExecuteScan step
 
-The stage `whitesourceScan` now executes the project "Piper" step `whitesourceExecuteScan`, and running the stage is activated **if** this step is configured in your `.pipeline/config.yml` file.
+The stage `whitesourceScan` has been replaced with the project "Piper" stage `security`. 
+Now the step `whitesourceExecuteScan` will be executed and the stage is activated **if** the step `whitesourceExecuteScan` is configured in your `.pipeline/config.yml` file.
 The existing configuration for the stage `whitesourceScan` has to be moved to the step `whitesourceExecuteScan` with some modifications:
 
 ```diff
