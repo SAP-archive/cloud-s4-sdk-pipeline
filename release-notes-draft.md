@@ -170,7 +170,12 @@ The version in the build descriptor files for each module is ignored.
 ### Send notification post action
 
 Due to alignments with project "Piper" the `sendNotification` post action has been removed.
-Please remove any configuration for the post action `sendNotification` from your pipeline configuration or custom default configuration.
+Please remove any configuration for the post action `sendNotification` from your pipeline configuration or custom default configuration. Please use the project "Piper" step [`mailSendNotification`](https://sap.github.io/jenkins-library/steps/mailSendNotification/) instead. 
+
+### Post Pipeline Hook Extension
+We moved some of the post actions into the default "Post Pipeline Hook" stage implementation. 
+If you implemented an extension for the "Post Pipeline Hook" with the name `postPipelineHook.groovy` please make sure to always run `parameters.originalStage.call()`.
+Otherwise, some default post actions might be skipped.
 
 ## New Features
 
