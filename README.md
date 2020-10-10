@@ -20,7 +20,7 @@ You can find more details about the supported project types and build tools in o
 
 ### Hardware requirements
 
-At least four gigabyte memory (available to Docker) and at least four gigabyte of disk space on the Jenkins master for downloading Docker images and the persistent storage of Jenkins.
+At least four gigabyte(4GB) of memory (available to Docker) and at least four gigabyte(4GB) of disk space on the Jenkins master for downloading Docker images and the persistent storage of Jenkins.
 
 The pipeline will refuse to run with less than one gigabyte available disk space to prevent a situation where the disk is running full.
 
