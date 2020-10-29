@@ -30,3 +30,24 @@ stages:
 ## Fixes
 
 ## Improvements
+
+It is possible to consistently enable or disable all **conditional** stages with the config key `runInAllBranches`.
+The stages `productionDeployment`, `artifactDeployment`, `compliance`, and `security` are by default disabled **for non-productive** branches.
+They can be enabled also for non-productive branches by configuring the respective stage with `runInAllBranches`.
+Example `.pipeline/config.yml` file snippet to enable `security` also in non-productive branches:
+
+```yaml
+stages:
+  security:
+    runInAllBranches: true
+```
+
+Similarily, if there are stages which you do **not** want to run by default also in your **non-productive** branches, you can disable them like this:
+
+```yaml
+stages:
+  endToEndTests:
+    runInAllBranches: false
+```
+
+This would then deviate from the default behavior and run the End to End Tests stage only for the productive branch.
