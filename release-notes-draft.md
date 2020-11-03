@@ -15,14 +15,14 @@ For example:
 
 ```diff
 stages:
--   backendIntegrationTests:
-+   integration:
-      retry: 2
-      credentials:
-        - alias: 'ERP'
-          credentialId: 'erp-credentials'
-        - alias: 'SF'
-          credentialId: 'successfactors-credentials'
+- backendIntegrationTests:
++ integration:
+    retry: 2
+    credentials:
+      - alias: 'ERP'
+        credentialId: 'erp-credentials'
+      - alias: 'SF'
+        credentialId: 'successfactors-credentials'
 ```
 
 ## New Features
@@ -30,6 +30,8 @@ stages:
 ## Fixes
 
 ## Improvements
+
+### Conditional Execution of Stages
 
 It is possible to consistently enable or disable all **conditional** stages with the config key `runInAllBranches`.
 The stages `productionDeployment`, `artifactDeployment`, `compliance`, and `security` are by default disabled **for non-productive** branches.
@@ -51,3 +53,11 @@ stages:
 ```
 
 This would then deviate from the default behavior and run the End to End Tests stage only for the productive branch.
+
+### Disable Usage of Deprecated Jenkins Plugins
+
+The [`checksPublishResults`](https://sap.github.io/jenkins-library/steps/checksPublishResults/) step uses some Jenkins plugins which have been deprecated in favor of [`warnings-ng`](https://plugins.jenkins.io/warnings-ng/).
+When replacing the SAP Cloud SDK Pipeline specific build stage with the more generic build stage of project "Piper", those plugins became a requirement of SAP Cloud SDK Pipeline, which was not intended.
+Due to backwards compatibility concerns in [project "Piper" general purpose pipeline](https://sap.github.io/jenkins-library/stages/introduction/), the old plugins are still available, but they have been disabled by default in SAP Cloud SDK Pipeline so that having those plugins installed is not required anymore.
+
+If you need any of the old plugins, see the docs of the [`checksPublishResults`](https://sap.github.io/jenkins-library/steps/checksPublishResults/) step to enable them in your pipeline config file.
