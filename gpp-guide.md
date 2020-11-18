@@ -20,6 +20,8 @@ In this case, please also [open an issue in the SAP Cloud SDK Pipeline GitHub re
 | Date          | Remark        |
 |:-------------:|:------------- |
 | 2020-11-11    | First draft |
+| 2020-11-18    | Recommend using inferBuildTool option |
+
 
 ## General
 
@@ -122,9 +124,15 @@ If you already use the new name, no action needs to be taken for this item.
 
 ### Build tool
 
-Make sure to set `buildTool` as described [in the project "Piper" docs](https://sap.github.io/jenkins-library/stages/introduction/#1-create-pipeline-configuration).
-Note, this was not required to be set in SAP Cloud SDK Pipeline, but **it is required** for project "Piper" General Purpose Pipeline.
-Supported build tools for projects using SAP Cloud SDK are `maven` and `mta`.
+You need to enable the `inferBuildTool` boolean value in the `general` section of your `.pipeline/config.yml` file.
+This will enable automatic detection of the [`buildTool`](https://sap.github.io/jenkins-library/stages/introduction/#1-create-pipeline-configuration) as you know it from SAP Cloud SDK Pipeline.
+
+```yaml
+general:
+  inferBuildTool: true
+```
+
+Note: Supported build tools for projects switching from SAP Cloud SDK Pipeline to project "Piper" General Purpose Pipeline are `maven` and `mta`.
 
 ### Pull-request voting
 
