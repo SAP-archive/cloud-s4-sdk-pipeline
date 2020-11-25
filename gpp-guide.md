@@ -436,7 +436,7 @@ stages:
 - artifactDeployment:
 -   nexus:
 -     version: nexus3
--     url: cloudpot.cpe.c.eu-de-1.cloud.sap:8081
+-     url: 'MY-NEXUS-URL'
 -     repository: maven-releases
 -     credentialsId: nexus-upload
 
