@@ -19,8 +19,9 @@ In this case, please also [open an issue in the SAP Cloud SDK Pipeline GitHub re
 
 | Date          | Remark        |
 |:-------------:|:------------- |
-| 2020-11-11    | First draft |
+| 2021-01-25.   | Fix pattern for Frontend Unit Test Coverage to avoid zipping up the entire workspace |
 | 2020-11-18    | Recommend using inferBuildTool option |
+| 2020-11-11    | First draft |
 
 
 ## General
@@ -306,8 +307,8 @@ stages:
 +     pattern: 's4hana_pipeline/reports/frontend-unit/**/Test*.xml'
 +   htmlPublisher:
 +     active: true
-+     reportDir: ""
-+     pattern: "s4hana_pipeline/reports/**/report-html/ut/index.html"
++     reportDir: "s4hana_pipeline/reports/"
++     pattern: "**/report-html/ut/index.html"
 +     reportName: "Frontend Unit Test Coverage"
 ```
 
