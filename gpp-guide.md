@@ -19,7 +19,7 @@ In this case, please also [open an issue in the SAP Cloud SDK Pipeline GitHub re
 
 | Date          | Remark        |
 |:-------------:|:------------- |
-| 2021-01-25.   | Fix pattern for Frontend Unit Test Coverage to avoid zipping up the entire workspace |
+| 2021-01-25    | Fix pattern for Frontend Unit Test Coverage to avoid zipping up the entire workspace |
 | 2020-11-18    | Recommend using inferBuildTool option |
 | 2020-11-11    | First draft |
 
